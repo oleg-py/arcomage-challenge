@@ -13,7 +13,7 @@ object red {
     ),
 
     "Earthquake" worth 0 bricks (
-      -1 all quarrys
+      -1 all quarries
     ),
 
     "Lucky Cache" worth 0 bricks (
@@ -44,7 +44,7 @@ object red {
     ),
 
     "Innovations" worth 2 bricks (
-      +1 all quarrys,
+      +1 all quarries,
       +4 player gems
     ),
 
@@ -98,7 +98,7 @@ object red {
       ) otherwise (
         -1 enemy dungeon,
         -2 enemy tower
-      )
+      ) // TODO -- when wall == enemy wall, hit both?
     ),
 
     "New Equipment" worth 6 bricks (

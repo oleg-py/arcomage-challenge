@@ -8,7 +8,7 @@ object CardsDsl {
   private type Op = State => State
 
   object play {
-    val again = State.turnModifiers.modify(_ :+ PlayAgain)
+    val again = State.turnModifiers.modify(_ :+ TurnMod.PlayAgain)
   }
 
   object enemy {
@@ -18,7 +18,7 @@ object CardsDsl {
   }
 
   object discard {
-    val card = State.turnModifiers.modify(_ :+ ForceDiscard)
+    val card = State.turnModifiers.modify(_ :+ TurnMod.ForceDiscard)
   }
 
   object swap {
@@ -66,7 +66,7 @@ object CardsDsl {
   }
 
   val brick, bricks     = StatWord(GenLens[Player](_.resources.bricks))
-  val quarry, quarrys   = StatWord(GenLens[Player](_.income.bricks))
+  val quarry, quarries  = StatWord(GenLens[Player](_.income.bricks))
 
   val gem, gems         = StatWord(GenLens[Player](_.resources.gems))
   val magic             = StatWord(GenLens[Player](_.income.gems))
