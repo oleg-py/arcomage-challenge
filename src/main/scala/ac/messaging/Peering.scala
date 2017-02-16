@@ -1,7 +1,7 @@
 package ac.messaging
 
 import monix.eval.Task
-import monix.execution.Cancelable
+import monix.execution.{Cancelable, Scheduler}
 import monix.reactive.Observable
 import monix.reactive.OverflowStrategy.Unbounded
 import monix.reactive.subjects.PublishSubject
@@ -13,7 +13,7 @@ trait Peering {
   protected type Serialized <: js.Any
   protected def serialize(p: Payload): Serialized
   protected def deserialize(s: Serialized): Payload
-  protected def ack(id: String): Payload
+  protected implicit def scheduler: Scheduler
 
   case class Connection (
     send    : Payload => Unit,
@@ -30,7 +30,7 @@ trait Peering {
   private def wire(id: String, connection: js.Dynamic) = {
     val send = (p: Payload) => { connection.send(serialize(p)); () }
     val received = Observable.create[Payload](Unbounded)(sub => {
-      connection.on("open", () => send(ack(id)))
+      // TODO meta-calls
       connection.on("close", () => sub.onComplete())
       connection.on("error", (err: js.Dynamic) => sub.onError(jsException(err)))
       connection.on("data", (data: Serialized) => sub.onNext(deserialize(data)))

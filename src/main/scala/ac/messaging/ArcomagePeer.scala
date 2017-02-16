@@ -1,14 +1,17 @@
 package ac.messaging
 
-import ac.messaging.GameEvent.ClientReady
+import boopickle.Default._
+import monix.execution.Scheduler
 
-import scala.scalajs.js.typedarray._
+import scala.scalajs.js.typedarray._, TypedArrayBufferOps._
 
-class ArcomagePeer extends Peering {
+class ArcomagePeer (implicit protected val scheduler: Scheduler) extends Peering {
   override type Payload = GameEvent
   override protected type Serialized = ArrayBuffer
 
-  override protected def serialize(p: GameEvent): ArrayBuffer = GameEvent.toBytes(p)
-  override protected def deserialize(s: ArrayBuffer): GameEvent = GameEvent.fromBytes(s)
-  override protected def ack(id: String): GameEvent = ClientReady(id)
+  override protected def serialize(p: GameEvent): ArrayBuffer =
+    Pickle.intoBytes(p).arrayBuffer()
+
+  override protected def deserialize(s: ArrayBuffer): GameEvent =
+    Unpickle[GameEvent].fromBytes(TypedArrayBuffer.wrap(s))
 }
