@@ -8,7 +8,7 @@ object CardsDsl {
   private type Op = State => State
 
   object play {
-    val again = State.turnModifiers.modify(_ :+ TurnMod.PlayAgain)
+    val again = State.turnModifiers.modify(_ :+ PlayAgain)
   }
 
   object enemy {
@@ -18,7 +18,7 @@ object CardsDsl {
   }
 
   object discard {
-    val card = State.turnModifiers.modify(_ :+ TurnMod.ForceDiscard)
+    val card = State.turnModifiers.modify(_ :+ ForceDiscard)
   }
 
   object swap {
