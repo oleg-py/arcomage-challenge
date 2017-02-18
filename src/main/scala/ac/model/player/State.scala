@@ -1,4 +1,4 @@
-package ac.model
+package ac.model.player
 
 import monocle.macros.Lenses
 
@@ -6,4 +6,6 @@ import monocle.macros.Lenses
   stats: Player,
   enemy: Player,
   turnModifiers: Vector[TurnMod]
-)
+) {
+  def reverse: State = copy(stats = enemy, enemy = stats)
+}

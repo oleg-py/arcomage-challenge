@@ -1,7 +1,6 @@
 package ac.model.cards
 
-import ac.model.Card
-import ac.model.CardsDsl._
+import CardsDsl._
 
 import scala.language.postfixOps
 

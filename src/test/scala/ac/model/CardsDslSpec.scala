@@ -1,7 +1,8 @@
 package ac.model
 
 import ac.UnitSpec
-import CardsDsl._
+import ac.model.cards.CardsDsl._
+import ac.model.player.{Buildings, Player, State}
 
 import scala.language.postfixOps
 

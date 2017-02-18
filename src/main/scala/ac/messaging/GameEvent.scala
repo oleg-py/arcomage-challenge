@@ -1,6 +1,6 @@
 package ac.messaging
 
-import ac.model.State
+import ac.model.player.State
 
 sealed trait GameEvent
 

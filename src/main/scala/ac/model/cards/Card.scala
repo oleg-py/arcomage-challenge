@@ -1,6 +1,7 @@
-package ac.model
+package ac.model.cards
 
-import shapeless._
+import ac.model.Resources
+import ac.model.player.State
 
 case class Card (
   name: String,
@@ -9,13 +10,12 @@ case class Card (
   effect: State => State,
   discardable: Boolean = true
 ) {
-  /*_*/
-  val costNumber: Int = Generic[Resources].to(cost).toList.max
+  val costNumber: Int = cost.asSeq.max
 }
 
 object Card {
   sealed trait Color
-  case object Red extends Color
+  case object Red   extends Color
   case object Green extends Color
-  case object Blue extends Color
+  case object Blue  extends Color
 }

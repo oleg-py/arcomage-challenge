@@ -1,4 +1,4 @@
-package ac.model
+package ac.model.cards
 
 case class Cards (
   hand: List[Card],

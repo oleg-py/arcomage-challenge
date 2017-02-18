@@ -1,5 +1,7 @@
-package ac.model
+package ac.model.cards
 
+import ac.model.Resources
+import ac.model.player.{Player, State}
 import monocle.Lens
 import monocle.macros.GenLens
 

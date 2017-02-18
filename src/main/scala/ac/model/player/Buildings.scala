@@ -1,5 +1,4 @@
-package ac.model
-
+package ac.model.player
 
 case class Buildings (
   tower: Int,
