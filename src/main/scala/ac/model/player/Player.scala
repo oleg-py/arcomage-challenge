@@ -1,10 +1,11 @@
 package ac.model.player
 
 import ac.model.Resources
+import monocle.macros.Lenses
 import shapeless._
 import ops.hlist.Mapper
 
-case class Player (
+@Lenses case class Player (
   buildings : Buildings,
   resources : Resources,
   income    : Resources

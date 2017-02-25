@@ -6,4 +6,10 @@ case class Resources (
   recruits: Int = 0
 ) {
   def asSeq: Seq[Int] = Seq(bricks, gems, recruits)
+
+  def + (other: Resources) = Resources(
+    bricks + other.bricks,
+    gems + other.gems,
+    recruits + other.recruits
+  )
 }
