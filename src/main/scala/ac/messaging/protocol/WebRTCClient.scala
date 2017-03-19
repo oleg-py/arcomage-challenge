@@ -34,7 +34,7 @@ object WebRTCClient {
   private def wire[A](id: String, connection: js.Dynamic)(implicit p: Pickler[A]): Task[RawCommunicator[A]] = Task.create{ (sc, done) =>
     val send = (a: A) => { connection.send(Pickle.intoBytes(a).arrayBuffer()); () }
     val received = Observable.create[A](Unbounded)(sub => {
-      connection.on("close", () => sub.onComplete)
+      connection.on("close", () => sub.onComplete())
       connection.on("data", (data: ArrayBuffer) => sub.onNext(Unpickle[A].fromBytes(TypedArrayBuffer.wrap(data))))
       connection.on("error", (err: js.Dynamic) => sub.onError(jsErr(err)))
       Cancelable(() => { connection.close(); () })
