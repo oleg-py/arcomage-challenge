@@ -14,7 +14,7 @@ import TypedArrayBufferOps._
 class WebRTCClient[A] private (
   val id: String,
   val connectionRequests: Observable[RawCommunicator[A]],
-  val connectFn: String => Task[RawCommunicator[A]]
+  connectFn: String => Task[RawCommunicator[A]]
 ) extends Client[A] {
   override def connect(id: String): Task[RawCommunicator[A]] = connectFn(id)
 }
@@ -40,7 +40,7 @@ object WebRTCClient {
       Cancelable(() => { connection.close(); () })
     }).share(sc)
     done.onSuccess(Communicator[A, A](send, received))
-    Cancelable.empty
+    Cancelable(() => { connection.close(); () })
   }
 
   private def jsErr(err: js.Dynamic) = {
