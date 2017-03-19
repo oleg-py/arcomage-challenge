@@ -9,8 +9,9 @@ case class Card (
   cost: Resources,
   effect: State => State,
   discardable: Boolean = true
-) {
+) extends (State => State) {
   val costNumber: Int = cost.asSeq.max
+  override def apply(s: State): State = effect(s)
 }
 
 object Card {

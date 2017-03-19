@@ -12,6 +12,7 @@ persistLauncher := true
 jsDependencies += ProvidedJS / "peer.js"
 
 libraryDependencies ++= Seq(
+  "org.typelevel" %%% "cats" % "0.9.0",
   "in.nvilla" %%% "monadic-html" % "latest.integration",
   "io.monix" %%% "monix" % "2.2.1",
   "io.suzaku" %%% "boopickle" % "1.2.6",

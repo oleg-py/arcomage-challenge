@@ -2,7 +2,8 @@ package ac.model
 
 import ac.model.player.{Player, State}
 import ac.model.cards._
-
+import cats.syntax.all._
+import cats.instances.function._
 import scala.language.postfixOps
 
 object Play {
@@ -26,9 +27,15 @@ object Play {
   val enemyIncome: State => State =
     reverse andThen playerIncome andThen reverse
 
+  val playerIncomeOnTurn: State => State =
+    s => if (s.turnModifiers.isEmpty) playerIncome(s) else s
+
   val deck: Vector[Card] =
     (red cards) ++ (blue cards) ++ (green cards)
 
   val cardsByName: Map[String, Card] =
     deck.map(c => (c.name, c)).toMap
+
+  val playSequence: String => State => State =
+    (playEnemyCard contramap cardsByName)(_) map playerIncomeOnTurn
 }
