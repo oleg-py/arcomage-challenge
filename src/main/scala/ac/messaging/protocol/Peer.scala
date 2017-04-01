@@ -23,6 +23,7 @@ final class Peer[Req, Res] (comm: BiCommunicator[Req, Res]) {
     Task.create[Unit]((sc, cb) => {
       respondent.received
         .mapTask { case (id, req) => respond(req).map(id -> _) }
+        .doOnComplete(() => cb.onSuccess(()))
         .doOnError(cb.onError)
         .foreach(respondent.send)(sc)
       Cancelable.empty

@@ -1,11 +1,11 @@
-package ac.markup
+package ac.ui.components
 
 import boopickle.Default._
 import ac.messaging.protocol.WebRTCClient
 import mhtml._
 import monix.execution.Scheduler.Implicits._
 import monix.reactive.Observable
-import org.scalajs.dom
+import org.scalajs.dom._, window._
 import scala.concurrent.duration._
 
 import scala.scalajs.js
@@ -28,9 +28,9 @@ object Main extends JSApp {
     } {
       println("Connected to Peer.js")
       println(s"User id is ${peer.id}")
-      if (dom.window.location.search.contains("to=")) {
+      if (location.search.contains("to=")) {
         val parse = "to=([a-z0-9]+)".r
-        val m = parse.findFirstMatchIn(dom.window.location.search).get
+        val m = parse.findFirstMatchIn(location.search).get
         val nextId = m.group(1)
         println(s"Connecting to $nextId")
         peer.connect(nextId).foreach(comm => {
@@ -39,7 +39,7 @@ object Main extends JSApp {
         })
       } else {
         println("Awaiting connection by share link")
-        val connLink = dom.window.location.toString + s"&to=${peer.id}"
+        val connLink = location.toString + s"&to=${peer.id}"
         hw := <input value={connLink}/>
         peer.connectionRequests.foreach(comm => {
           println("Communcator generated")
@@ -52,7 +52,7 @@ object Main extends JSApp {
 
   @JSExport
   override def main(): Unit = {
-    mount(dom.document.body, hw)
+    mount(document.body, hw)
 
     /*val peer = new ArcomagePeer
     peer.connectionRequests.flatMap(_.received).foreach(println)

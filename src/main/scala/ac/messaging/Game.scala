@@ -1,11 +1,13 @@
 package ac.messaging
 
+import ac.model.GameConditions
 import ac.model.Play._
 import ac.model.player.State
 import monocle.macros.Lenses
 
 object Game {
   sealed trait Command
+  case class SetupConditions  (conds: GameConditions) extends Command
   case class ChangeName  (name: String) extends Command
   case class PlayCard    (card: String) extends Command
   case class DiscardCard (card: String) extends Command
