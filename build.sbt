@@ -1,13 +1,10 @@
 name := "arcomage-challenge"
 version := "0.0.1"
-scalaVersion := "2.12.1"
-
-scalaOrganization := "org.typelevel"
 
 enablePlugins(ScalaJSPlugin)
 
 skip in packageJSDependencies := false
-persistLauncher := true
+scalaJSUseMainModuleInitializer := true
 
 libraryDependencies ++= Seq(
   "org.typelevel" %%% "cats" % "0.9.0",
@@ -20,7 +17,12 @@ libraryDependencies ++= Seq(
   "org.scalatest" %%% "scalatest" % "3.0.1" % Test
 )
 
-resolvers += Resolver.sonatypeRepo("releases")
+// === Temporary TLS - ScalaJS fix ===
+
+// Remove the dependency on the scalajs-compiler
+libraryDependencies := libraryDependencies.value.filterNot(_.name == "scalajs-compiler")
+// And add a custom one
+addCompilerPlugin("org.scala-js" % "scalajs-compiler" % scalaJSVersion cross CrossVersion.patch)
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
-addCompilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.full)
+addCompilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.patch)
