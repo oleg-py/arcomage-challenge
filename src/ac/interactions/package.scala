@@ -1,27 +1,25 @@
 package ac
 
 import ac.syntax._
-import ac.game.GameConditions
+import ac.game.{GameConditions, Randomizer}
 import ac.game.cards.Cards
 import ac.game.player.{CardScope, PlayerScope}
 import ac.interactions.State._
-import monix.eval.Task
+import cats.{Applicative, Functor}
+import cats.syntax.applicative._
+import cats.syntax.functor._
+import cats.syntax.option._
 
 package object interactions {
-  type OutcomeL = Task[(State, Option[Command])]
+  type Outcome[F[_]] = F[(State, Option[Command])]
 
   object -< {
     def unapply[A, B](t: (A, B)) = Some(t)
   }
 
-  implicit class TableSugar1(a: State) {
-    def lift             : OutcomeL = Task.pure((a, None))
-    def liftC(c: Command): OutcomeL = Task.pure((a, Some(c)))
-  }
-
-  implicit class TableSugar2(task: Task[State]) {
-    def lift             : OutcomeL = task.flatMap(_.lift)
-    def liftC(c: Command): OutcomeL = task.flatMap(_.liftC(c))
+  implicit class TableSugar1[F[_]: Applicative](a: State) {
+    def lift             : Outcome[F] = (a, none[Command]).pure[F]
+    def liftC(c: Command): Outcome[F] = (a, c.some).pure[F]
   }
 
   private def nextTurnState(isEnemy: Boolean)(s: PlayerScope) = {
@@ -46,13 +44,17 @@ package object interactions {
       nextTurnState(isEnemy = cards.isEmpty)
   }
 
-  def initialPlayerScope(myName: String, enemyName: String, conds: GameConditions) = for {
-    cards <- Cards.initial(6)
-  } yield PlayerScope(
-    myName,
-    enemyName,
-    cards,
-    conds.initialState,
-    conds
+  def initialPlayerScope[F[_]: Randomizer: Functor](
+    myName: String,
+    enemyName: String,
+    conds: GameConditions
+  ) = Cards.initial(6).map(cards =>
+    PlayerScope(
+      myName,
+      enemyName,
+      cards,
+      conds.initialState,
+      conds
+    )
   )
 }

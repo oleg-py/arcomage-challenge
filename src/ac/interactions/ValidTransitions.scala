@@ -1,12 +1,15 @@
 package ac.interactions
 
 import ac.game.Play._
+import State._
+import Command._
+import ac.game.Randomizer
+import cats.Applicative
 import cats.syntax.option._
-import State._, Command._
+import cats.syntax.functor._
 
 object ValidTransitions {
-  // TODO tagless?
-  val table: PartialFunction[(State, Command), OutcomeL] = {
+  def table[F[_]: Randomizer: Applicative]: PartialFunction[(State, Command), Outcome[F]] = {
     case HostNameEntry                 -< NameEntered(name) =>
       WaitingForGuest(name).liftC(EnemyNameSet(name))
 
@@ -17,10 +20,16 @@ object ValidTransitions {
       SelectConditions(name, enemy).liftC(EnemyNameSet(name))
 
     case SelectConditions(name, enemy) -< ConditionsChosen(conds) =>
-      initialPlayerScope(name, enemy, conds).map(EnemyTurn).liftC(GuestReady(name, conds))
+      initialPlayerScope(name, enemy, conds)
+        .map(EnemyTurn)
+        .tupleRight(GuestReady(name, conds).some)
+        .widen
 
     case WaitingForGuest(name)         -< GuestReady(enemy, conds) =>
-      initialPlayerScope(name, enemy, conds).map(PlayerTurn).lift
+      initialPlayerScope(name, enemy, conds)
+        .map(PlayerTurn)
+        .tupleRight(none)
+        .widen
 
     case PlayerTurn(p)                 -< PlayedCard(n) if p.canPlay(n) =>
       val (card, nextCards) = p.cards.pull(n)

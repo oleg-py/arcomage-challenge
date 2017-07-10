@@ -1,9 +1,10 @@
 package ac.game.cards
 
 import scala.language.postfixOps
-import scala.util.Random
 
-import monix.eval.Task
+import ac.game.Randomizer
+import cats.Functor
+import cats.syntax.functor._
 
 
 class Cards private (
@@ -15,14 +16,11 @@ class Cards private (
 }
 
 object Cards {
-  // TODO tagless?
-  def initial[F[_]](handSize: Int): Task[Cards] = Task {
-    val allCards = Vector(red cards, blue cards, green cards).flatten
-    val (hand, source) = Stream
-      .continually { Random.shuffle(allCards) }
-      .flatten
-      .splitAt(handSize)
+  val allCards = Vector(red cards, blue cards, green cards).flatten
 
-    new Cards(hand.toVector, source)
-  }
+  def initial[F[_]: Randomizer: Functor](handSize: Int): F[Cards] =
+    Randomizer[F].shuffles(allCards).map { stream =>
+      val (hand, source) = stream splitAt handSize
+      new Cards(hand.toVector, source)
+    }
 }

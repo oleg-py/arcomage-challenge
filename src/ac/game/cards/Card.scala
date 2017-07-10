@@ -14,9 +14,10 @@ case class Card (
 }
 
 object Card {
+  type Fn = CardScope => CardScope
+
   val Noop = Card("", Color.Red, 0, identity)
 
-  type Fn = CardScope => CardScope
   sealed trait Color {
     import Color._
     def resource = this match {
