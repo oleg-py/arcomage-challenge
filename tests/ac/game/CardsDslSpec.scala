@@ -2,13 +2,13 @@ package ac.game
 
 import ac.UnitSpec
 import ac.game.cards.CardsDsl._
-import ac.game.player.{Buildings, Player, State}
+import ac.game.player.{Buildings, Player, CardScope}
 
 import ac.UnitSpec
 import scala.language.postfixOps
 
 class CardsDslSpec extends UnitSpec {
-  val testState = State(
+  val testState = CardScope(
     Player(Buildings(25, 17), Resources(3, 4, 5), Resources(2, 2, 2)),
     Player(Buildings(30, 2), Resources(10, 6, 15), Resources(1, 1, 1)),
     Vector()
@@ -26,7 +26,7 @@ class CardsDslSpec extends UnitSpec {
   }
 
   "Additive syntax words" should "correctly update relevant stat" in {
-    val testData: Seq[(StatWord, Player => Int)] = Seq(
+    val testData: Seq[(PlayerAttribute, Player => Int)] = Seq(
       (brick, _.resources.bricks),
       (bricks, _.resources.bricks),
       (gem, _.resources.gems),

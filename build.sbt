@@ -8,13 +8,42 @@ scalaJSUseMainModuleInitializer := true
 
 libraryDependencies ++= Seq(
   "org.typelevel" %%% "cats" % "0.9.0",
-  "in.nvilla" %%% "monadic-html" % "latest.integration",
-  "io.monix" %%% "monix" % "2.2.1",
+  "io.monix" %%% "monix" % "2.3.0",
+  "io.monix" %%% "monix-cats" % "2.3.0",
   "io.suzaku" %%% "boopickle" % "1.2.6",
   "com.chuusai" %%% "shapeless" % "2.3.2",
   "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0",
   "com.github.julien-truffaut" %%% "monocle-macro" % "1.4.0",
+
+  "com.github.japgolly.scalacss" %%% "core" % "0.5.3",
+  "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.3",
+  "com.github.japgolly.scalajs-react" %%% "core" % "1.0.1",
+  "com.github.japgolly.scalajs-react" %%% "extra" % "1.0.1",
+
   "org.scalatest" %%% "scalatest" % "3.0.1" % Test
+)
+
+jsDependencies ++= Seq(
+  "org.webjars.bower" % "react" % "15.5.4"
+    /        "react-with-addons.js"
+    minified "react-with-addons.min.js"
+    commonJSName "React",
+
+  "org.webjars.bower" % "react" % "15.5.4"
+    /         "react-dom.js"
+    minified  "react-dom.min.js"
+    dependsOn "react-with-addons.js"
+    commonJSName "ReactDOM",
+
+  "org.webjars.bower" % "react" % "15.5.4"
+    /         "react-dom-server.js"
+    minified  "react-dom-server.min.js"
+    dependsOn "react-dom.js"
+    commonJSName "ReactDOMServer",
+
+  "org.webjars.bower" % "peerjs" % "0.3.14"
+    /        "peer.js"
+    minified "peer.min.js"
 )
 
 // === Temporary TLS - ScalaJS fix ===

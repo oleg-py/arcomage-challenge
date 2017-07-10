@@ -7,9 +7,17 @@ case class Resources (
 ) {
   def asSeq: Seq[Int] = Seq(bricks, gems, recruits)
 
-  def + (other: Resources) = Resources(
-    bricks + other.bricks,
-    gems + other.gems,
-    recruits + other.recruits
+  def + (r: Resources) = Resources(
+    bricks   + r.bricks,
+    gems     + r.gems,
+    recruits + r.recruits
   )
+
+  def - (r: Resources) = this + (-r)
+  def unary_-() = this * -1
+
+  def *   (i: Int) = Resources(bricks * i, gems * i, recruits * i)
+  def max (i: Int) = Resources(bricks max i, gems max i, recruits max i)
+
+  def all_<= (r: Resources) = this.asSeq zip r.asSeq forall { case (a, b) => a <= b }
 }

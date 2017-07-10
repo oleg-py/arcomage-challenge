@@ -2,32 +2,17 @@ package ac.game
 package player
 
 import monocle.macros.Lenses
-import shapeless._
-import ops.hlist.Mapper
 
 @Lenses case class Player (
   buildings : Buildings,
   resources : Resources,
   income    : Resources
 ) {
-  //noinspection TypeAnnotation
-  private object f0 extends Poly1 {
-    implicit val intCase = at[Int](_ min 0)
-  }
-
-  //noinspection TypeAnnotation
-  private object f1 extends Poly1 {
-    implicit val intCase = at[Int](_ min 1)
-  }
-
-  private def minF[A, Repr <: HList](a: A, f: Poly)(
-    implicit gen: Generic.Aux[A, Repr],
-    mapper: Mapper.Aux[f.type, Repr, Repr]
-  ): A = gen.from(mapper(gen.to(a)))
-
-  def normalized = Player(
-    minF(buildings, f0),
-    minF(resources, f0),
-    minF(income, f1)
+  def norm = Player(
+    buildings.norm,
+    resources max 0,
+    income    max 1
   )
+
+  def addResources(r: Resources = income) = copy(resources = resources + r)
 }

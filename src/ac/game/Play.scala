@@ -1,41 +1,27 @@
 package ac.game
 
-import ac.game.player.{Player, State}
+import ac.game.player.CardScope
 import ac.game.cards._
-import cats.syntax.all._
-import cats.instances.function._
 import scala.language.postfixOps
+import ac.syntax._
+import CardScope._
 
 object Play {
-  val normalize: State => State =
-    State.stats.modify(_.normalized) andThen
-    State.enemy.modify(_.normalized)
+  val cardByName: Map[String, Card] =
+    Vector(red cards, blue cards, green cards)
+      .flatten
+      .map(c => (c.name, c))
+      .toMap
 
-  val reverse: State => State = _.reverse
+  val playCard: Card => Card.Fn = card =>
+    turnMods.modify(_ drop 1) andThen
+    stats.modify(_ addResources card.cost) andThen
+      card                                          andThen
+      modifyIf(_.passTurn, enemy.modify(_.addResources()))
 
-  val playMyCard: (State => State) => State => State =
-    _ andThen normalize
+  val playEnemyCard: String => Card.Fn = str => cs =>
+    cardByName(str) |> playCard |> cs.applyReversed
 
-  val playEnemyCard: (State => State) => State => State =
-    reverse andThen playMyCard(_) andThen reverse
-
-  val playerIncome: State => State =
-    State.stats.modify(p =>
-      Player.resources.modify(_ + p.income)(p)
-    )
-
-  val enemyIncome: State => State =
-    reverse andThen playerIncome andThen reverse
-
-  val playerIncomeOnTurn: State => State =
-    s => if (s.turnModifiers.isEmpty) playerIncome(s) else s
-
-  val deck: Vector[Card] =
-    (red cards) ++ (blue cards) ++ (green cards)
-
-  val cardsByName: Map[String, Card] =
-    deck.map(c => (c.name, c)).toMap
-
-  val playSequence: String => State => State =
-    (playEnemyCard contramap cardsByName)(_) map playerIncomeOnTurn
+  val discardCard      : Card.Fn = playCard(Card.Noop)
+  val discardEnemyCard : Card.Fn = _.applyReversed(discardCard)
 }
