@@ -22,7 +22,7 @@ object ValidTransitions {
     case WaitingForGuest(name)         -< GuestReady(enemy, conds) =>
       initialPlayerScope(name, enemy, conds).map(PlayerTurn).lift
 
-    case PlayerTurn(p)                 -< PlayedCard(n) if !p.canPlay(n) =>
+    case PlayerTurn(p)                 -< PlayedCard(n) if p.canPlay(n) =>
       val (card, nextCards) = p.cards.pull(n)
       makeTurn(playCard(card), nextCards.some)(p).liftC(EnemyPlayedCard(card.name))
 
