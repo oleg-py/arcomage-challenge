@@ -6,7 +6,6 @@ import ac.syntax._
 import japgolly.scalajs.react._
 import vdom.html_<^._
 import cats.syntax.option._
-import monix.eval.Task
 import monix.execution.Scheduler
 
 object Arcomage {

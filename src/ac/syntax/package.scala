@@ -10,6 +10,8 @@ import monix.execution.Scheduler
 package object syntax {
   type ??? = Nothing
 
+  def discard[A](a: A): Unit = ()
+
   implicit class PipeThroughFunctionSyntax[A](a: A) {
     def |>[B](f: A => B) = f(a)
   }

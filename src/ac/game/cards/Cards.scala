@@ -16,7 +16,7 @@ class Cards private (
 
 object Cards {
   // TODO tagless?
-  def initial(handSize: Int): Task[Cards] = Task {
+  def initial[F[_]](handSize: Int): Task[Cards] = Task {
     val allCards = Vector(red cards, blue cards, green cards).flatten
     val (hand, source) = Stream
       .continually { Random.shuffle(allCards) }

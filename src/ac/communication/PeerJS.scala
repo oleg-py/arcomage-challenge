@@ -30,7 +30,7 @@ final class PeerJS[A: Pickler](apiKey: String) extends Messaging[A] {
 
   private class PeerJSChannel(jsConn: js.Dynamic) extends Channel[A] {
     override def send(a: A): Task[Unit] = Task {
-      jsConn.send(Pickle.intoBytes(a) |> toArrayBuffer)
+      discard { jsConn.send(Pickle.intoBytes(a) |> toArrayBuffer) }
     }
 
     override val received = PublishSubject[A]()

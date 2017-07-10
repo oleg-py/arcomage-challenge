@@ -2,8 +2,6 @@ package ac.interactions
 
 import ac.game.Play._
 import cats.syntax.option._
-import monix.cats._
-import monix.eval.Task
 import State._, Command._
 
 object ValidTransitions {
