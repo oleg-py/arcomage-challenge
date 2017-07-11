@@ -1,7 +1,8 @@
+/*
 package ac.ui.react
 
 
-import ac.communication.{Discriminated, Offer}
+import ac.communication.{Discriminated, Offer, Peer}
 import ac.syntax._
 import japgolly.scalajs.react._
 import vdom.html_<^._
@@ -10,7 +11,7 @@ import monix.execution.Scheduler
 
 object Arcomage {
   case class Props (
-    messenger: Discriminated[String, String],
+//    messenger: Peer.T[Task, ],
     scheduler: Scheduler
   )
 
@@ -18,7 +19,7 @@ object Arcomage {
     myOffer: String = "",
     hostOffer: String = "",
     messageText: String = "",
-    send: Option[Discriminated.PeerRequest[String, String]] = None
+    send: Option[] = None
   )
 
   val Component = ScalaComponent.builder[Props]("Arcomage")
@@ -96,3 +97,4 @@ object Arcomage {
       ^.onClick --> onClick
     )
 }
+*/

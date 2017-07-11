@@ -7,14 +7,14 @@ import cats.syntax.flatMap._
 import cats.syntax.functor._
 
 final class Peer[O[_], M[_], Req, Res] (
-  responder: Req => M[Res]
+  responder: Req => M[Res],
+  raw: Protocol[O, M, EitherId[Req, Res]]
 )(implicit
   M: Monad[M],
-  raw : Messaging[O, M, EitherId[Req, Res]],
   link: Collectable[O, M],
   UniqueId: UniqueId[M]
 ) {
-  class PeerRequest(wrapped: raw.Channel) extends (Req => M[Res]) {
+  class PeerRequest (wrapped: raw.Channel) extends (Req => M[Res]) {
     override def apply(r: Req): M[Res] = for {
       id       <- UniqueId.generate
       _        <- wrapped send (id, r).asLeft
@@ -39,4 +39,8 @@ final class Peer[O[_], M[_], Req, Res] (
         } yield ()
       }
       .as(new PeerRequest(channel))
+}
+
+object Peer {
+  type T[M[_], Req, Res] = Peer[_, M, Req, Res]
 }
