@@ -1,8 +1,11 @@
 package ac.communication
 
-import monix.eval.Task
+trait Messaging[O[_], M[_], A] {
+  trait Channel {
+    def send(a: A): M[Unit]
+    val received: O[A]
+  }
 
-trait Messaging[A] {
-  def makeOffer: Task[(Offer, Task[Channel[A]])]
-  def connect(offer: Offer): Task[Channel[A]]
+  def makeOffer: M[(Offer, M[Channel])]
+  def connect(offer: Offer): M[Channel]
 }
