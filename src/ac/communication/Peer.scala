@@ -40,7 +40,3 @@ final class Peer[O[_], M[_], Req, Res] (
       }
       .as(new PeerRequest(channel))
 }
-
-object Peer {
-  type T[M[_], Req, Res] = Peer[_, M, Req, Res]
-}
