@@ -16,7 +16,7 @@ import monix.reactive.subjects.PublishSubject
 
 import java.nio.ByteBuffer
 
-final class PeerJS[A: Pickler](apiKey: String) extends Protocol[Observable, Task, A] {
+class PeerJS[A: Pickler](apiKey: String) extends Protocol[Observable, Task, A] {
   override def makeOffer: Task[(Offer, Task[Channel])] = Task.defer {
     val peerJS = newPeerJS()
 

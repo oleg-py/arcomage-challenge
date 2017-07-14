@@ -3,7 +3,7 @@ package ac.game
 import scala.util.Random
 
 import cats.Id
-import monix.eval.Coeval
+import monix.eval.Task
 import simulacrum._
 
 
@@ -12,16 +12,18 @@ import simulacrum._
 }
 
 object Randomizer {
+  trait Impure extends Randomizer[Task] {
+    override def shuffles[A](v: TraversableOnce[A]): Task[Stream[A]] =
+      Task.eval { randomShuffle(Random, v) }
+  }
+
+  trait Pure extends Randomizer[Id] {
+    val randomizerSeed: Long
+
+    override def shuffles[A](v: TraversableOnce[A]): Id[Stream[A]] =
+      randomShuffle(new Random(randomizerSeed), v)
+  }
+
   private def randomShuffle[A](r: Random, v: TraversableOnce[A]) =
       Stream.continually { r.shuffle(v) }.flatten
-
-  def system = new Randomizer[Coeval] {
-    override def shuffles[A](v: TraversableOnce[A]): Coeval[Stream[A]] =
-      Coeval.eval { randomShuffle(Random, v) }
-  }
-
-  def pure(seed: Long) = new Randomizer[Id] {
-    override def shuffles[A](v: TraversableOnce[A]): Stream[A] =
-      randomShuffle(new Random(seed), v)
-  }
 }
