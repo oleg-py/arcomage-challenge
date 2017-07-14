@@ -1,11 +1,18 @@
 package ac.interactions
 
-import ac.game.player.PlayerScope
+import ac.game.player.{CardScope, PlayerScope}
 
 
-sealed trait State
+sealed trait State {
+  def comparable: Option[CardScope] = None
+}
 
 object State {
+  sealed trait StateP extends State {
+    val p: PlayerScope
+    override def comparable: Option[CardScope] = Some(p.game)
+  }
+
   // Host-only states
   case object HostNameEntry                                        extends State
   case class  WaitingForGuest  (myName: String)                    extends State
@@ -16,8 +23,8 @@ object State {
   case class  SelectConditions (myName: String, enemyName: String) extends State
 
   // Shared states
-  case class  PlayerTurn       (p: PlayerScope)                    extends State
-  case class  EnemyTurn        (p: PlayerScope)                    extends State
-  case class  Victory          (p: PlayerScope)                    extends State
-  case class  Defeat           (p: PlayerScope)                    extends State
+  case class  PlayerTurn       (p: PlayerScope)                    extends StateP
+  case class  EnemyTurn        (p: PlayerScope)                    extends StateP
+  case class  Victory          (p: PlayerScope)                    extends StateP
+  case class  Defeat           (p: PlayerScope)                    extends StateP
 }

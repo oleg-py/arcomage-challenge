@@ -12,6 +12,7 @@ import cats.syntax.option._
 
 package object interactions {
   type Outcome[F[_]] = F[(State, Option[Command])]
+  type OutcomeFn[F[_]] = PartialFunction[(State, Command), Outcome[F]]
 
   object -< {
     def unapply[A, B](t: (A, B)) = Some(t)

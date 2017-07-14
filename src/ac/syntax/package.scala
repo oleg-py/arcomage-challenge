@@ -4,11 +4,15 @@ import japgolly.scalajs.react.{Callback, CallbackTo}
 import monix.eval.Task
 import scala.language.implicitConversions
 
+import cats.MonadError
 import monix.execution.Scheduler
 
 
 package object syntax {
   type ??? = Nothing
+
+  type ErrM[F[_]] = MonadError[F, Throwable]
+  def  ErrM[F[_]](implicit instance: ErrM[F]) = instance
 
   def discard[A](a: A): Unit = ()
 

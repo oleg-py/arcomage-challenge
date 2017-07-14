@@ -9,7 +9,7 @@ import cats.syntax.option._
 import cats.syntax.functor._
 
 object ValidTransitions {
-  def table[F[_]: Randomizer: Applicative]: PartialFunction[(State, Command), Outcome[F]] = {
+  def table[F[_]: Randomizer: Applicative]: OutcomeFn[F] = {
     case HostNameEntry                 -< NameEntered(name) =>
       WaitingForGuest(name).liftC(EnemyNameSet(name))
 
