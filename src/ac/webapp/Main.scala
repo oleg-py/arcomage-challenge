@@ -1,6 +1,5 @@
 package ac.webapp
 
-import boopickle.Default._
 import monix.eval.{Task, TaskApp}
 
 object Main extends TaskApp with Algebras {
