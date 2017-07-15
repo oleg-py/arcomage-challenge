@@ -5,6 +5,7 @@ import scala.concurrent.duration._
 import ac.interactions._
 import ac.syntax._
 import ac.webapp.react.Arcomage
+import japgolly.scalajs.react.Callback
 import monix.cats._
 import monix.eval.{Task, TaskApp}
 import monix.execution.Scheduler
@@ -17,7 +18,7 @@ object Main extends TaskApp with Algebras {
     val (states, onCommand) = wire(_ => Task.unit, Observable.never)
     val target = document.getElementById("app-root")
 
-    Arcomage.Props(sc, onCommand, states)
+    Arcomage.Props(onCommand, register(states))
       .render
       .renderIntoDOM(target)
 
@@ -30,11 +31,16 @@ object Main extends TaskApp with Algebras {
     Task.unit
   }
 
+  private def register(states: Observable[State])(fn: State => Callback)(implicit sc: Scheduler) = {
+    discard { states.foreach(s => fn(s).attemptTry.runNow().get) }
+  }
+
   private def wire(send: Result => Task[Unit], received: Observable[Result])(implicit sc: Scheduler) = {
     val local = PublishSubject[Result]()
     val onCommand = (c: Command) => discard { local.onNext(Result.Cmd(c)) }
     val outcomeFn = ValidTransitions.table[Task]
 
+    /*_*/
     val states = Observable(local).merge
       .scan(Task.pure[State](State.Initial)) { (stateL, result) =>
         stateL.flatMap(result.process(outcomeFn).run).flatMap {
