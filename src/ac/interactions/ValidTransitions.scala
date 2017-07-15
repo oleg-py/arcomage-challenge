@@ -10,6 +10,12 @@ import cats.syntax.functor._
 
 object ValidTransitions {
   def table[F[_]: Randomizer: Applicative]: OutcomeFn[F] = {
+    case Initial                       -< HostInitiated =>
+      HostNameEntry.lift
+
+    case Initial                       -< JoinInitiated =>
+      AwaitHostConnection.lift
+
     case HostNameEntry                 -< NameEntered(name) =>
       WaitingForGuest(name).liftC(EnemyNameSet(name))
 
