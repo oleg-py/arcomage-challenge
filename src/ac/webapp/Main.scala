@@ -14,8 +14,12 @@ object Main extends TaskApp with Algebras {
     new Connection(new PeerJS[Result]("19e27tcfy8drt3xr"), Transitions[Task])
       .open
       .map { case (states, onCmd) =>
+        val logged = states
+          .doOnError(println)
+          .doOnNext(s => println(s"App transitioned to state $s"))
+
         def register(fn: App.State => Callback) =
-          discard { states.foreach(s => fn(s).attemptTry.runNow().get) }
+          discard { logged.foreach(s => fn(s).attemptTry.runNow().get) }
 
         val target = document.getElementById("app-root")
 

@@ -25,6 +25,9 @@ object Transitions {
         .tupleRight(GuestReady(name, conds).some)
         .widen
 
+    case (e @ WaitingForGuest(_))         -< EnemyNameSet(_) =>
+      e.lift // TODO something should be done about this bit...
+
     case WaitingForGuest(name)         -< GuestReady(enemy, conds) =>
       initialPlayerScope(name, enemy, conds)
         .map(PlayerTurn)

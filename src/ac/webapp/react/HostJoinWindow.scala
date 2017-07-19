@@ -3,19 +3,19 @@ package ac.webapp.react
 import japgolly.scalajs.react._
 import vdom.all._
 
-object HostJoinWindow {
-  case class Props (onHost: Callback, onJoin: String => Callback) {
-    def render = Component(this)
-  }
+case class HostJoinWindow (onHost: Callback, onJoin: String => Callback) {
+  def /> = HostJoinWindow.Component(this)()
+}
 
+object HostJoinWindow {
   case class State (offerText: String)
 
-  class Backend ($: BackendScope[Props, State]) {
+  class Backend ($: BackendScope[HostJoinWindow, State]) {
     def setOfferText(e: ReactEventFromInput) =
       Callback { e.persist() } >>
         $.setState(State(e.target.value))
 
-    def render(p: Props, s: State) = {
+    def render(p: HostJoinWindow, s: State) = {
       div(
         button("Host a game", onClick --> p.onHost),
         hr(),
@@ -25,7 +25,7 @@ object HostJoinWindow {
     }
   }
 
-  val Component = ScalaComponent.builder[Props]("HostJoinWindow")
+  val Component = ScalaComponent.builder[HostJoinWindow]("HostJoinWindow")
     .initialState(State(""))
     .renderBackend[Backend]
     .build

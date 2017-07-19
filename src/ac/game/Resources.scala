@@ -21,3 +21,7 @@ case class Resources (
 
   def all_<= (r: Resources) = this.asSeq zip r.asSeq forall { case (a, b) => a <= b }
 }
+
+object Resources {
+  def all(x: Int) = Resources(x, x, x)
+}

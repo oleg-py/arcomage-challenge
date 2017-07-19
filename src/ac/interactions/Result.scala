@@ -33,7 +33,7 @@ object Result {
       def totalResult(state: State) =
         (outcomes andThen resultForMatch) applyOrElse (
           (state, cmd),
-          Function.const { S[F] pure err("Invalid command for state") }
+          Function.const { S[F] pure err(s"Invalid command $cmd for state $state") }
         )
 
       S[F].get flatMap totalResult

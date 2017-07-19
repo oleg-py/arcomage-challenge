@@ -19,3 +19,13 @@ case class GameConditions (
   )
 }
 
+object GameConditions {
+  def testing = GameConditions(
+    Player(
+      Buildings(25, 15),
+      Resources.all(10),
+      Resources.all(2)
+    ),
+    VictoryConditions(100, 200)
+  )
+}
