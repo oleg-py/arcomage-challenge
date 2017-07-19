@@ -13,7 +13,7 @@ object State {
     override def comparable: Option[CardScope] = Some(p.game)
   }
 
-  case object Initial                                              extends State
+  case object NotInitialized                                       extends State
 
   // Host-only states
   case object HostNameEntry                                        extends State

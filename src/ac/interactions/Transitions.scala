@@ -2,20 +2,14 @@ package ac.interactions
 
 import ac.game.Play._
 import State._
-import Command._
+import Event._
 import ac.game.Randomizer
 import cats.Applicative
 import cats.syntax.option._
 import cats.syntax.functor._
 
-object ValidTransitions {
-  def table[F[_]: Randomizer: Applicative]: OutcomeFn[F] = {
-    case Initial                       -< HostInitiated =>
-      HostNameEntry.lift
-
-    case Initial                       -< JoinInitiated =>
-      AwaitHostConnection.lift
-
+object Transitions {
+  def apply[F[_]: Randomizer: Applicative]: OutcomeFn[F] = {
     case HostNameEntry                 -< NameEntered(name) =>
       WaitingForGuest(name).liftC(EnemyNameSet(name))
 

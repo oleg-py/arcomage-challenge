@@ -11,16 +11,16 @@ import cats.syntax.functor._
 import cats.syntax.option._
 
 package object interactions {
-  type Outcome[F[_]] = F[(State, Option[Command])]
-  type OutcomeFn[F[_]] = PartialFunction[(State, Command), Outcome[F]]
+  type Outcome[F[_]] = F[(State, Option[Event])]
+  type OutcomeFn[F[_]] = PartialFunction[(State, Event), Outcome[F]]
 
   object -< {
     def unapply[A, B](t: (A, B)) = Some(t)
   }
 
   implicit class TableSugar1[F[_]: Applicative](a: State) {
-    def lift             : Outcome[F] = (a, none[Command]).pure[F]
-    def liftC(c: Command): Outcome[F] = (a, c.some).pure[F]
+    def lift             : Outcome[F] = (a, none[Event]).pure[F]
+    def liftC(c: Event): Outcome[F] = (a, c.some).pure[F]
   }
 
   private def nextTurnState(isEnemy: Boolean)(s: PlayerScope) = {

@@ -22,13 +22,13 @@ object Result {
         else err("State acknowledgment failed")
   }
 
-  case class Cmd(cmd: Command) extends Result {
+  case class Evt(cmd: Event) extends Result {
     override def process[F[_] : ErrM](outcomes: OutcomeFn[F]): Processed[F] = {
-      def resultForMatch(outcome: F[(State, Option[Command])]) = for {
+      def resultForMatch(outcome: F[(State, Option[Event])]) = for {
         outcomeS          <- StateT.lift(outcome)
         (state, maybeCmd) = outcomeS
         _                 <- S[F].set(state)
-      } yield maybeCmd.map(Cmd) orElse state.comparable.map(Ack)
+      } yield maybeCmd.map(Evt) orElse state.comparable.map(Ack)
 
       def totalResult(state: State) =
         (outcomes andThen resultForMatch) applyOrElse (
