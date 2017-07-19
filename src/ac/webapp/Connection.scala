@@ -29,7 +29,7 @@ class Connection (protocol: Protocol[Observable, Task, Result], outcome: Outcome
     val states = cmds
       .merge
       .scan(Task.pure(App.State())) { (stateL, peerCmd) =>
-        peerCmd match {
+        val nextStateL = peerCmd match {
           case Host =>
             stateL.zip(protocol.makeOffer).map { case (state, (offer, channelL)) =>
               channelL.foreach(registerChannel)
@@ -49,10 +49,11 @@ class Connection (protocol: Protocol[Observable, Task, Result], outcome: Outcome
               _                 <- sendFunc.ap(toSend) getOrElse Task.unit
             } yield state.copy(updated)
         }
+
+        nextStateL.memoize
       }
       .mapTask(identity)
-      .behavior(App.State())
-      .refCount
+      .share
 
     Task.pure((states, cmd => discard { local.onNext(cmd) }))
   }
