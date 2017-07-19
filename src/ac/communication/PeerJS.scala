@@ -17,7 +17,7 @@ import monix.reactive.subjects.PublishSubject
 import java.nio.ByteBuffer
 
 class PeerJS[A: Pickler](apiKey: String) extends Protocol[Observable, Task, A] {
-  override def makeOffer: Task[(Offer, Task[Channel])] = Task.defer {
+  override def makeOffer: Task[(String, Task[Channel])] = Task.defer {
     val peerJS = newPeerJS()
 
     val connectTask = Task.async[Channel]{ (_, done) =>
@@ -26,13 +26,12 @@ class PeerJS[A: Pickler](apiKey: String) extends Protocol[Observable, Task, A] {
     }
 
     awaitField[String] { peerJS.id }
-      .map(Offer)
       .map((_, connectTask))
   }
 
-  override def connect(offer: Offer): Task[Channel] = Task.async[Channel] { (_, done) =>
+  override def connect(offer: String): Task[Channel] = Task.async[Channel] { (_, done) =>
     val peerJSInstance = newPeerJS()
-    val conn = peerJSInstance.connect(offer.string)
+    val conn = peerJSInstance.connect(offer)
     completeOnConnection(done)(conn)
     Cancelable.empty
   }

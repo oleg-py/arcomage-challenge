@@ -6,6 +6,6 @@ trait Protocol[O[_], M[_], A] {
     val received: O[A]
   }
 
-  def makeOffer: M[(Offer, M[Channel])]
-  def connect(offer: Offer): M[Channel]
+  def makeOffer: M[(String, M[Channel])]
+  def connect(offer: String): M[Channel]
 }
