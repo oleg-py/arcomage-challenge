@@ -1,10 +1,10 @@
 package ac.webapp.react
 
-import japgolly.scalajs.react._
-import vdom.all._
+import ReactSyntax._
+
 
 case class HostJoinWindow (onHost: Callback, onJoin: String => Callback) {
-  def /> = HostJoinWindow.Component(this)()
+  def /> = HostJoinWindow.Component(this)
 }
 
 object HostJoinWindow {

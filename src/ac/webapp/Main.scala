@@ -23,6 +23,8 @@ object Main extends TaskApp with Algebras {
 
         val target = document.getElementById("app-root")
 
+//        Stylesheets.addToDocument()
+
         App(onCmd, register)./>
           .renderIntoDOM(target)
 

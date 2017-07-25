@@ -6,7 +6,7 @@ import ac.interactions.Result.Evt
 import ac.interactions.{Event, State => SessionState}
 import ac.interactions.State._
 import ac.webapp.PeerCommand._
-import ac.webapp.react.{HostJoinWindow, NameEntry}
+import ac.webapp.react.{HostJoinWindow, NameEntry, Battlefield}
 import japgolly.scalajs.react._
 import japgolly.scalajs.react.vdom.html_<^._
 
@@ -14,16 +14,15 @@ case class App(
   onCommand: PeerCommand => Unit,
   register: (App.State => Callback) => Unit
 ) {
-  def /> = App.C(this)
-
-  def trigger(event: Event) = onCommand(Run(Evt(event)))
+  def /> = App.Component(this)
+  def trigger(event: Event) = Callback { onCommand(Run(Evt(event))) }
 }
 
 object App {
   type Props = App
   case class State (current: SessionState = NotInitialized, offer: String = "")
 
-  val C = ScalaComponent.builder[App]("Arcomage")
+  val Component = ScalaComponent.builder[App]("Arcomage")
     .initialState(State())
     .renderBackend[Backend]
     .componentWillMount(i => i.backend.connectState(i.props))
@@ -33,7 +32,7 @@ object App {
     def connectState(p: Props): Callback = Callback { p.register($.setState(_)) }
 
     def render(s: State, pr: Props) = {
-      val app = s.current match {
+      val app: TagMod = s.current match {
         case NotInitialized =>
           HostJoinWindow(
             Callback { pr.onCommand(Host) },
@@ -44,7 +43,7 @@ object App {
           <.div(
             <.span(s"Your offer is `${s.offer}`"),
             NameEntry(
-              text => Callback { pr.trigger(NameEntered(text)) }
+              text => pr.trigger(NameEntered(text))
             )./>
           )
         case WaitingForGuest(myName) =>
@@ -59,25 +58,25 @@ object App {
           <.div(
             s"Fighting against $enemyName",
             NameEntry(
-              text => Callback { pr.trigger(NameEntered(text)) }
+              text => pr.trigger(NameEntered(text))
             )./>
           )
         case SelectConditions(myName, enemyName) =>
           <.div(
             s"$myName is battling against $enemyName",
             <.button(
-              ^.onClick --> Callback { pr.trigger(ConditionsChosen(GameConditions.testing)) },
+              ^.onClick --> pr.trigger(ConditionsChosen(GameConditions.testing)),
               "Next"
             )
           )
 
         case PlayerTurn(p) =>
-          Battlefield(p, pr.trigger, enemyTurn = false)./>
+          Battlefield(p, pr.trigger, isEnemy = false)./>
         case EnemyTurn(p) =>
-          Battlefield(p, pr.trigger, enemyTurn = true)./>
-        case Victory(p) =>
+          Battlefield(p, pr.trigger, isEnemy = true)./>
+        case Victory(_) =>
           <.div("You're winner!")
-        case Defeat(p) =>
+        case Defeat(_) =>
           <.div("You're lose")
       }
 

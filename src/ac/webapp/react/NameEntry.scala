@@ -1,10 +1,10 @@
 package ac.webapp.react
 
-import japgolly.scalajs.react._
-import vdom.all._
+import ReactSyntax._
+
 
 case class NameEntry (onName: String => Callback) {
-  def /> = NameEntry.Component(this)()
+  def /> = NameEntry.Component(this)
 }
 
 object NameEntry {
