@@ -15,8 +15,6 @@ libraryDependencies ++= Seq(
   "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0",
   "com.github.julien-truffaut" %%% "monocle-macro" % "1.4.0",
 
-  "com.github.japgolly.scalacss" %%% "core" % "0.5.3",
-  "com.github.japgolly.scalacss" %%% "ext-react" % "0.5.3",
   "com.github.japgolly.scalajs-react" %%% "core" % "1.0.1",
   "com.github.japgolly.scalajs-react" %%% "extra" % "1.0.1",
 

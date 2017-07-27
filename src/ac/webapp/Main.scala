@@ -21,17 +21,10 @@ object Main extends TaskApp with Algebras {
         def register(fn: App.State => Callback) =
           discard { logged.foreach(s => fn(s).attemptTry.runNow().get) }
 
-        val target = document.getElementById("app-root")
-
-//        Stylesheets.addToDocument()
-
         App(onCmd, register)./>
-          .renderIntoDOM(target)
+          .renderIntoDOM(document.getElementById("app-root"))
 
         ()
       }
   }
-
-
-
 }
