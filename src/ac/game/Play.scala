@@ -13,14 +13,13 @@ object Play {
       .map(c => (c.name, c))
       .toMap
 
-  val playCard: Card => Card.Fn = card =>
-    turnMods.modify(_ drop 1) andThen
-    stats.modify(_ addResources card.cost) andThen
-      card                                          andThen
-      modifyIf(_.passTurn, enemy.modify(_.addResources()))
+  val playCard: Card => Card.Fn = card => _
+    .thru(turnMods.modify(_ drop 1))
+    .thru(stats.modify(_ addResources card.cost))
+    .when(_.passTurn, enemy.modify(_.addResources()))
 
   val playEnemyCard: String => Card.Fn = str => cs =>
-    cardByName(str) |> playCard |> cs.applyReversed
+    cardByName(str).thru(playCard).thru(cs.applyReversed)
 
   val discardCard      : Card.Fn = playCard(Card.Noop)
   val discardEnemyCard : Card.Fn = _.applyReversed(discardCard)

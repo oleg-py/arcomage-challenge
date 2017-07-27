@@ -10,8 +10,8 @@ import monocle.macros.Lenses
 ) {
   def norm = Player(
     buildings.norm,
-    resources max 0,
-    income    max 1
+    resources atLeast 0,
+    income    atLeast 1
   )
 
   def addResources(r: Resources = income) = copy(resources = resources + r)

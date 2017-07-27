@@ -55,6 +55,6 @@ class Connection (protocol: Protocol[Observable, Task, Result], outcome: Outcome
       .mapTask(identity)
       .share
 
-    Task.pure((states, cmd => discard { local.onNext(cmd) }))
+    Task.pure((states, cmd => local.onNext(cmd).discard() ))
   }
 }

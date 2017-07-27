@@ -1,6 +1,7 @@
 package ac.webapp.react
 
-import ReactSyntax._
+import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.html_<^._
 
 
 case class NameEntry (onName: String => Callback) {
@@ -14,9 +15,16 @@ object NameEntry {
         $.setState(e.target.value)
 
     def render(p: NameEntry, state: String) =
-      div(
-        input(`type` := "text", value := state, onChange ==> setName),
-        button("Set name!", onClick --> p.onName(state))
+      <.div(
+        <.input(
+          ^.tpe := "text",
+          ^.value := state,
+          ^.onChange ==> setName
+        ),
+        <.button(
+          ^.onClick --> p.onName(state),
+          "Set name!"
+        )
       )
   }
 

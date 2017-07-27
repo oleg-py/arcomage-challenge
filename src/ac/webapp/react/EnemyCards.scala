@@ -1,6 +1,7 @@
 package ac.webapp.react
 
-import ReactSyntax._
+import japgolly.scalajs.react.ScalaComponent
+import japgolly.scalajs.react.vdom.html_<^._
 
 
 case class EnemyCards (n: Int) {
@@ -10,8 +11,9 @@ case class EnemyCards (n: Int) {
 object EnemyCards {
   val Component = ScalaComponent.builder[EnemyCards]("EnemyCards")
     .render_P { props =>
-      div(`class` := "enemy-cards")(
-        (1 to props.n).toVdomArray(i => div(`class` := "enemy-card"))
+      <.div(
+        ^.cls := "enemy-cards",
+        (1 to props.n).toVdomArray(i => <.div(^.cls := "enemy-card"))
       )
     }
     .build

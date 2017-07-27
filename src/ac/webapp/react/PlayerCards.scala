@@ -1,7 +1,8 @@
 package ac.webapp.react
 
-import ReactSyntax._
 import ac.game.cards.Card
+import japgolly.scalajs.react.vdom.html_<^._
+import japgolly.scalajs.react.{Callback, ScalaComponent}
 
 case class PlayerCards (cards: Vector[(Card, Callback)]) {
   def /> = PlayerCards.Component(this)
@@ -10,7 +11,9 @@ case class PlayerCards (cards: Vector[(Card, Callback)]) {
 object PlayerCards {
   val Component = ScalaComponent.builder[PlayerCards]("PlayerCards")
     .render_P { props =>
-      div(`class` := "player-cards")(
+      <.div(
+        ^.cls := "player-cards",
+
         props.cards.zipWithIndex.toVdomArray { case ((card, onCard), idx) =>
           CardDisplay.Component.withKey(idx)(CardDisplay(card, onCard))
         }

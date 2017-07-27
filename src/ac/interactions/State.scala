@@ -3,7 +3,7 @@ package ac.interactions
 import ac.game.player.{CardScope, PlayerScope}
 
 
-sealed trait State {
+sealed trait State extends Product with Serializable {
   def comparable: Option[CardScope] = None
 }
 

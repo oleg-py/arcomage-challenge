@@ -1,6 +1,7 @@
 package ac.webapp.react
 
-import ReactSyntax._
+import japgolly.scalajs.react._
+import japgolly.scalajs.react.vdom.html_<^._
 
 
 case class HostJoinWindow (onHost: Callback, onJoin: String => Callback) {
@@ -16,11 +17,21 @@ object HostJoinWindow {
         $.setState(State(e.target.value))
 
     def render(p: HostJoinWindow, s: State) = {
-      div(
-        button("Host a game", onClick --> p.onHost),
-        hr(),
-        input(`type` := "text", value := s.offerText, onChange ==> setOfferText),
-        button("Join a game", onClick --> p.onJoin(s.offerText))
+      <.div(
+        <.button(
+          ^.onClick --> p.onHost,
+          "Host a game"
+        ),
+        <.hr(),
+        <.input(
+          ^.tpe := "text",
+          ^.value := s.offerText,
+          ^.onChange ==> setOfferText
+        ),
+        <.button(
+          ^.onClick --> p.onJoin(s.offerText),
+          "Join a game"
+        )
       )
     }
   }

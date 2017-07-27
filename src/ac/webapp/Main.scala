@@ -2,7 +2,7 @@ package ac.webapp
 
 import ac.communication.PeerJS
 import ac.interactions.{Result, Transitions}
-import ac.syntax.discard
+import ac.syntax._
 import boopickle.Default._
 import japgolly.scalajs.react.Callback
 import monix.cats._
@@ -19,12 +19,11 @@ object Main extends TaskApp with Algebras {
           .doOnNext(s => println(s"App transitioned to state $s"))
 
         def register(fn: App.State => Callback) =
-          discard { logged.foreach(s => fn(s).attemptTry.runNow().get) }
+          logged.foreach(s => fn(s).attemptTry.runNow().get).discard()
 
         App(onCmd, register)./>
           .renderIntoDOM(document.getElementById("app-root"))
-
-        ()
+          .discard()
       }
   }
 }

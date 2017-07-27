@@ -16,8 +16,8 @@ case class Resources (
   def - (r: Resources) = this + (-r)
   def unary_-() = this * -1
 
-  def *   (i: Int) = Resources(bricks * i, gems * i, recruits * i)
-  def max (i: Int) = Resources(bricks max i, gems max i, recruits max i)
+  def * (i: Int) = Resources(bricks * i, gems * i, recruits * i)
+  def atLeast (i: Int) = Resources(bricks max i, gems max i, recruits max i)
 
   def all_<= (r: Resources) = this.asSeq zip r.asSeq forall { case (a, b) => a <= b }
 }

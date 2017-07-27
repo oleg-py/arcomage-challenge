@@ -1,22 +1,35 @@
 package ac.webapp.react
 
-import ReactSyntax._
+import japgolly.scalajs.react.ScalaComponent
+import japgolly.scalajs.react.vdom.html_<^._
 
 
-case class ResourceDisplay (label: String, `class`: String, resource: Int, income: Int) {
+case class ResourceDisplay (label: String, cls: String, resource: Int, income: Int) {
   def /> = ResourceDisplay.Component(this)
 }
 
 object ResourceDisplay {
   val Component = ScalaComponent.builder[ResourceDisplay]("ResourceDisplay")
     .render_P { props =>
-      div(className := s"resource-display ${props.`class`}")(
-        div(`class` := "income-box")(
-          div(`class` := "income-text", props.income.toString)
+      <.div(
+        ^.cls := s"resource-display ${props.cls}",
+        <.div(
+          ^.cls := "income-box",
+          <.div(
+            ^.cls := "text",
+            props.income.toString
+          )
         ),
-        div(`class` := "current-box")(
-          div(`class` := "current-label", props.label),
-          div(`class` := "current-value", props.resource.toString)
+        <.div(
+          ^.cls := "current-box",
+          <.div(
+            ^.cls := "label",
+            props.label
+          ),
+          <.div(
+            ^.cls := "value",
+            props.resource.toString
+          )
         )
       )
     }

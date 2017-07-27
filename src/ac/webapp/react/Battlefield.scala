@@ -2,7 +2,8 @@ package ac.webapp.react
 
 import ac.game.player.PlayerScope
 import ac.interactions.Event
-import ReactSyntax._
+import japgolly.scalajs.react.{Callback, BackendScope, ScalaComponent}
+import japgolly.scalajs.react.vdom.html_<^._
 
 case class Battlefield (
   info: PlayerScope,
@@ -16,7 +17,7 @@ object Battlefield {
   class Backend($: BackendScope[Battlefield, Unit]) {
     def render(p: Battlefield) = {
       import p.info._
-      div(
+      <.div(
         ResourcesColumn(playerName, game.stats.resources, game.stats.income)./>,
         ResourcesColumn(enemyName, game.enemy.resources, game.enemy.income)./>,
         EnemyCards(cards.hand.size)./>,

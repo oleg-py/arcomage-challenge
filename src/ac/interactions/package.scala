@@ -28,7 +28,7 @@ package object interactions {
       if (!isEnemy) (PlayerTurn, EnemyTurn)
       else          (EnemyTurn, PlayerTurn)
 
-    s |> {
+    s.thru {
       if (s.isVictory) Victory
       else if (s.isDefeat) Defeat
       else if (s.game.passTurn) passTurn

@@ -38,7 +38,7 @@ class PeerJS[A: Pickler](apiKey: String) extends Protocol[Observable, Task, A] {
 
   private class PeerJSChannel (jsConn: js.Dynamic) extends Channel {
     override def send(a: A): Task[Unit] = Task {
-      discard { jsConn.send(Pickle.intoBytes(a) |> toArrayBuffer) }
+      jsConn.send(toArrayBuffer(Pickle.intoBytes(a))).discard()
     }
 
     override val received = PublishSubject[A]()

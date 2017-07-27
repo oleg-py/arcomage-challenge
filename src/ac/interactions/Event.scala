@@ -3,7 +3,7 @@ package ac.interactions
 import ac.game.{GameConditions => Conds}
 
 
-sealed trait Event
+sealed trait Event extends Product with Serializable
 
 object Event {
   case class  NameEntered        (name: String)                    extends Event
