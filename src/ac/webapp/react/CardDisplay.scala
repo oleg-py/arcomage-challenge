@@ -13,7 +13,7 @@ object CardDisplay {
       val card = props.card
       div(`class` := s"clickable-card card-${card.color.toString}", onClick --> props.onClick)(
         div(`class` := "title")(card.name),
-        div(`class` := "description"),
+        div(`class` := "description")("Dummy description"),
         div(`class` := "picture"),
         div(`class` := "price")(card.worth),
       )

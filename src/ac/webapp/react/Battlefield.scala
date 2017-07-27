@@ -16,16 +16,20 @@ object Battlefield {
   class Backend($: BackendScope[Battlefield, Unit]) {
     def render(p: Battlefield) = {
       import p.info._
-      div("TODO",
+      div(
         ResourcesColumn(playerName, game.stats.resources, game.stats.income)./>,
         ResourcesColumn(enemyName, game.enemy.resources, game.enemy.income)./>,
-        //EnemyCards(cards.hand.size)./>,
+        EnemyCards(cards.hand.size)./>,
         BuildingsDisplay(
           game.stats.buildings,
           game.enemy.buildings,
           conditions.victoryConditions.tower
         )./>,
-        //PlayerCards(cards.hand, visible = p.isEnemy)./>
+        PlayerCards(
+          cards.hand
+            .zipWithIndex
+            .map { case (card, idx) => (card, p.trigger(Event.PlayedCard(idx))) }
+        )./>
       )
     }
   }
