@@ -1,51 +1,44 @@
+import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
+import sbtcrossproject.Platform
+
 name := "arcomage-challenge"
 version := "0.0.1"
+scalaVersion := "2.12.6"
 
-enablePlugins(ScalaJSPlugin)
 
-skip in packageJSDependencies := false
-scalaJSUseMainModuleInitializer := true
+lazy val core = crossProject()
+    .crossType(CrossType.Pure)
+    .settings(compilerFlags, coreLibs, plugins)
+  .settings(
+    scalacOptions in Compile ~= { _.filterNot(_ contains "warn-unused") }
+  )
 
-libraryDependencies ++= Seq(
-  "org.typelevel" %%% "cats" % "0.9.0",
-  "io.monix" %%% "monix" % "2.3.0",
-  "io.monix" %%% "monix-cats" % "2.3.0",
-  "io.suzaku" %%% "boopickle" % "1.2.6",
-  "com.github.julien-truffaut" %%% "monocle-core" % "1.4.0",
-  "com.github.julien-truffaut" %%% "monocle-macro" % "1.4.0",
+lazy val frontend = crossProject(JSPlatform)
+  .withoutSuffixFor(JSPlatform)
+  .crossType(CrossType.Pure)
+  .settings(compilerFlags, plugins)
+  .dependsOn(core)
 
-  "com.github.japgolly.scalajs-react" %%% "core" % "1.0.1",
-  "com.github.japgolly.scalajs-react" %%% "extra" % "1.0.1"
+def compilerFlags = {
+  scalacOptions ~= { _.filterNot(Set("-Xfatal-warnings")) }
+}
+
+def coreLibs = {
+  libraryDependencies ++= Seq(
+    "org.typelevel" %%% "cats-core" % "1.2.0",
+    "org.typelevel" %%% "cats-effect" % "1.0.0-RC3",
+    "io.suzaku" %%% "boopickle" % "1.3.0",
+    "com.chuusai" %%% "shapeless" % "2.3.3",
+    "com.github.julien-truffaut" %%% "monocle-core" % "1.5.0-cats",
+    "com.github.julien-truffaut" %%% "monocle-macro" % "1.5.0-cats",
+    "com.github.mpilquist" %% "simulacrum" % "0.13.0",
+    "org.scalatest" %%% "scalatest" % "3.0.1" % Test
+  )
+}
+
+def plugins = Seq(
+  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
+  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
+  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
+  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full)
 )
-
-jsDependencies ++= Seq(
-  "org.webjars.bower" % "react" % "15.5.4"
-    /        "react-with-addons.js"
-    minified "react-with-addons.min.js"
-    commonJSName "React",
-
-  "org.webjars.bower" % "react" % "15.5.4"
-    /         "react-dom.js"
-    minified  "react-dom.min.js"
-    dependsOn "react-with-addons.js"
-    commonJSName "ReactDOM",
-
-  "org.webjars.bower" % "react" % "15.5.4"
-    /         "react-dom-server.js"
-    minified  "react-dom-server.min.js"
-    dependsOn "react-dom.js"
-    commonJSName "ReactDOMServer",
-
-  "org.webjars.bower" % "peerjs" % "0.3.14"
-    /        "peer.js"
-    minified "peer.min.js"
-)
-
-// === Temporary TLS - ScalaJS fix ===
-
-// Remove the dependency on the scalajs-compiler
-libraryDependencies ~= {_ .filterNot(_.name == "scalajs-compiler") }
-// And add a custom one
-addCompilerPlugin("org.scala-js" % "scalajs-compiler" % scalaJSVersion cross CrossVersion.patch)
-addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
-addCompilerPlugin("org.scalamacros" %% "paradise" % "2.1.0" cross CrossVersion.patch)
