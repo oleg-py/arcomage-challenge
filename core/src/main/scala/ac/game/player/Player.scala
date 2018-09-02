@@ -1,18 +1,18 @@
 package ac.game
 package player
 
+import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
 import monocle.macros.Lenses
 
 @Lenses case class Player (
   buildings : Buildings,
-  resources : Resources,
-  income    : Resources
+  resources : Resources[NonNegInt],
+  income    : Resources[PosInt]
 ) {
-  def norm = Player(
-    buildings.norm,
-    resources atLeast 0,
-    income    atLeast 1
-  )
+  def addResources[N](r: Resources[N]): Player = {
+    val rs = r + resources
+    copy(resources = rs.min_0)
+  }
 
-  def addResources(r: Resources = income) = copy(resources = resources + r)
+  def receiveIncome: Player = addResources(income)
 }

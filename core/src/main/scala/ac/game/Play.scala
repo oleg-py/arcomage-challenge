@@ -16,7 +16,7 @@ object Play {
   val playCard: Card => Card.Fn = card => _
     .thru(turnMods.modify(_ drop 1))
     .thru(stats.modify(_ addResources card.cost))
-    .when(_.passTurn, enemy.modify(_.addResources()))
+    .when(_.passTurn, enemy.modify(_.receiveIncome))
 
   val playEnemyCard: String => Card.Fn = str => cs =>
     cardByName(str).thru(playCard).thru(cs.applyReversed)

@@ -1,5 +1,6 @@
 package ac.game
 
+import eu.timepit.refined.auto._
 import player._
 
 case class GameConditions (
@@ -7,9 +8,9 @@ case class GameConditions (
   victoryConditions: VictoryConditions
 ) {
   def isVictory (s: CardScope): Boolean = {
-    s.enemy.buildings.tower <= 0 ||
-      s.stats.buildings.tower >= victoryConditions.tower ||
-      s.stats.resources.asSeq.forall(_ >= victoryConditions.resources)
+    s.enemy.buildings.tower.value == 0 ||
+      s.stats.buildings.tower.value >= victoryConditions.tower.value ||
+      s.stats.resources.asSeq.forall(_.value >= victoryConditions.resources.value)
   }
 
   def initialState = CardScope(

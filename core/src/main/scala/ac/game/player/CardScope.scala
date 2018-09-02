@@ -9,8 +9,7 @@ import monocle.macros.Lenses
   turnMods: Vector[TurnMod]
 ) {
   def reverse: CardScope = copy(stats = enemy, enemy = stats)
-  def applyReversed(f: Card.Fn) = f(reverse).reverse.norm
+  def applyReversed(f: Card.Fn): CardScope = f(reverse).reverse
   def requireDiscard: Boolean = turnMods.headOption.contains(TurnMod.ForceDiscard)
   def passTurn: Boolean = turnMods.isEmpty
-  def norm: CardScope = copy(stats.norm, enemy.norm)
 }

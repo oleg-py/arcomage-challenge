@@ -1,3 +1,6 @@
 package ac.game
 
-case class VictoryConditions (tower: Int, resources: Int)
+import eu.timepit.refined.types.numeric.PosInt
+
+
+case class VictoryConditions (tower: PosInt, resources: PosInt)

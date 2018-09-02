@@ -31,7 +31,10 @@ def coreLibs = {
     "com.chuusai" %%% "shapeless" % "2.3.3",
     "com.github.julien-truffaut" %%% "monocle-core" % "1.5.0-cats",
     "com.github.julien-truffaut" %%% "monocle-macro" % "1.5.0-cats",
-    "com.github.mpilquist" %% "simulacrum" % "0.13.0",
+    "com.github.mpilquist" %%% "simulacrum" % "0.13.0",
+    "eu.timepit" %%% "refined"            % "0.9.2",
+    "eu.timepit" %%% "refined-cats"       % "0.9.2",
+
     "org.scalatest" %%% "scalatest" % "3.0.1" % Test
   )
 }

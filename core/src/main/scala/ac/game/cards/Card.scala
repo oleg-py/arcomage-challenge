@@ -1,29 +1,32 @@
 package ac.game
 package cards
+
+import eu.timepit.refined.auto._
+import eu.timepit.refined.types.numeric.NonNegInt
 import player._
 
 case class Card (
   name: String,
   color: Card.Color,
-  worth: Int,
+  worth: NonNegInt,
   effect: Card.Fn,
   discardable: Boolean = true
 ) extends Card.Fn {
-  def cost = color.resource * -worth
-  override def apply(s: CardScope): CardScope = effect(s).norm
+  def cost: Resources[Int] = color.resource * -worth.value
+  override def apply(s: CardScope): CardScope = effect(s)
 }
 
 object Card {
   type Fn = CardScope => CardScope
 
-  val Noop = Card("", Color.Red, 0, identity)
+  val Noop = Card("", Color.Red, NonNegInt(0), identity)
 
   sealed trait Color {
     import Color._
-    def resource = this match {
-      case Red   => Resources(bricks = 1)
-      case Blue  => Resources(gems = 1)
-      case Green => Resources(recruits = 1)
+    def resource: Resources[NonNegInt] = this match {
+      case Red   => Resources(1, 0, 0)
+      case Blue  => Resources(0, 1, 0)
+      case Green => Resources(0, 0, 1)
     }
   }
   object Color {
