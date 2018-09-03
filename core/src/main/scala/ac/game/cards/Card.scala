@@ -2,7 +2,6 @@ package ac.game
 package cards
 
 import ac.game.cards.dsl.ExecInterpreter
-import ac.game.cards.dsl.lang.NoEffect
 import ac.game.cards.dsl.structure.DSLEntry
 import cats.Endo
 import eu.timepit.refined.auto._
@@ -16,7 +15,7 @@ case class Card (
   effect: DSLEntry,
   discardable: Boolean = true
 ) extends Card.Fn {
-  def cost: Resources[Int] = color.resource * -worth.value
+  def cost: Resources[Int] = color.resource * worth.value
   override def apply(s: CardScope): CardScope =
     ExecInterpreter(effect).apply(s)
 }

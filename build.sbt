@@ -1,5 +1,4 @@
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
-import sbtcrossproject.Platform
 
 name := "arcomage-challenge"
 version := "0.0.1"
@@ -18,6 +17,15 @@ lazy val frontend = crossProject(JSPlatform)
   .crossType(CrossType.Pure)
   .settings(compilerFlags, plugins)
   .dependsOn(core)
+
+lazy val console = crossProject(JVMPlatform)
+  .withoutSuffixFor(JVMPlatform)
+  .crossType(CrossType.Pure)
+  .settings(compilerFlags, plugins)
+  .dependsOn(core)
+  .jvmSettings(
+    libraryDependencies += "com.github.gvolpe" %% "console4cats" % "0.2"
+  )
 
 def compilerFlags = {
   scalacOptions ~= { _.filterNot(Set("-Xfatal-warnings")) }
