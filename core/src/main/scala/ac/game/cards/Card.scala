@@ -4,6 +4,7 @@ package cards
 import ac.game.cards.dsl.ExecInterpreter
 import ac.game.cards.dsl.lang.NoEffect
 import ac.game.cards.dsl.structure.DSLEntry
+import cats.Endo
 import eu.timepit.refined.auto._
 import eu.timepit.refined.types.numeric.NonNegInt
 import player._
@@ -21,9 +22,7 @@ case class Card (
 }
 
 object Card {
-  type Fn = CardScope => CardScope
-
-  val Noop = Card("", Color.Red, 0, NoEffect)
+  type Fn = Endo[CardScope]
 
   sealed trait Color {
     import Color._

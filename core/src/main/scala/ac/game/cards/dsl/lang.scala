@@ -11,8 +11,6 @@ import structure._
 object lang {
   implicit private def lift(t: DSLEntryF[Fix[DSLEntryF]]): DSLEntry = Fix(t)
 
-  val NoEffect: DSLEntry = Combination(Nil)
-
   object play {
     val again: DSLEntry = PlayAgain
   }
