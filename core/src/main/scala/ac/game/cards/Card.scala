@@ -1,6 +1,9 @@
 package ac.game
 package cards
 
+import ac.game.cards.dsl.ExecInterpreter
+import ac.game.cards.dsl.lang.NoEffect
+import ac.game.cards.dsl.structure.DSLEntry
 import eu.timepit.refined.auto._
 import eu.timepit.refined.types.numeric.NonNegInt
 import player._
@@ -9,17 +12,18 @@ case class Card (
   name: String,
   color: Card.Color,
   worth: NonNegInt,
-  effect: Card.Fn,
+  effect: DSLEntry,
   discardable: Boolean = true
 ) extends Card.Fn {
   def cost: Resources[Int] = color.resource * -worth.value
-  override def apply(s: CardScope): CardScope = effect(s)
+  override def apply(s: CardScope): CardScope =
+    ExecInterpreter(effect).apply(s)
 }
 
 object Card {
   type Fn = CardScope => CardScope
 
-  val Noop = Card("", Color.Red, NonNegInt(0), identity)
+  val Noop = Card("", Color.Red, 0, NoEffect)
 
   sealed trait Color {
     import Color._

@@ -1,6 +1,7 @@
 package ac.game.cards
 
-import CardsDsl._
+import dsl.lang._
+import eu.timepit.refined.auto._
 
 import scala.language.postfixOps
 

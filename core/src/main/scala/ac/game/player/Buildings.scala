@@ -1,9 +1,10 @@
 package ac.game.player
 
 import eu.timepit.refined.types.numeric.NonNegInt
+import monocle.macros.Lenses
 
 
-case class Buildings (
+@Lenses case class Buildings (
   tower: NonNegInt,
   wall:  NonNegInt
 ) {
