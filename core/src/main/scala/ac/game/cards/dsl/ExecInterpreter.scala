@@ -23,14 +23,14 @@ object ExecInterpreter {
 
   def algebra: Algebra[DSLEntryF, Endo[CardScope]] =
     Algebra {
-      case  PlayAgain => CardScope.turnMods.modify(TurnMod.PlayAgain +: _)
+      case  PlayAgain => CardScope.turnMods.modify(_ :+ TurnMod.PlayAgain)
       case  SwapWalls => cs =>
         val pw = cs.stats.buildings.wall
         val ew = cs.enemy.buildings.wall
         val fn = GenLens[CardScope](_.stats.buildings.wall).set(ew) >>>
           GenLens[CardScope](_.enemy.buildings.wall).set(pw)
         fn(cs)
-      case  DiscardCard => CardScope.turnMods.modify(TurnMod.ForceDiscard +: _)
+      case  DiscardCard => CardScope.turnMods.modify(_ :+ TurnMod.ForceDiscard)
       case  Assign(from, to) =>
         cs => asLens(from).set(read(to)(cs))(cs)
       case  Modify(from, to) =>

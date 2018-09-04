@@ -1,11 +1,13 @@
 package ac
 
-import cats.MonadError
+import cats.{Applicative, MonadError}
 
 
 package object syntax {
-  type ErrM[F[_]] = MonadError[F, Throwable]
-  def  ErrM[F[_]](implicit F: ErrM[F]) = F
+  implicit class BoolIFAMethod(b: Boolean) {
+    def ifA[F[_]: Applicative](fa: F[Unit]): F[Unit] =
+      if (b) fa else Applicative[F].unit
+  }
 
   implicit class PassThroughFunctionOps[A](a: A) {
     def thru[B](f: A => B) = f(a)

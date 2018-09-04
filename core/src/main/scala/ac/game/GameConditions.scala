@@ -1,17 +1,16 @@
 package ac.game
 
+import eu.timepit.refined.api.Refined
 import eu.timepit.refined.auto._
+import eu.timepit.refined.numeric.Greater
 import player._
+import shapeless.{Witness => W}
 
 case class GameConditions (
+  handSize: Int Refined Greater[W.`4`.T],
   initialStats: Player,
   victoryConditions: VictoryConditions
 ) {
-  def isVictory (s: CardScope): Boolean = {
-    s.enemy.buildings.tower.value == 0 ||
-      s.stats.buildings.tower.value >= victoryConditions.tower.value ||
-      s.stats.resources.asSeq.forall(_.value >= victoryConditions.resources.value)
-  }
 
   def initialState = CardScope(
     initialStats,
