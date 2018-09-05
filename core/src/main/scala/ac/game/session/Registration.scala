@@ -23,7 +23,7 @@ class Registration[F[_]: Sync] private (
 }
 
 object Registration {
-  def create[F[_]: Async]: F[Registration[F]] = {
+  def apply[F[_]: Async]: F[Registration[F]] = {
     val df = Deferred.uncancelable[F, Participant[F]]
     (df, df, Ref[F].of(0)).mapN(new Registration(_, _, _))
   }

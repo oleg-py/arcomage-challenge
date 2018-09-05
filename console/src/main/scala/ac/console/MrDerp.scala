@@ -1,6 +1,6 @@
 package ac.console
 
-import ac.game.Resources
+import ac.game.{GameConditions, Resources}
 import ac.game.cards.Card
 import ac.game.flow._
 import cats.Applicative
@@ -16,4 +16,6 @@ class MrDerp[F[_]: Applicative] extends Participant[F] {
   }
 
   def notify(notification: Notification): F[Unit] = ().pure[F]
+
+  def proposeConditions: F[GameConditions] = GameConditions.testing.pure[F]
 }

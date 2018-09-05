@@ -21,6 +21,7 @@ case class GameConditions (
 
 object GameConditions {
   def testing = GameConditions(
+    6,
     Player(
       Buildings(25, 15),
       Resources.all(10),

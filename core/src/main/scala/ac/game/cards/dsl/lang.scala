@@ -76,7 +76,7 @@ object lang {
 
   implicit class NumberSyntax (private val i: Int) extends AnyVal {
     def player (x: Attribute): DSLEntry = Modify(Var(Player, x.prop), i)
-    def enemy  (x: Attribute): DSLEntry = Modify(Var(Player, x.prop), i)
+    def enemy  (x: Attribute): DSLEntry = Modify(Var(Enemy, x.prop), i)
     def all    (x: Attribute): DSLEntry = Combination(List(player(x), enemy(x)))
 
     def damage (word: Target): DSLEntry = Damage(word, Val(i))

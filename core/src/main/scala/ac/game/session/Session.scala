@@ -1,14 +1,14 @@
 package ac.game.session
 
-import ac.game.{GameConditions, VictoryConditions}
-import ac.game.cards.{Card, Cards}
+import ac.game.cards.Cards
 import ac.game.flow._
 import ac.game.player.{CardScope, TurnMod}
+import ac.game.{GameConditions, VictoryConditions}
 import ac.syntax._
-import cats.effect.Sync
 import cats._
+import cats.effect.Sync
 import cats.effect.concurrent.Ref
-import implicits._
+import cats.implicits._
 
 class Session[F[_]: Sync] private (
   p1: Participant[F],
@@ -19,7 +19,21 @@ class Session[F[_]: Sync] private (
   conds: VictoryConditions
 ) {
 
-  private def getIntent: F[TurnIntent] = ??? // P1, check if must discard
+  private def getIntent(recheck: Boolean = false): F[TurnIntent] =
+    for {
+      cards <- cards1.get.map(_.hand)
+      res <- state.get.map(_.stats.resources)
+      ti <- p1.getTurn(cards, res)
+      mustDiscard <- state.get.map(_.requireDiscard)
+      checked <- ti match {
+        case t @ Discard(idx) if idx.value < cards.length => t.pure[F]
+        case t @ Play(idx) if idx.value < cards.length && !mustDiscard => t.pure[F]
+        case _ => getIntent(recheck = true)
+      }
+      _ <- (mustDiscard && !recheck)
+        .ifA(state.update(CardScope.turnMods.modify(_.drop(1))))
+    } yield checked
+
   private def notifyResources: F[Unit] =
     for {
       gs <- state.get
@@ -41,7 +55,7 @@ class Session[F[_]: Sync] private (
       state.update(CardScope.stats.modify(_.receiveIncome))
     } *> notifyResources *> isEndgame.ifM(
       notifyEndgame,
-      getIntent.flatMap {
+      getIntent().flatMap {
         case Discard(idx) =>
           cards1.modify(_.pull(idx.value).swap)
             .flatMap { card =>
@@ -58,19 +72,23 @@ class Session[F[_]: Sync] private (
       } *> notifyResources
     )
 
-  // TODO: return on victory
-  private def continuation: F[Unit] = state.get
-    .map(_.turnMods.headOption.contains(TurnMod.PlayAgain))
-    .ifM(
-      state.update(CardScope.turnMods.modify(_.drop(1))) *> continuation,
-      swap.flatMap(s => s.turn() *> s.continuation)
-    )
+  private def continuation: F[Unit] =
+    isEndgame
+      .ifM(
+        turn(),
+        state.get // TODO: below doesn't work for some reason
+          .map(_.turnMods.headOption.contains(TurnMod.PlayAgain))
+          .ifM(
+            state.update(CardScope.turnMods.modify(_.drop(1))) *> turn() *> continuation,
+            swap.flatMap(s => s.turn() *> s.continuation)
+          )
+      )
 
 
   private def loop = turn(firstTurn = true) *> continuation
 
   private def swap = state.update(_.reverse)
-    .map(new Session(p2, p1, cards2, cards1, _, conds))
+    .as(new Session(p2, p1, cards2, cards1, state, conds))
 }
 
 object Session {
