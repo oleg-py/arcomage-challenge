@@ -1,4 +1,4 @@
-require("./frontend-fastopt.js").entrypoint.main();
+require("./frontend-fastopt.js").entrypoint.exec();
 
 if (module.hot) {
     module.hot.accept();

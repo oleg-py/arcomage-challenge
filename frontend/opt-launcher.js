@@ -1,1 +1,1 @@
-require("./frontend-opt.js").entrypoint.main();
+require("./frontend-opt.js").entrypoint.exec();
