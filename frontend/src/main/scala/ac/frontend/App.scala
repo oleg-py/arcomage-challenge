@@ -1,11 +1,11 @@
 package ac.frontend
 
+import scala.scalajs.js
+import scala.scalajs.js.annotation.JSImport
+
 import slinky.core._
 import slinky.core.annotations.react
 import slinky.web.html._
-
-import scala.scalajs.js
-import scala.scalajs.js.annotation.{JSImport, ScalaJSDefined}
 
 @JSImport("resources/App.css", JSImport.Default)
 @js.native
@@ -15,8 +15,11 @@ object AppCSS extends js.Object
 @js.native
 object ReactLogo extends js.Object
 
-@react class App extends StatelessComponent {
-  type Props = Unit
+@react class App extends Component {
+  case class Props(isGuest: Boolean)
+  case class State ()
+
+  def initialState: State = State()
 
   private val css = AppCSS
 
@@ -26,6 +29,7 @@ object ReactLogo extends js.Object
         img(src := ReactLogo.asInstanceOf[String], className := "App-logo", alt := "logo"),
         h1(className := "App-title")("Welcome to React (with Scala.js and Slinky!)")
       ),
+      if (props.isGuest) p("You are a guest") else p("You are a host"),
       p(className := "App-intro")(
         "To get started, edit ", code("App.scala"), " and save to reload."
       )

@@ -4,6 +4,7 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
+import ac.frontend.connections.HostGuest
 import cats.effect.{ExitCode, IO, IOApp}
 import slinky.web.ReactDOM
 import slinky.hot
@@ -21,7 +22,8 @@ object Main extends IOApp {
     _    <- if (LinkingInfo.developmentMode) IO { hot.initialize() }
             else IO.unit
     root <- IO { dom.document.getElementById("root") }
-    _    <- IO { ReactDOM.render(App(), root) }
+    guestKey <- HostGuest.guestToken[IO]
+    _    <- IO { ReactDOM.render(App(guestKey.nonEmpty), root) }
   } yield ExitCode.Success
 
   @JSExport

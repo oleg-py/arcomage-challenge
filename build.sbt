@@ -14,8 +14,8 @@ val SinglePlatform: CrossType = new CrossType {
 
 
 lazy val core = crossProject()
-    .crossType(CrossType.Pure)
-    .settings(compilerFlags, coreLibs, plugins)
+  .crossType(CrossType.Pure)
+  .settings(compilerFlags, coreLibs, plugins)
   .settings(
     scalacOptions in Compile ~= { _.filterNot(_ contains "warn-unused") }
   )
@@ -27,10 +27,13 @@ lazy val frontend = crossProject(JSPlatform)
   .dependsOn(core)
   .enablePlugins(ScalaJSBundlerPlugin)
   .jsSettings(
+    addCommandAlias("wp", ";compile;fastOptJS::startWebpackDevServer;~fastOptJS"),
+    addCommandAlias("nowp", "fastOptJS::stopWebpackDevServer"),
     npmDependencies in Compile ++= Seq(
       "react" -> "16.4.2",
       "react-dom" -> "16.4.2",
-      "react-proxy" -> "1.1.8"
+      "react-proxy" -> "1.1.8",
+      "peerjs" -> "0.3.16"
     ),
 
     npmDevDependencies in Compile ++= Seq("file-loader" -> "1.1.11",
@@ -43,7 +46,8 @@ lazy val frontend = crossProject(JSPlatform)
 
     libraryDependencies ++= Seq(
       "me.shadaj" %%% "slinky-web" % "0.4.3",
-      "me.shadaj" %%% "slinky-hot" % "0.4.3"
+      "me.shadaj" %%% "slinky-hot" % "0.4.3",
+      "co.fs2" %% "fs2-core" % "1.0.0-M5",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
@@ -74,8 +78,8 @@ def compilerFlags = {
 
 def coreLibs = {
   libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats-core" % "1.2.0",
-    "org.typelevel" %%% "cats-effect" % "1.0.0-RC3",
+    "org.typelevel" %%% "cats-core" % "1.3.1",
+    "org.typelevel" %%% "cats-effect" % "1.0.0",
     "io.higherkindness" %%% "droste-core" % "0.4.0",
     "io.suzaku" %%% "boopickle" % "1.3.0",
     "com.chuusai" %%% "shapeless" % "2.3.3",
@@ -90,6 +94,8 @@ def coreLibs = {
 }
 
 def plugins = Seq(
+  libraryDependencies += "com.github.ghik" %% "silencer-lib" % "1.2" % Provided,
+  addCompilerPlugin("com.github.ghik" %% "silencer-plugin" % "1.2"),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
