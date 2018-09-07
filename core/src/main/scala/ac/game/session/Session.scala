@@ -76,7 +76,7 @@ class Session[F[_]: Sync] private (
     isEndgame
       .ifM(
         turn(),
-        state.get // TODO: below doesn't work for some reason
+        state.get
           .map(_.turnMods.headOption.contains(TurnMod.PlayAgain))
           .ifM(
             state.update(CardScope.turnMods.modify(_.drop(1))) *> turn() *> continuation,
