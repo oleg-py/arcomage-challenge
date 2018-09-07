@@ -1,21 +1,54 @@
 package ac.frontend.connections
 
-import scala.scalajs.js
-import scala.scalajs.js.annotation.JSImport
-import com.github.ghik.silencer.silent
+import cats.effect._
+import cats.effect.syntax.effect._
+import cats.implicits._
+import scala.concurrent.duration._
 
-@JSImport("peerjs", JSImport.Default)
-@js.native
-@silent class Peer extends js.Object {
-  def connect(otherId: String): Peer.Connection = js.native
-  def on(event: String, fn: js.Function0[Unit]): Unit = js.native
-  def on(event: String, fn: js.Function1[js.Dynamic, Unit]): Unit = js.native
+import fs2.{Sink, Stream}
+import fs2.concurrent.Queue
+import org.scalajs.dom.Blob
+
+
+class Peer[F[_]] private (
+  val id: String,
+  js: PeerJS,
+  queue: Queue[F, Peer.Duplex[F, Blob]]
+)(implicit F: ConcurrentEffect[F]) {
+
+  val incoming: fs2.Stream[F, Peer.Duplex[F, Blob]] =
+    queue.dequeue
+
+  private[this] def handleConnection(conn: PeerJS.Connection): F[Peer.Duplex[F, Blob]] =
+    for {
+      msgs <- Queue.synchronous[F, Blob]
+      sink = fs2.Sink[F, Blob](msg => F.delay(conn.send(msg)))
+      _ <- F.delay { conn.on("data", { data =>
+        msgs.enqueue1(data.asInstanceOf[Blob])
+          .toIO.unsafeRunAsyncAndForget()
+      }) }
+    } yield (msgs.dequeue, sink)
+
+  js.on("connection", { conn =>
+    handleConnection(conn)
+      .flatMap(queue.enqueue1)
+      .toIO
+      .unsafeRunAsyncAndForget()
+  })
+
+  def connect(id: String): F[Peer.Duplex[F, Blob]] =
+    handleConnection(js.connect(id))
 }
 
-@silent object Peer {
-  @js.native
-  trait Connection extends js.Object {
-    def on(event: String, fn: js.Function1[js.Dynamic, Unit]): Unit = js.native
-  }
-}
+object Peer {
+  type Duplex[F[_], A] = (Stream[F, A], Sink[F, A])
 
+  def apply[F[_]](implicit F: ConcurrentEffect[F], timer: Timer[F]): F[Peer[F]] =
+    for {
+      js    <- F.delay(new PeerJS)
+      _     <- timer.sleep(500.millis).whileM_(F.delay(js.id.isEmpty))
+      id    <- F.delay(js.id.get)
+      conns <- Queue.synchronous[F, Duplex[F, Blob]]
+      peer  <- F.delay(new Peer(id, js, conns))
+    } yield peer
+}
