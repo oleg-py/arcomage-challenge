@@ -47,7 +47,8 @@ lazy val frontend = crossProject(JSPlatform)
     libraryDependencies ++= Seq(
       "me.shadaj" %%% "slinky-web" % "0.4.3",
       "me.shadaj" %%% "slinky-hot" % "0.4.3",
-      "co.fs2" %% "fs2-core" % "1.0.0-M5",
+      "co.fs2" %%% "fs2-core" % "1.0.0-M5",
+      "io.suzaku" %%% "boopickle" % "1.3.0",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
@@ -81,7 +82,6 @@ def coreLibs = {
     "org.typelevel" %%% "cats-core" % "1.3.1",
     "org.typelevel" %%% "cats-effect" % "1.0.0",
     "io.higherkindness" %%% "droste-core" % "0.4.0",
-    "io.suzaku" %%% "boopickle" % "1.3.0",
     "com.chuusai" %%% "shapeless" % "2.3.3",
     "com.github.julien-truffaut" %%% "monocle-core" % "1.5.0-cats",
     "com.github.julien-truffaut" %%% "monocle-macro" % "1.5.0-cats",

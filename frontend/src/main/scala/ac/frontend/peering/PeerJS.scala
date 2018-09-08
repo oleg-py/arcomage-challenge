@@ -1,7 +1,8 @@
-package ac.frontend.connections
+package ac.frontend.peering
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.typedarray.ArrayBuffer
 
 import com.github.ghik.silencer.silent
 import org.scalajs.dom.Blob
@@ -18,8 +19,8 @@ import org.scalajs.dom.Blob
 @silent object PeerJS {
   @js.native
   trait Connection extends js.Object {
-    def send(data: Blob): Unit = js.native
-    def on(event: String, fn: js.Function1[js.Dynamic, Unit]): Unit = js.native
+    def send(data: ArrayBuffer): Unit = js.native
+    def on(event: String, fn: js.Function1[ArrayBuffer, Unit]): Unit = js.native
   }
 }
 

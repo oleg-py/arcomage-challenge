@@ -1,4 +1,4 @@
-package ac.frontend.connections
+package ac.frontend.peering
 
 import ac.frontend.utils
 import cats.effect.Sync
