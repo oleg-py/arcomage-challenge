@@ -16,11 +16,11 @@ import slinky.web.html._
 
   def initialState = State()
   def render(): ReactElement = {
-    div(
-      div(className := "avatarDisplay"),
+    div(className := "player-box")(
+      div(className := "avatar-display"),
       div(className := "input-container")(
         label(
-          span("Nickname"),
+          div("Nickname"),
           input(
             value := state.name,
             onChange := { e: Event =>
@@ -29,21 +29,23 @@ import slinky.web.html._
             })
         ),
         label(
-          span("Email (optional - for avatar only)"),
+          div("Email (optional - for avatar only)"),
           input(
             value := state.email,
             onChange := { e: Event =>
               val target = e.target.asInstanceOf[HTMLInputElement]
               setState(_.copy(email = target.value))
             })
+        ),
+        div(className := "button-container")(
+          button(onClick := { _ => Store.dispatch(
+            connections.connect(User(
+              state.name,
+              if (state.email.isEmpty) None else Some(state.email)
+            )))}
+          )("Enter a game")
         )
       ),
-      button(onClick := { _ => Store.dispatch(
-        connections.connect(User(
-          state.name,
-          if (state.email.isEmpty) None else Some(state.email)
-        )))}
-      )("Enter a game")
     )
   }
 }

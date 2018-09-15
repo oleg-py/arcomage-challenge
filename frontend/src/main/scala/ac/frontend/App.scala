@@ -9,10 +9,6 @@ import slinky.core._
 import slinky.core.annotations.react
 import slinky.web.html._
 
-@JSImport("resources/App.css", JSImport.Default)
-@js.native
-object AppCSS extends js.Object
-
 @JSImport("resources/logo.svg", JSImport.Default)
 @js.native
 object ReactLogo extends js.Object
@@ -25,8 +21,6 @@ object ReactLogo extends js.Object
   )
 
   def initialState: State = State()
-
-  private val css = AppCSS
 
   def render() = {
     div(className := "App")(

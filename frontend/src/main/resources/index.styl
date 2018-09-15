@@ -1,0 +1,66 @@
+body
+  margin: 0
+  padding: 0
+  font-family: sans-serif
+  background: whitesmoke
+  vertical-align: middle
+
+*
+  box-sizing: border-box
+
+.player-box
+  margin: auto
+  max-width: 500px
+  background: white
+  position: relative
+  top: 50vh
+  transform: translateY(-50%)
+  box-shadow: 0 0 12px gray
+  border-radius: 4px
+  padding: 16px
+  display: flex
+
+  .avatar-display
+    width: 128px
+    height: 128px
+    background-color: white
+    border: 1px solid lightgray
+
+  .input-container
+    padding: 0 12px
+    flex-grow: 2
+    display: flex
+    flex-direction: column
+    justify-content: space-between
+    > *
+      display: block
+      margin: 0 0 8px 0
+
+    label div
+      padding-left: 2px
+      font-size: 10pt
+      margin-bottom: 4px
+
+    input
+      width: 100%
+      border: 1px solid lightgray
+      border-radius: 4px
+      padding: 8px
+      font-size: 12pt
+
+    .button-container
+      display: flex
+      justify-content: flex-end
+
+    button
+      padding: 1ex
+      border: none
+      background-color: darkslateblue;
+      color: white
+      font-weight: bold
+      border-radius: 4px
+      width: auto
+      &:hover
+        background-color: lighten(darkslateblue, 10%)
+      &:active
+        background-color: darken(darkslateblue, 10%)

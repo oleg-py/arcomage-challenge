@@ -41,9 +41,11 @@ lazy val frontend = crossProject(JSPlatform)
       "file-loader"         -> "1.1.11",
       "style-loader"        -> "0.20.3",
       "css-loader"          -> "0.28.11",
+      "stylus-loader"       -> "3.0.2",
       "html-webpack-plugin" -> "3.2.0",
       "copy-webpack-plugin" -> "4.5.1",
       "webpack-merge"       -> "4.1.2",
+      "stylus"              -> "0.54.5"
     ),
 
     libraryDependencies ++= Seq(
