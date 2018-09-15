@@ -4,7 +4,9 @@ import cats.effect.ConcurrentEffect
 import cats.effect.implicits._
 import fs2.Stream
 import fs2.concurrent.{SignallingRef, Topic}
-import cats.syntax.functor._
+import cats.implicits._
+
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class Shironeko[F[_]](
@@ -28,6 +30,12 @@ class Shironeko[F[_]](
     def notify(as: Stream[F, A]): F[Unit] =
       as.map(Some(_)).to(topic.publish).compile.drain.start.void
     def notify1(a: A): F[Unit] = topic.publish1(Some(a))
+    def await1[B](pf: PartialFunction[A, B]): F[B] = {
+      topic.subscribe(1).unNone.collectFirst(pf).compile.last.flatMap {
+        case None => F.never[B]
+        case Some(b) => F.pure(b)
+      }
+    }
   }
 
   object Events {

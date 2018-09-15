@@ -1,5 +1,11 @@
 package ac.frontend.pages
 
+import scala.scalajs.js
+
+import ac.frontend.Store
+import ac.frontend.actions.connections
+import ac.frontend.states.AppState.User
+import org.scalajs.dom.raw.{Event, HTMLInputElement}
 import slinky.core.Component
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
@@ -17,14 +23,29 @@ import slinky.web.html._
       div(className := "input-container")(
         label(
           span("Nickname"),
-          input()
+          input(
+            value := state.name,
+            onChange := { e: Event =>
+              val target = e.target.asInstanceOf[HTMLInputElement]
+              setState(_.copy(name = target.value))
+            })
         ),
         label(
           span("Email (optional - for avatar only)"),
-          input()
+          input(
+            value := state.email,
+            onChange := { e: Event =>
+              val target = e.target.asInstanceOf[HTMLInputElement]
+              setState(_.copy(email = target.value))
+            })
         )
       ),
-      button("Enter a game")
+      button(onClick := { _ => Store.dispatch(
+        connections.connect(User(
+          state.name,
+          if (state.email.isEmpty) None else Some(state.email)
+        )))}
+      )("Enter a game")
     )
   }
 }

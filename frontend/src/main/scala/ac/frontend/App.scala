@@ -33,8 +33,12 @@ object ReactLogo extends js.Object
       props match {
         case AppState.NameEntry =>
           NameEntryPage()
-        case AppState.AwaitingGuest(id, me) =>
-          AwaitingGuestPeerPage()
+        case ag @ AppState.AwaitingGuest(_, _) =>
+          AwaitingGuestPeerPage(ag)
+        case AppState.AwaitingHost =>
+          div("Waiting for host...")
+        case AppState.Playing(me, other) =>
+          div("TODO")
       }
     )
   }

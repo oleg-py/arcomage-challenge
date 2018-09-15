@@ -7,6 +7,8 @@ import ac.frontend.states._
 import ac.frontend.states.AppState.NameEntry
 import cats.effect.{ContextShift, IO, Timer}
 import shironeko.Shironeko
+import scala.concurrent.duration._
+import cats.implicits._
 
 
 //noinspection TypeAnnotation
@@ -21,10 +23,14 @@ object Store extends Shironeko[IO](Main.Instance) {
   val sendF = Cell[Option[Peer.Sink1[IO, ArrayBuffer]]](None)
 
   val gameEvents: Events[GameMessage] = Events[GameMessage] {
-    case EngineNotification(_) => IO.unit
+    _ => IO.unit
   }
 
 
-  def sendRaw(bytes: ArrayBuffer): IO[Unit] =
-    sendF.get.flatMap(_.fold(IO.unit)(f => f(bytes)))
+  def sendRaw(bytes: ArrayBuffer): IO[Unit] = {
+    sendF.get.flatMap {
+      case None => IO(println("Connection is not yet established"))
+      case Some(f) => f(bytes)
+    }
+  }
 }
