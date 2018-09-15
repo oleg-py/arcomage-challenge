@@ -8,7 +8,6 @@ import cats.effect._
 import slinky.web.ReactDOM
 import slinky.hot
 import org.scalajs.dom.document
-import boopickle.Default._
 
 @JSImport("resources/index.css", JSImport.Default)
 @js.native

@@ -1,7 +1,5 @@
 package ac.frontend.pages
 
-import scala.scalajs.js
-
 import ac.frontend.Store
 import ac.frontend.actions.connections
 import ac.frontend.states.AppState.User

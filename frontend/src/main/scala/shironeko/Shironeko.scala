@@ -6,8 +6,6 @@ import fs2.Stream
 import fs2.concurrent.{SignallingRef, Topic}
 import cats.implicits._
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 
 class Shironeko[F[_]](
   F: => ConcurrentEffect[F]

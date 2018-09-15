@@ -7,8 +7,6 @@ import ac.frontend.states._
 import ac.frontend.states.AppState.NameEntry
 import cats.effect.{ContextShift, IO, Timer}
 import shironeko.Shironeko
-import scala.concurrent.duration._
-import cats.implicits._
 
 
 //noinspection TypeAnnotation
