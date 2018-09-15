@@ -1,6 +1,5 @@
 package ac.frontend.peering
 
-import org.scalajs.dom.raw.Blob
 import scala.scalajs.js.typedarray._
 
 import boopickle.BufferPool

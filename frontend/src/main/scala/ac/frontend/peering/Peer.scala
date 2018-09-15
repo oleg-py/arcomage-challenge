@@ -8,7 +8,6 @@ import scala.scalajs.js.typedarray.ArrayBuffer
 
 import fs2.Stream
 import fs2.concurrent.Queue
-import org.scalajs.dom.Blob
 
 
 class Peer[F[_]] private (

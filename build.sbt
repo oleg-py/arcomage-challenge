@@ -1,5 +1,6 @@
 import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 import sbtcrossproject.Platform
+import java.lang.Runtime.getRuntime
 
 name := "arcomage-challenge"
 version := "0.0.1"
@@ -30,18 +31,19 @@ lazy val frontend = crossProject(JSPlatform)
     addCommandAlias("wp", ";compile;fastOptJS::startWebpackDevServer;~fastOptJS"),
     addCommandAlias("nowp", "fastOptJS::stopWebpackDevServer"),
     npmDependencies in Compile ++= Seq(
-      "react" -> "16.4.2",
-      "react-dom" -> "16.4.2",
-      "react-proxy" -> "1.1.8",
-      "peerjs" -> "0.3.16"
+      "react"              -> "16.4.2",
+      "react-dom"          -> "16.4.2",
+      "react-proxy"        -> "1.1.8",
+      "peerjs"             -> "0.3.16",
     ),
 
-    npmDevDependencies in Compile ++= Seq("file-loader" -> "1.1.11",
-      "style-loader" -> "0.20.3",
-      "css-loader" -> "0.28.11",
+    npmDevDependencies in Compile ++= Seq(
+      "file-loader"         -> "1.1.11",
+      "style-loader"        -> "0.20.3",
+      "css-loader"          -> "0.28.11",
       "html-webpack-plugin" -> "3.2.0",
       "copy-webpack-plugin" -> "4.5.1",
-      "webpack-merge" -> "4.1.2"
+      "webpack-merge"       -> "4.1.2",
     ),
 
     libraryDependencies ++= Seq(
@@ -74,7 +76,10 @@ lazy val console = crossProject(JVMPlatform)
   )
 
 def compilerFlags = {
-  scalacOptions ~= { _.filterNot(Set("-Xfatal-warnings")) }
+  scalacOptions ~= { _.filterNot(Set("-Xfatal-warnings")) ++ Seq(
+    "-Ybackend-parallelism",
+    Math.max(1, getRuntime.availableProcessors() - 1).toString
+  )}
 }
 
 def coreLibs = {
@@ -99,5 +104,5 @@ def plugins = Seq(
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full)
+  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
 )

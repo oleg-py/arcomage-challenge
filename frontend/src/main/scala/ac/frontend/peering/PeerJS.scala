@@ -5,7 +5,6 @@ import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.typedarray.ArrayBuffer
 
 import com.github.ghik.silencer.silent
-import org.scalajs.dom.Blob
 
 @JSImport("peerjs", JSImport.Default)
 @js.native
