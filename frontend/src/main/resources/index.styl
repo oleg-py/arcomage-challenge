@@ -65,3 +65,39 @@ body
         background-color: lighten(darkslateblue, 10%)
       &:active
         background-color: darken(darkslateblue, 10%)
+
+.player
+  box-sizing: content-box
+  height: 128px
+  width: 128px
+  border: 1px solid lightgray
+
+  background: red
+  img
+    position: relative
+  label
+    color: white
+    font-weight: bold
+    line-height: 20px
+    height: 32px
+    display: inline-block
+    position: relative
+    bottom: 40px
+    padding: 4px 10px
+    border-radius: 8px
+    width: auto
+    background: hsla(0, 0%, 30%, .75)
+    box-shadow:0 0 6px hsla(0, 0, 0%, .75)
+    border: 2px solid hsla(0, 0%, 100%, .5)
+    left: 50%
+    transform: translateX(-50%)
+
+.connection-data
+  overflow: hidden
+  padding-left: 8px
+  pre
+    overflow-x: auto
+    padding: 8px
+    border-radius: 4px
+    background: lightgray
+    border: 1px solid gray
