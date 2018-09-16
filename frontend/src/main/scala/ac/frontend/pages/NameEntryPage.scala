@@ -5,7 +5,7 @@ import ac.frontend.GravatarUrl
 import ac.frontend.actions.connections
 import ac.frontend.states.AppState.User
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
-import slinky.core.{Component, CustomAttribute}
+import slinky.core.Component
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
@@ -16,13 +16,13 @@ import scala.scalajs.js.Dynamic.literal
   type Props = Unit
   case class State(name: String = "", email: String = "")
 
-  val dataAvatar = new CustomAttribute[String]("data-avatar")
+  private val DefaultAvatarType = "monsterid"
 
   private def avatarUrl = {
     if (state.email contains "@") {
-      GravatarUrl(state.email, literal(size = 128, default = "monsterid"))
+      GravatarUrl(state.email, literal(size = 128, default = DefaultAvatarType))
     } else {
-      "https://gravatar.com/avatar/0?size=128&default=monsterid"
+      s"https://gravatar.com/avatar/${state.name.hashCode.toHexString}?size=128&default=$DefaultAvatarType"
     }
   }
 
@@ -55,7 +55,7 @@ import scala.scalajs.js.Dynamic.literal
           button(onClick := { _ => Store.dispatch(
             connections.connect(User(
               state.name,
-              if (state.email.isEmpty) None else Some(state.email)
+              avatarUrl
             )))}
           )("Enter a game")
         )

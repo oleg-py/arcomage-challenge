@@ -55,7 +55,7 @@ object connections {
   def connect(me: User): IO[Unit] =
     for {
       url <- utils.currentUrl[IO]
-      key =  utils.parseQueryString(url.search).get("ac_game")
+      key =  utils.parseQueryString(url.search).get(ConnectionKey)
       _   <- key.fold(host(me))(connectToUser(_, me))
     } yield ()
 }

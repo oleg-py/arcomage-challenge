@@ -4,7 +4,7 @@ package ac.frontend.states
 sealed trait AppState
 
 object AppState {
-  case class User(name: String, email: Option[String])
+  case class User(name: String, avatarUrl: String)
 
   case object NameEntry extends AppState
   case object AwaitingHost extends AppState
