@@ -5,11 +5,8 @@ import scala.scalajs.js.typedarray.ArrayBuffer
 import ac.frontend.{Store, utils}
 import ac.frontend.Store.contextShift
 import ac.frontend.peering.Peer.Sink1
-import ac.frontend.peering.Serialized
 import ac.frontend.states.AppState._
 import ac.frontend.states.{GameMessage, OpponentReady}
-import ac.frontend.utils.boopickleInstances._
-import boopickle.Default._
 import cats.effect.IO
 import cats.syntax.apply._
 import scala.concurrent.duration._
@@ -29,12 +26,12 @@ object connections {
       user <- Store.gameEvents.await1 {
         case OpponentReady(other) => other
       }
-      _    <- Store.sendRaw(Serialized.from[GameMessage](OpponentReady(me)))
+      _    <- Store.sendRaw(OpponentReady(me).asBytes)
       _    <- Store.app.set(Playing(me, user))
     } yield ()
 
   private def establishConnection(msgs: fs2.Stream[IO, ArrayBuffer], sink: Sink1[IO, ArrayBuffer]): IO[Unit] = {
-    Store.gameEvents.notify(msgs.map(Serialized.get[GameMessage])) *>
+    Store.gameEvents.notify(msgs.map(GameMessage.fromBytes)) *>
     Store.sendF.set(Some(sink))
   }
 
@@ -44,7 +41,7 @@ object connections {
       _    <- peer.connect(id).flatMap(Function.tupled(establishConnection))
       _    <- Store.app.set(AwaitingHost)
       _    <- Store.timer.sleep(1.second)
-      _    <- Store.sendRaw(Serialized.from[GameMessage](OpponentReady(me)))
+      _    <- Store.sendRaw(OpponentReady(me).asBytes)
       user <- Store.gameEvents.await1 {
         case OpponentReady(other) => other
       }
