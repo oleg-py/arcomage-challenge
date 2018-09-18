@@ -8,7 +8,7 @@ import com.olegpy.shironeko.{Cell, StoreBase}
 import fs2.concurrent.Topic
 
 trait StateCells[F[_]] { this: StoreBase[F] =>
-  object Cell {
+  protected object Cell {
     def apply[A](initial: A): Cell[F, A] = new CellImpl(initial)
   }
 
@@ -35,7 +35,7 @@ trait StateCells[F[_]] { this: StoreBase[F] =>
       tryModify(a => (f(a), ())).map(_.nonEmpty)
 
     def tryModify[B](f: A => (A, B)): F[Option[B]] =
-      underlying.modify(f).map(Some(_)) // TODO: I'm too lazy to implement that
+      modify(f).map(Some(_)) // TODO: I'm too lazy to implement that properly
 
     def update(f: A => A): F[Unit] = modify(a => (f(a), ()))
 

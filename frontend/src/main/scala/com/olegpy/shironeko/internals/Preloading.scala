@@ -5,6 +5,6 @@ import cats.effect.implicits._
 
 
 trait Preloading[F[_]] { this: StoreBase[F] =>
-  def preload[A](fa: F[A]): F[A] =
+  protected def preload[A](fa: F[A]): F[A] =
     fa.toIO.start.unsafeRunSync().join.to[F]
 }

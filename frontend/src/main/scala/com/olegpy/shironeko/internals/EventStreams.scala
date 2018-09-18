@@ -7,7 +7,7 @@ import fs2.concurrent.Topic
 import cats.syntax.flatMap._
 
 trait EventStreams[F[_]] { this: StoreBase[F] =>
-  object Events {
+  protected object Events {
     def apply[A](f: A => F[Unit]): Events[F, A] = {
       val events = noHandler[A]
       exec(events.listen.evalMap(f).compile.drain)
