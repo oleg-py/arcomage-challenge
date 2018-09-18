@@ -31,7 +31,7 @@ object connections {
     } yield ()
 
   private def establishConnection(msgs: fs2.Stream[IO, ArrayBuffer], sink: Sink1[IO, ArrayBuffer]): IO[Unit] = {
-    Store.gameEvents.notify(msgs.map(GameMessage.fromBytes)) *>
+    msgs.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain.start *>
     Store.sendF.set(Some(sink))
   }
 

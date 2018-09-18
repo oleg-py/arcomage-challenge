@@ -6,11 +6,11 @@ import ac.frontend.peering.Peer
 import ac.frontend.states._
 import ac.frontend.states.AppState.NameEntry
 import cats.effect.{ContextShift, IO, Timer}
-import shironeko.Shironeko
+import com.olegpy.shironeko.StoreBase
 
 
 //noinspection TypeAnnotation
-object Store extends Shironeko[IO](Main.Instance) {
+object Store extends StoreBase[IO](Main.Instance) {
   implicit lazy val timer: Timer[IO] = Main.timer
   implicit lazy val contextShift: ContextShift[IO] = Main.contextShift
 
@@ -20,9 +20,7 @@ object Store extends Shironeko[IO](Main.Instance) {
   val game  = Cell[GameState](GameState.AwaitingConditions)
   val sendF = Cell[Option[Peer.Sink1[IO, ArrayBuffer]]](None)
 
-  val gameEvents: Events[GameMessage] = Events[GameMessage] {
-    _ => IO.unit
-  }
+  val gameEvents = Events.noHandler[GameMessage]
 
 
   def sendRaw(bytes: ArrayBuffer): IO[Unit] = {

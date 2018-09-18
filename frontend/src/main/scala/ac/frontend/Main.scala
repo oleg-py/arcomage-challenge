@@ -28,7 +28,7 @@ object Main extends IOApp {
             else IO.unit
     root <- IO { document.getElementById("root") }
 
-    _ <- Store.app.discrete.evalMap { as =>
+    _ <- Store.app.listen.evalMap { as =>
       IO { ReactDOM.render(App(as), root) }
     }.compile.drain
   } yield ExitCode.Success

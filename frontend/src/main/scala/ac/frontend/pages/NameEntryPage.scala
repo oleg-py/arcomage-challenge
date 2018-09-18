@@ -52,7 +52,7 @@ import scala.scalajs.js.Dynamic.literal
             })
         ),
         div(className := "button-container")(
-          button(onClick := { _ => Store.dispatch(
+          button(onClick := { _ => Store.exec(
             connections.connect(User(
               state.name,
               avatarUrl
