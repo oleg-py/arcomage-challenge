@@ -2,7 +2,7 @@ package ac.frontend.pages
 
 import ac.frontend.Store
 import ac.frontend.GravatarUrl
-import ac.frontend.actions.connections
+import ac.frontend.actions.connect
 import ac.frontend.states.AppState.User
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
 import slinky.core.Component
@@ -52,12 +52,10 @@ import scala.scalajs.js.Dynamic.literal
             })
         ),
         div(className := "button-container")(
-          button(onClick := { _ => Store.exec(
-            connections.connect(User(
-              state.name,
-              avatarUrl
-            )))}
-          )("Enter a game")
+          button(onClick := { _ => Store.execS { implicit alg =>
+            connect(User(state.name, avatarUrl))
+          }
+          })("Enter a game")
         )
       ),
     )
