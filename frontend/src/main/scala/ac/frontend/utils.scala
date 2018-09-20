@@ -8,6 +8,7 @@ import ac.syntax.delay
 import cats.effect.Sync
 import org.scalajs.dom.raw.Location
 import org.scalajs.dom.window
+import slinky.core._
 
 object utils {
   def parseQueryString(str: String): Map[String, String] = {
@@ -26,5 +27,12 @@ object utils {
 
   def currentUrl[F[_]: Sync]: F[Location] =
     delay[F].of(window.location)
+
+  object suppressSlinkyHotLoading {
+    implicit val srp: StateReaderProvider = null
+    implicit val swp: StateWriterProvider = null
+    implicit val prp: PropsReaderProvider = null
+    implicit val pwp: PropsWriterProvider = null
+  }
 
 }
