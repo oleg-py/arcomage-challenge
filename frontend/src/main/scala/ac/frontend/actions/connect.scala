@@ -5,10 +5,13 @@ import scala.scalajs.js.typedarray.ArrayBuffer
 import ac.frontend.utils
 import ac.frontend.peering.Peer.Sink1
 import ac.frontend.states.AppState._
-import ac.frontend.states.{GameMessage, OpponentReady, StoreAlg}
+import ac.frontend.states._
 import cats.syntax.all._
 import cats.effect.syntax.all._
 import scala.concurrent.duration._
+
+import ac.game.GameConditions
+import ac.game.session.Registration
 
 object connect {
   private val ConnectionKey = "ac_game"
@@ -33,8 +36,14 @@ object connect {
         user <- Store.gameEvents.await1 {
           case OpponentReady(other) => other
         }
+        reg  <- Registration[F]
+
         _    <- Store.sendRaw(OpponentReady(me).asBytes)
         _    <- Store.app.set(Playing(me, user))
+
+        cds  <- Store.gameEvents.await1 {
+          case ConditionsSet(conds) => conds
+        }
       } yield ()
 
     def connectToUser(id: String, me: User): F[Unit] =
@@ -56,5 +65,9 @@ object connect {
       key =  utils.parseQueryString(url.search).get(ConnectionKey)
       _   <- key.fold(host(me))(connectToUser(_, me))
     } yield ()
+  }
+
+  def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
+    F.gameEvents.emit1(ConditionsSet(gc))
   }
 }

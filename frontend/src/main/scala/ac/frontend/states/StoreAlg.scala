@@ -17,7 +17,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val game  = Cell[GameState](GameState.AwaitingConditions)
   val sendF = Cell[Option[Peer.Sink1[F, ArrayBuffer]]](None)
 
-  val gameEvents = Events.noHandler[GameMessage]
+  val gameEvents = Events[GameMessage]
 
 
   def sendRaw(bytes: ArrayBuffer): F[Unit] = {

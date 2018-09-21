@@ -56,7 +56,7 @@ lazy val frontend = crossProject(JSPlatform)
       "me.shadaj" %%% "slinky-hot" % "0.4.3",
       "co.fs2" %%% "fs2-core" % "1.0.0-M5",
       "io.suzaku" %%% "boopickle" % "1.3.0",
-      "com.olegpy" %%% "shironeko" % "0.0.1-SNAPSHOT"
+      "com.olegpy" %%% "shironeko-slinky" % "0.0.1-SNAPSHOT"
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

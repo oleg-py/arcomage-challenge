@@ -27,10 +27,7 @@ object Main extends IOApp {
     _    <- if (LinkingInfo.developmentMode) IO { hot.initialize() }
             else IO.unit
     root <- IO { document.getElementById("root") }
-
-    _ <- Store.app.listen.evalMap { as =>
-      IO { ReactDOM.render(App(as), root) }
-    }.compile.drain
+    _    <- IO { ReactDOM.render(App(), root) }
   } yield ExitCode.Success
 
   @JSExport

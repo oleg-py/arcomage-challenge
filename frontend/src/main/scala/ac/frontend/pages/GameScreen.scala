@@ -7,7 +7,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html.div
 
-import ac.frontend.utils.suppressSlinkyHotLoading._
+import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 
 
 @react class GameScreen extends StatelessComponent {

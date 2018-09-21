@@ -5,10 +5,12 @@ import scala.scalajs.js
 import scala.scalajs.js.Dynamic.global
 
 import ac.syntax.delay
-import cats.effect.Sync
+import cats.data.{Nested}
+import cats.effect.{Concurrent, Sync}
+import fs2.Stream
 import org.scalajs.dom.raw.Location
 import org.scalajs.dom.window
-import slinky.core._
+import cats.implicits._
 
 object utils {
   def parseQueryString(str: String): Map[String, String] = {
@@ -28,11 +30,10 @@ object utils {
   def currentUrl[F[_]: Sync]: F[Location] =
     delay[F].of(window.location)
 
-  object suppressSlinkyHotLoading {
-    implicit val srp: StateReaderProvider = null
-    implicit val swp: StateWriterProvider = null
-    implicit val prp: PropsReaderProvider = null
-    implicit val pwp: PropsWriterProvider = null
-  }
-
+  /*_*/
+  def zipND[F[_]: Concurrent, A, B](fa: Stream[F, A], fb: Stream[F, B]): Stream[F, (A, B)] =
+    Nested(fa.holdOption).product(Nested(fb.holdOption)).value.flatMap(_.discrete).collect {
+      case (Some(a), Some(b)) => (a, b)
+    }
+  /*_*/
 }

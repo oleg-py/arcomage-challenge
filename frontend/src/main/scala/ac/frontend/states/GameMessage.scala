@@ -3,6 +3,7 @@ package ac.frontend.states
 import scala.scalajs.js.typedarray._
 
 import ac.frontend.states.AppState.User
+import ac.game.GameConditions
 import ac.game.flow.Notification
 import boopickle.BufferPool
 import boopickle.Default._
@@ -23,6 +24,7 @@ sealed trait GameMessage {
 }
 case class OpponentReady(other: User) extends GameMessage
 case class EngineNotification(n: Notification) extends GameMessage
+case class ConditionsSet(conds: GameConditions) extends GameMessage
 
 object GameMessage {
   private object boopickleInstances {
