@@ -57,7 +57,7 @@ object connect {
           case OpponentReady(other) => other
         }
 
-        _    <- Store.app.set(Playing(me, user))
+        _    <- Store.app.set(SupplyingConditions(me, user))
       } yield ()
 
     for {
@@ -68,6 +68,10 @@ object connect {
   }
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
-    F.gameEvents.emit1(ConditionsSet(gc))
+    import F.implicits._
+    F.gameEvents.emit1(ConditionsSet(gc)) *> F.app.update {
+      case SupplyingConditions(me, other) => Playing(me, other)
+      case s => throw new Exception(s"Invalid state transition: $s -> Playing")
+    }
   }
 }

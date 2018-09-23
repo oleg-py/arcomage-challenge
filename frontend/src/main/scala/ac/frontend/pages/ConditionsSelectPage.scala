@@ -31,7 +31,7 @@ import slinky.web.html._
         onClick := {() => Store.execS { implicit alg =>
           connect.supplyConditions(state)
         }}
-      )(s"")
+      )(s"Confirm")
     )
   }
 }
