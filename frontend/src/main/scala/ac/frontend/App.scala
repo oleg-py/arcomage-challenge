@@ -19,8 +19,8 @@ object App extends Store.Container(utils.zipND(Store.app.listen, Store.game.list
           div("Waiting for host...")
         case (sc @ AppState.SupplyingConditions(_, _), _) =>
           ConditionsSelectPage(sc)
-        case (AppState.Playing(_, _), AwaitingConditions) =>
-          div("Waiting for conditions")
+        case (p @ AppState.Playing(_, _), AwaitingConditions) =>
+          AwaitingConditionsPage(p)
         case (AppState.Playing(_, _), state) =>
           println(state)
           div("TODO")

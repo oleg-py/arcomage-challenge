@@ -11,7 +11,7 @@ import slinky.web.html._
 @react class AwaitingGuestPeerPage extends StatelessComponent {
   type Props = AwaitingGuest
   def render(): ReactElement =
-    div(className := "player-box")(
+    div(className := "box")(
       PlayerDisplay(props.me),
       div(className := "connection-data")(
         span("Share this link with your friend to start a game:"),

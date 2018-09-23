@@ -28,7 +28,7 @@ import scala.scalajs.js.Dynamic.literal
 
   def initialState = State()
   def render(): ReactElement = {
-    div(className := "player-box")(
+    div(className := "box")(
       div(className := "avatar-display")(
         img(src := avatarUrl)
       ),
@@ -51,8 +51,10 @@ import scala.scalajs.js.Dynamic.literal
               setState(_.copy(email = target.value))
             })
         ),
-        div(className := "button-container")(
-          button(onClick := { _ => Store.execS { implicit alg =>
+        div(className := "button-container-right")(
+          button(
+            className := "button",
+            onClick := { _ => Store.execS { implicit alg =>
             connect(User(state.name, avatarUrl))
           }
           })("Enter a game")

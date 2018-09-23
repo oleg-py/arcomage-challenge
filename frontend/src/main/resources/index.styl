@@ -8,7 +8,7 @@ body
 *
   box-sizing: border-box
 
-.player-box
+.box
   margin: auto
   max-width: 500px
   background: white
@@ -19,6 +19,11 @@ body
   border-radius: 4px
   padding: 16px
   display: flex
+  justify-content: space-between
+  &.down
+    flex-direction: column
+  &.wide
+    max-width: 720px
 
   .avatar-display
     box-sizing: content-box
@@ -49,22 +54,22 @@ body
       padding: 8px
       font-size: 12pt
 
-    .button-container
-      display: flex
-      justify-content: flex-end
+.button-container-right
+  display: flex
+  justify-content: flex-end
 
-    button
-      padding: 1ex
-      border: none
-      background-color: darkslateblue;
-      color: white
-      font-weight: bold
-      border-radius: 4px
-      width: auto
-      &:hover
-        background-color: lighten(darkslateblue, 10%)
-      &:active
-        background-color: darken(darkslateblue, 10%)
+.button
+  padding: 1ex
+  border: none
+  background-color: darkslateblue;
+  color: white
+  font-weight: bold
+  border-radius: 4px
+  width: auto
+  &:hover
+    background-color: lighten(darkslateblue, 10%)
+  &:active
+    background-color: darken(darkslateblue, 10%)
 
 .player
   box-sizing: content-box
@@ -78,17 +83,18 @@ body
   label
     color: white
     font-weight: bold
-    line-height: 20px
-    height: 32px
+    line-height: 16px
+    height: 24px
+    font-size: 10pt
     display: inline-block
     position: relative
-    bottom: 40px
+    bottom: 30px
     padding: 4px 10px
-    border-radius: 8px
+    border-radius: 3px
     width: auto
-    background: hsla(0, 0%, 30%, .75)
-    box-shadow:0 0 6px hsla(0, 0, 0%, .75)
-    border: 2px solid hsla(0, 0%, 100%, .5)
+    background: hsla(0, 0%, 20%, .75)
+    box-shadow:0 0 3px hsla(0, 0, 0%, .75)
+    border: 1px solid hsla(0, 0%, 100%, .75)
     left: 50%
     transform: translateX(-50%)
 

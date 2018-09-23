@@ -37,9 +37,9 @@ object connect {
           case OpponentReady(other) => other
         }
         reg  <- Registration[F]
+        _    <- Session.start(reg).start
         _    <- reg.enlist(new LocalParticipant[F])
         _    <- reg.enlist(new RemoteParticipant[F])
-        _    <- Session.start(reg).start
 
         _    <- Store.sendRaw(OpponentReady(me).asBytes)
         _    <- Store.app.set(Playing(me, user))
@@ -72,9 +72,6 @@ object connect {
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     import F.implicits._
-    F.gameEvents.emit1(ConditionsSet(gc)) *> F.app.update {
-      case SupplyingConditions(me, other) => Playing(me, other)
-      case s => throw new Exception(s"Invalid state transition: $s -> Playing")
-    }
+    F.gameEvents.emit1(ConditionsSet(gc)) *> F.app.set(AwaitingHost)
   }
 }

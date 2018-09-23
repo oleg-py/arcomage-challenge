@@ -18,7 +18,9 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val game  = Cell[GameState](GameState.AwaitingConditions)
   val sendF = Cell[Option[Peer.Sink1[F, ArrayBuffer]]](None)
 
-  val gameEvents = Events[GameMessage]
+  val gameEvents = Events.handled[GameMessage] {
+    case msg => F.delay(println(msg))
+  }
   val myTurnIntents = Events[TurnIntent]
 
 
