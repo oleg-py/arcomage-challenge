@@ -3,14 +3,15 @@ package ac.frontend.states
 import scala.scalajs.js.typedarray._
 
 import ac.frontend.states.AppState.User
-import ac.game.GameConditions
-import ac.game.flow.Notification
+import ac.game.{GameConditions, Resources}
+import ac.game.flow.{Notification, TurnIntent}
 import boopickle.BufferPool
 import boopickle.Default._
 import ac.game.cards.Card
 import ac.game.player.Player
 import cats.Functor
 import eu.timepit.refined.api.Refined
+import eu.timepit.refined.types.numeric.NonNegInt
 import qq.droste.data.Fix
 
 import java.nio.ByteBuffer
@@ -25,6 +26,8 @@ sealed trait GameMessage {
 case class OpponentReady(other: User) extends GameMessage
 case class EngineNotification(n: Notification) extends GameMessage
 case class ConditionsSet(conds: GameConditions) extends GameMessage
+case class RemoteTurnIntent(ti: TurnIntent) extends GameMessage
+case class RemoteTurnRequest(cards: Vector[Card], rsc: Resources[NonNegInt]) extends GameMessage
 
 object GameMessage {
   private object boopickleInstances {

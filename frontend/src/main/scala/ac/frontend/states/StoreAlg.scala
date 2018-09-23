@@ -4,6 +4,7 @@ import scala.scalajs.js.typedarray.ArrayBuffer
 
 import ac.frontend.peering.Peer
 import ac.frontend.states.AppState.NameEntry
+import ac.game.flow.TurnIntent
 import cats.effect._
 import com.olegpy.shironeko.StoreBase
 import cats.syntax.flatMap._
@@ -18,6 +19,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val sendF = Cell[Option[Peer.Sink1[F, ArrayBuffer]]](None)
 
   val gameEvents = Events[GameMessage]
+  val myTurnIntents = Events[TurnIntent]
 
 
   def sendRaw(bytes: ArrayBuffer): F[Unit] = {
