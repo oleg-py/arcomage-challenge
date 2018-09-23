@@ -11,7 +11,7 @@ import cats.effect.syntax.all._
 import scala.concurrent.duration._
 
 import ac.game.GameConditions
-import ac.game.session.Registration
+import ac.game.session.{Registration, Session}
 
 object connect {
   private val ConnectionKey = "ac_game"
@@ -37,6 +37,9 @@ object connect {
           case OpponentReady(other) => other
         }
         reg  <- Registration[F]
+        _    <- reg.enlist(new LocalParticipant[F])
+        _    <- reg.enlist(new RemoteParticipant[F])
+        _    <- Session.start(reg).start
 
         _    <- Store.sendRaw(OpponentReady(me).asBytes)
         _    <- Store.app.set(Playing(me, user))
