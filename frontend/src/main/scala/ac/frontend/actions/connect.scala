@@ -41,7 +41,7 @@ object connect {
         _    <- reg.enlist(new LocalParticipant[F])
         _    <- reg.enlist(new RemoteParticipant[F])
 
-        _    <- Store.sendRaw(OpponentReady(me).asBytes)
+        _    <- Store.send(OpponentReady(me))
         _    <- Store.app.set(Playing(me, user))
 
         cds  <- Store.gameEvents.await1 {
@@ -55,7 +55,7 @@ object connect {
         _    <- peer.connect(id).flatMap(Function.tupled(establishConnection))
         _    <- Store.app.set(AwaitingHost)
         _    <- timer.sleep(1.second)
-        _    <- Store.sendRaw(OpponentReady(me).asBytes)
+        _    <- Store.send(OpponentReady(me))
         user <- Store.gameEvents.await1 {
           case OpponentReady(other) => other
         }
@@ -72,6 +72,6 @@ object connect {
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     import F.implicits._
-    F.sendRaw(ConditionsSet(gc).asBytes) *> F.app.set(AwaitingHost)
+    F.send(ConditionsSet(gc)) *> F.app.set(AwaitingHost)
   }
 }

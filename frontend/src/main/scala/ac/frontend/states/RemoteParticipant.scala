@@ -15,10 +15,10 @@ class RemoteParticipant[F[_]](implicit store: StoreAlg[F]) extends Participant[F
   }
 
   def getTurn(hand: Vector[Card], rsc: Resources[NonNegInt]): F[TurnIntent] =
-    store.sendRaw(RemoteTurnRequest(hand, rsc).asBytes) >> store.gameEvents.await1 {
+    store.send(RemoteTurnRequest(hand, rsc)) >> store.gameEvents.await1 {
       case RemoteTurnIntent(ti) => ti
     }
 
   def notify(notification: Notification): F[Unit] =
-    store.sendRaw(EngineNotification(notification).asBytes)
+    store.send(EngineNotification(notification))
 }

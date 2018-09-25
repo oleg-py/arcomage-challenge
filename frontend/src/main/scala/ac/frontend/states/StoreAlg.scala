@@ -24,10 +24,10 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val myTurnIntents = Events[TurnIntent]
 
 
-  def sendRaw(bytes: ArrayBuffer): F[Unit] = {
+  def send(gm: GameMessage): F[Unit] = {
     sendF.get.flatMap {
       case None => F.delay(println("Connection is not yet established"))
-      case Some(f) => f(bytes)
+      case Some(f) => f(gm.asBytes)
     }
   }
 
