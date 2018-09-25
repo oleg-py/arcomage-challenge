@@ -3,8 +3,11 @@ import sbtcrossproject.Platform
 import java.lang.Runtime.getRuntime
 
 name := "arcomage-challenge"
-version := "0.0.1"
-scalaVersion := "2.12.6"
+
+inThisBuild(Seq(
+  version := "0.0.1",
+  scalaVersion := "2.12.6",
+))
 
 val SinglePlatform: CrossType = new CrossType {
   def projectDir(crossBase: File, projectType: String) = crossBase
@@ -54,7 +57,7 @@ lazy val frontend = crossProject(JSPlatform)
     libraryDependencies ++= Seq(
       "me.shadaj" %%% "slinky-web" % "0.4.3",
       "me.shadaj" %%% "slinky-hot" % "0.4.3",
-      "co.fs2" %%% "fs2-core" % "1.0.0-M5",
+      "co.fs2" %%% "fs2-core" % "1.0.0-9ba71b3",
       "io.suzaku" %%% "boopickle" % "1.3.0",
       "com.olegpy" %%% "shironeko-slinky" % "0.0.2"
     ),

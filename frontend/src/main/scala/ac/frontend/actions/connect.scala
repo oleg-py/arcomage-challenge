@@ -72,6 +72,6 @@ object connect {
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     import F.implicits._
-    F.gameEvents.emit1(ConditionsSet(gc)) *> F.app.set(AwaitingHost)
+    F.sendRaw(ConditionsSet(gc).asBytes) *> F.app.set(AwaitingHost)
   }
 }
