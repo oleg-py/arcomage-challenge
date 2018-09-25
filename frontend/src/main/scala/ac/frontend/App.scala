@@ -1,28 +1,32 @@
 package ac.frontend
 
 import ac.frontend.pages._
-import ac.frontend.states.{AppState, GameState}
+import ac.frontend.states.AppState
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import Store.implicits._
-import ac.frontend.states.GameState.AwaitingConditions
+import ac.frontend.states.AppState.User
+import ac.frontend.utils.StreamOps
 
-object App extends Store.Container(utils.zipND(Store.app.listen, Store.game.listen)) {
-  def render(a: (AppState, GameState)): ReactElement = {
+object App extends Store.Container(
+  Store.app.listen
+    .withLatestFrom(Store.me.listen)
+    .withLatestFrom(Store.enemy.listen)
+) {
+  def render(a: ((AppState, Option[User]), Option[User])): ReactElement = {
     div(className := "App")(
       a match {
-        case (AppState.NameEntry, _) =>
+        case ((_, None), _) =>
           NameEntryPage()
-        case (ag @ AppState.AwaitingGuest(_, _), _)=>
-          AwaitingGuestPeerPage(ag)
-        case (AppState.AwaitingHost, _) =>
+        case ((AppState.AwaitingGuest(link), Some(me)), _) =>
+          AwaitingGuestPeerPage(me, link)
+        case ((AppState.AwaitingHost, _), _) =>
           div("Waiting for host...")
-        case (sc @ AppState.SupplyingConditions(_, _), _) =>
-          ConditionsSelectPage(sc)
-        case (p @ AppState.Playing(_, _), AwaitingConditions) =>
-          AwaitingConditionsPage(p)
-        case (AppState.Playing(_, _), state) =>
-          println(state)
+        case ((AppState.SupplyingConditions, Some(me)), Some(enemy)) =>
+          ConditionsSelectPage(me, enemy)
+        case ((AppState.AwaitingConditions, Some(me)), Some(enemy)) =>
+          AwaitingConditionsPage(me, enemy)
+        case _ =>
           div("TODO")
       }
     )

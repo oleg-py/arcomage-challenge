@@ -5,7 +5,7 @@ import scala.scalajs.js
 import scala.scalajs.js.Dynamic.global
 
 import ac.syntax.delay
-import cats.data.{Nested}
+import cats.data.Nested
 import cats.effect.{Concurrent, Sync}
 import fs2.Stream
 import org.scalajs.dom.raw.Location
@@ -31,9 +31,11 @@ object utils {
     delay[F].of(window.location)
 
   /*_*/
-  def zipND[F[_]: Concurrent, A, B](fa: Stream[F, A], fb: Stream[F, B]): Stream[F, (A, B)] =
-    Nested(fa.holdOption).product(Nested(fb.holdOption)).value.flatMap(_.discrete).collect {
-      case (Some(a), Some(b)) => (a, b)
-    }
+  implicit class StreamOps[F[_], A](private val self: Stream[F, A]) {
+    def withLatestFrom[B](other: Stream[F, B])(implicit F: Concurrent[F]): Stream[F, (A, B)] =
+      Nested(self.holdOption).product(Nested(other.holdOption)).value.flatMap(_.discrete).collect {
+        case (Some(a), Some(b)) => (a, b)
+      }
+  }
   /*_*/
 }

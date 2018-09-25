@@ -8,7 +8,10 @@ object AppState {
 
   case object NameEntry extends AppState
   case object AwaitingHost extends AppState
-  case class SupplyingConditions(me: User, other: User) extends AppState
-  case class AwaitingGuest(connectionLink: String, me: User) extends AppState
-  case class Playing(me: User, other: User) extends AppState
+  case object AwaitingConditions extends AppState
+  case object SupplyingConditions extends AppState
+  case class  AwaitingGuest(connectionLink: String) extends AppState
+  case object Playing extends AppState
+  case object Victory extends AppState
+  case object Defeat extends AppState
 }

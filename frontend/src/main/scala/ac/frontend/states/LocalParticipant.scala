@@ -4,7 +4,8 @@ import ac.game.cards.Card
 import ac.game.{GameConditions, Resources}
 import ac.game.flow.{Notification, Participant, TurnIntent}
 import eu.timepit.refined.types.numeric.NonNegInt
-
+import cats.effect.syntax.all._
+import cats.syntax.all._
 
 /*_*/
 class LocalParticipant[F[_]](implicit store: StoreAlg[F]) extends Participant[F] {
@@ -16,5 +17,5 @@ class LocalParticipant[F[_]](implicit store: StoreAlg[F]) extends Participant[F]
     store.myTurnIntents.await1 { case ti => ti }
 
   def notify(notification: Notification): F[Unit] =
-    store.gameEvents.emit1(EngineNotification(notification))
+    store.gameEvents.emit1(EngineNotification(notification)).start.void
 }

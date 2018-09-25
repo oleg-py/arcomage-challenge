@@ -28,8 +28,9 @@ object connect {
       for {
         peer <- Store.peer
         url  <- utils.currentUrl[F]
+        _    <- Store.me.set(me.some)
         _    <- Store.app.set(AwaitingGuest(
-          s"${url.toString}?$ConnectionKey=${peer.id}", me))
+          s"${url.toString}?$ConnectionKey=${peer.id}"))
         _    <- peer.incoming
           .evalMap { Function.tupled(establishConnection) }
           .compile.drain.start
@@ -42,11 +43,7 @@ object connect {
         _    <- reg.enlist(new RemoteParticipant[F])
 
         _    <- Store.send(OpponentReady(me))
-        _    <- Store.app.set(Playing(me, user))
-
-        cds  <- Store.gameEvents.await1 {
-          case ConditionsSet(conds) => conds
-        }
+        _    <- Store.app.set(Playing)
       } yield ()
 
     def connectToUser(id: String, me: User): F[Unit] =
@@ -60,7 +57,7 @@ object connect {
           case OpponentReady(other) => other
         }
 
-        _    <- Store.app.set(SupplyingConditions(me, user))
+        _    <- Store.app.set(SupplyingConditions)
       } yield ()
 
     for {

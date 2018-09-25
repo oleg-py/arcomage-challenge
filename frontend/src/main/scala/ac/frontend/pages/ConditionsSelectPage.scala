@@ -3,7 +3,7 @@ package ac.frontend.pages
 import ac.frontend.Store
 import ac.frontend.actions.connect
 import ac.frontend.components.PlayerDisplay
-import ac.frontend.states.AppState.SupplyingConditions
+import ac.frontend.states.AppState.User
 import ac.game.GameConditions
 import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 import slinky.core.Component
@@ -12,7 +12,7 @@ import slinky.core.facade.ReactElement
 import slinky.web.html._
 
 @react class ConditionsSelectPage extends Component {
-  type Props = SupplyingConditions
+  case class Props(me: User, enemy: User)
   type State = GameConditions
 
   def initialState: State = GameConditions.testing
@@ -39,7 +39,7 @@ import slinky.web.html._
           )(s"Confirm")
         ),
       ),
-      PlayerDisplay(props.other)
+      PlayerDisplay(props.enemy)
 
     )
   }
