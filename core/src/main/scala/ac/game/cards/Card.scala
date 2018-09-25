@@ -18,6 +18,8 @@ case class Card (
   def cost: Resources[Int] = color.resource * worth.value
   override def apply(s: CardScope): CardScope =
     ExecInterpreter(effect).apply(s)
+
+  override def toString(): String = s"Card($name)"
 }
 
 object Card {
