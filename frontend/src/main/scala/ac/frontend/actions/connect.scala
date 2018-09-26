@@ -49,14 +49,11 @@ object connect {
     def connectToUser(id: String, me: User): F[Unit] =
       for {
         peer <- Store.peer
+        _    <- Store.me.set(me.some)
         _    <- peer.connect(id).flatMap(Function.tupled(establishConnection))
         _    <- Store.app.set(AwaitingHost)
         _    <- timer.sleep(1.second)
         _    <- Store.send(OpponentReady(me))
-        user <- Store.gameEvents.await1 {
-          case OpponentReady(other) => other
-        }
-
         _    <- Store.app.set(SupplyingConditions)
       } yield ()
 
@@ -69,6 +66,6 @@ object connect {
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     import F.implicits._
-    F.send(ConditionsSet(gc)) *> F.app.set(AwaitingHost)
+    F.send(ConditionsSet(gc)) *> F.app.set(Playing)
   }
 }

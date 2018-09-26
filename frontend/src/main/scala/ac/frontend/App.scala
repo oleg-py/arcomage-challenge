@@ -24,10 +24,10 @@ object App extends Store.Container(
           div("Waiting for host...")
         case ((AppState.SupplyingConditions, Some(me)), Some(enemy)) =>
           ConditionsSelectPage(me, enemy)
-        case ((AppState.AwaitingConditions, Some(me)), Some(enemy)) =>
-          AwaitingConditionsPage(me, enemy)
+        case ((AppState.Playing, _), _) =>
+          GameScreen()
         case _ =>
-          div("TODO")
+          div("Unsupported state reached")
       }
     )
   }
