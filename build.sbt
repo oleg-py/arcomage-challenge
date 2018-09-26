@@ -57,9 +57,9 @@ lazy val frontend = crossProject(JSPlatform)
     libraryDependencies ++= Seq(
       "me.shadaj" %%% "slinky-web" % "0.4.3",
       "me.shadaj" %%% "slinky-hot" % "0.4.3",
-      "co.fs2" %%% "fs2-core" % "1.0.0-9ba71b3",
+      "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
       "io.suzaku" %%% "boopickle" % "1.3.0",
-      "com.olegpy" %%% "shironeko-slinky" % "0.0.2"
+      "com.olegpy" %%% "shironeko-slinky" % "0.0.3"
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
