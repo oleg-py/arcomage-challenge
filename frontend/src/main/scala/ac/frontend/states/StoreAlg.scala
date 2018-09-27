@@ -10,6 +10,7 @@ import ac.game.player.CardScope
 import cats.effect._
 import com.olegpy.shironeko.StoreBase
 import cats.syntax.all._
+import monocle.macros.GenLens
 
 //noinspection TypeAnnotation
 trait StoreAlg[F[_]] { this: StoreBase[F] =>
@@ -36,6 +37,12 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       cards.update(_ :+ card)
     case EngineNotification(ResourceUpdate(state)) =>
       game.update(Progress.state.set(state))
+    case EngineNotification(CardPlayed(card, _)) =>
+      cards.update(_.filterNot(_ == card))
+    case RemoteTurnRequest(hand, rsc) =>
+      cards.set(hand) *> game.update(
+        GenLens[Progress](_.state.stats.resources).set(rsc)
+      )
     case msg => F.delay(println(msg))
   }
   val myTurnIntents = Events[TurnIntent]

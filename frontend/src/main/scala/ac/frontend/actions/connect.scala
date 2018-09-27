@@ -55,6 +55,10 @@ object connect {
         _    <- timer.sleep(1.second)
         _    <- Store.send(OpponentReady(me))
         _    <- Store.app.set(SupplyingConditions)
+        _    <- Store.myTurnIntents.listen
+                  .map(RemoteTurnIntent)
+                  .evalMap(Store.send)
+                  .compile.drain.start
       } yield ()
 
     for {
