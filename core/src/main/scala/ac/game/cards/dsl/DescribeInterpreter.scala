@@ -3,14 +3,16 @@ package ac.game.cards.dsl
 import ac.game.cards.dsl.ExecInterpreter._
 import ac.game.cards.dsl.structure._
 import ac.game.player.{CardScope, TurnMod}
+import cats.data.Chain
 import cats.kernel.Comparison.{EqualTo, GreaterThan, LessThan}
 import cats.{Comparison, Endo}
 import monocle.macros.GenLens
 import qq.droste.{Algebra, scheme}
-
+import cats.syntax.foldable._
+import cats.instances.list._
 
 object DescribeInterpreter {
-  def apply(dslEntry: DSLEntry): String =
+  def apply(dslEntry: DSLEntry): Chain[String] =
     scheme.cata(algebra).apply(dslEntry)
 
   def stringify(comparison: Comparison): String = comparison match {
@@ -42,26 +44,27 @@ object DescribeInterpreter {
   }
 
   def stringify(c: Condition): String =
-    stringify(c.x) ++ stringify(c.op) ++ stringify(c.other)
+    stringify(c.x) ++ " " ++ stringify(c.op) ++ " " ++ stringify(c.other)
 
-  def algebra: Algebra[DSLEntryF, String] =
+  def algebra: Algebra[DSLEntryF, Chain[String]] =
     Algebra {
-      case  PlayAgain => "Play again"
-      case  SwapWalls => "Swap walls"
-      case  DiscardCard => "Receive a card\nDiscard a card"
+      case  PlayAgain => Chain("Play again")
+      case  SwapWalls => Chain("Swap walls")
+      case  DiscardCard => Chain("Receive a card", "Discard a card")
       case  Assign(from, to) =>
-        s"${stringify(from)} becomes as ${stringify(to)}"
+        Chain(s"${stringify(from)} becomes as ${stringify(to)}")
       case  Modify(from, to) =>
         val str = s"$to to ${stringify(from)}"
-        if (str startsWith "-") str
-        else "+" + str
+        if (str startsWith "-") Chain(str)
+        else Chain("+" + str)
       case  Damage(Player, value) =>
-        s"You receive ${stringify(value)} damage"
+        Chain(s"You receive ${stringify(value)} damage")
       case  Damage(Enemy, value) =>
-        s"${stringify(value)} damage"
+        Chain(s"${stringify(value)} damage")
       case  Alt(c, ifTrue, ifFalse) =>
-        s"if ${stringify(c)}\n$ifTrue\notherwise\n$ifFalse"
+        val prefix = Chain(s"if ${stringify(c)}") ++ ifTrue
+        ifFalse.fold(prefix)(prefix.append("otherwise") ++ _)
       case  Combination(as) =>
-        as.mkString("\n")
+        as.combineAll
     }
 }

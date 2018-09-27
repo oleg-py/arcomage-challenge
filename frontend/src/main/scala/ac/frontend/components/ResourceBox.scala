@@ -1,7 +1,6 @@
 package ac.frontend.components
 
 import ac.game.cards.Card
-import ac.game.cards.Card.Color
 import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
@@ -14,11 +13,7 @@ import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
   case class Props(tpe: Card.Color, res: NonNegInt, income: PosInt)
 
   def render(): ReactElement = {
-    val colorClass = props.tpe match {
-      case Color.Red => "red"
-      case Color.Blue => "blue"
-      case Color.Green => "green"
-    }
+    val colorClass = props.tpe.lowerName
 
     div(className := s"resource-box $colorClass")(
       div(className := "income")(props.income.toString),

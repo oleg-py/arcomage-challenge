@@ -25,12 +25,18 @@ case class Card (
 object Card {
   type Fn = Endo[CardScope]
 
-  sealed trait Color {
+  sealed trait Color { // TODO move out of card
     import Color._
     def resource: Resources[NonNegInt] = this match {
       case Red   => Resources(1, 0, 0)
       case Blue  => Resources(0, 1, 0)
       case Green => Resources(0, 0, 1)
+    }
+
+    def lowerName: String = this match {
+      case Red => "red"
+      case Blue => "blue"
+      case Green => "green"
     }
   }
   object Color {

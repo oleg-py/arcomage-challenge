@@ -1,0 +1,77 @@
+.game-screen
+  display: flex
+  flex-direction: row
+
+  .stats
+    max-width: 130px
+
+colors()
+  &.red
+    background-color: #ffbab5;
+
+  &.blue
+    background-color: #94cbd1;
+
+  &.green
+    background-color: #94c19b;
+
+.resource-box
+  border: 1px solid black
+  width: 100px
+  height: 80px
+  margin: 15px
+  padding: 3px
+  colors()
+
+
+  .income
+    font-size: 24pt
+
+  .amount
+    text-align: right
+
+
+.hand
+  display: flex
+  flex-direction: row
+
+  .card
+    border: 1px solid black
+    width: 180px
+    height: 240px
+    position: relative
+    margin: 0 2px
+    colors()
+
+    label
+      padding-top: 4px
+      text-align: center
+      width: 100%
+      font-weight: bold
+      display: block
+
+    .image
+      background-color: lightgray
+      margin: 4px auto
+      width: 150px
+      height: 100px
+
+    .description
+      font-size: 10pt
+      margin: 6px 10px
+      text-align: center
+      p
+        margin: 0
+
+    .footer
+      text-align: center
+      line-height: 24px
+      font-weight: bold
+      position: absolute
+      background: rgba(255, 255, 255, 0.25)
+      border: 1px solid black
+      bottom: 4px
+      right: 4px
+      border-radius: 24px
+      width: 24px
+      height: 24px

@@ -2,8 +2,8 @@ package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.actions.card
+import ac.frontend.i18n.English
 import ac.game.cards.Card
-import ac.game.cards.dsl.DescribeInterpreter
 import cats.effect.IO
 import eu.timepit.refined.api.Refined
 import org.scalajs.dom.MouseEvent
@@ -29,16 +29,23 @@ import slinky.web.html._
   }
 
   def render(): ReactElement = div(
+    className := "hand"
+  )(
     props.zipWithIndex.map { case (card, i) =>
       div(
         key := i.toString,
         className := s"card ${card.name} ${card.color.toString.toLowerCase}",
         onMouseDown := handleClick(i) _
       )(
-        label(className := "card-name")(),
+        label(className := "card-name")(card.name),
         div(className := "image"),
         div(className := "description")(
-          DescribeInterpreter(card.effect)
+          English.cardDescription(card.effect)
+            .toList
+            .zipWithIndex
+            .map { case (line, j) =>
+              p(key := j.toString)(line)
+            }
         ),
         div(className := "footer")(
           div(className := "worth")(card.worth.toString)
