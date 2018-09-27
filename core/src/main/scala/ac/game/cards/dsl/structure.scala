@@ -1,43 +1,17 @@
 package ac.game.cards.dsl
 
-import cats.{Applicative, Eval, Foldable, Traverse}
+import cats.Traverse
 import cats.kernel.Comparison
 import qq.droste.data.Fix
-import cats.instances.list._
-import cats.instances.option._
-import cats.syntax.traverse._
-import cats.syntax.apply._
-import cats.syntax.functor._
+import cats.derived.semi
 
 object structure {
   type DSLEntry = Fix[DSLEntryF]
 
   sealed trait DSLEntryF[+A]
   object DSLEntryF {
-    implicit val traverseInstance: Traverse[DSLEntryF] = new Traverse[DSLEntryF] {
-      def traverse[G[_], A, B](fa: DSLEntryF[A])(f: A => G[B])(implicit ev: Applicative[G]): G[DSLEntryF[B]] =
-        fa match {
-          case Alt(c, ifTrue, ifFalse) => (f(ifTrue), ifFalse.traverse(f))
-            .mapN(Alt(c, _, _))
-          case Combination(as) => as.traverse(f).map(Combination(_))
-          case v: DSLEntryF[Nothing @unchecked] => ev.pure(v) // TODO: skolemization doesn't work for some reason
-        }
-
-      def foldLeft[A, B](fa: DSLEntryF[A], b: B)(f: (B, A) => B): B =
-        fa match {
-          case Alt(_, ifTrue, ifFalse) => (List(ifTrue) ++ ifFalse).foldLeft(b)(f)
-          case Combination(as) => as.foldLeft(b)(f)
-          case _ => b
-        }
-
-      def foldRight[A, B](fa: DSLEntryF[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B] =
-        fa match {
-          case Alt(_, ifTrue, ifFalse) =>
-            Foldable[List].foldRight(List(ifTrue) ++ ifFalse, lb)(f)
-          case Combination(as) => Foldable[List].foldRight(as, lb)(f)
-          case _ => lb
-        }
-    }
+    implicit val traverseInstance: Traverse[DSLEntryF] =
+      semi.traverse[DSLEntryF]
   }
 
   case object PlayAgain extends DSLEntryF[Nothing]

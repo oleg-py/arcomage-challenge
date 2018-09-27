@@ -95,6 +95,7 @@ def coreLibs = {
   libraryDependencies ++= Seq(
     "org.typelevel" %%% "cats-core" % "1.3.1",
     "org.typelevel" %%% "cats-effect" % "1.0.0",
+    "org.typelevel" %%% "kittens" % "1.2.0",
     "io.higherkindness" %%% "droste-core" % "0.4.0",
     "com.chuusai" %%% "shapeless" % "2.3.3",
     "com.github.julien-truffaut" %%% "monocle-core" % "1.5.0-cats",
