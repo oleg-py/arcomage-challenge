@@ -75,3 +75,36 @@ colors()
       border-radius: 24px
       width: 24px
       height: 24px
+
+.castles
+  height: 450px
+  display: flex
+  flex-direction: row
+  align-items: flex-end
+  .block
+    background: grey;
+  .spacer
+    flex-grow: 10
+  .tower .block
+    width: 50px
+  .wall .block
+    width: 40px
+  .tower, .wall
+    margin: 0 8px 4px
+    display: flex
+    align-items: center
+    flex-direction: column
+    label
+      margin: 4px auto 0
+      color: white
+      font-weight: bold
+      line-height: 16px
+      height: 24px
+      font-size: 10pt
+      display: inline-block
+      padding: 4px 10px
+      border-radius: 3px
+      width: auto
+      background: hsla(0, 0%, 20%, .75)
+      box-shadow:0 0 3px hsla(0, 0, 0%, .75)
+      border: 1px solid hsla(0, 0%, 100%, .75)
