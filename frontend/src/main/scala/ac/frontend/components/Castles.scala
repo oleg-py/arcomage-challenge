@@ -32,6 +32,7 @@ import slinky.web.html.{className, div, label, style}
 
     div(className := "castles")(
       div(className := "tower mine")(
+        div(className := "capstone"),
         blockOf(towerHeight(cs.stats)),
         label(s"${cs.stats.buildings.tower}")),
       div(className := "wall mine")(
@@ -44,6 +45,7 @@ import slinky.web.html.{className, div, label, style}
         label(s"${cs.enemy.buildings.wall}"),
       ),
       div(className := "tower enemy")(
+        div(className := "capstone"),
         blockOf(towerHeight(cs.enemy)),
         label(s"${cs.enemy.buildings.tower}"),
       )
