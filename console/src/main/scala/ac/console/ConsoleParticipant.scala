@@ -51,7 +51,7 @@ class ConsoleParticipant extends Participant[IO] {
     case Victory => putStrLn("You're a winner!!")
     case Defeat  => putStrLn("You're lose")
     case CardPlayed(_, _) => IO.unit
-    case CardReceived(card) => putStrLn(s"Received ${card.name}")
+    case HandUpdated(cards) => putStrLn(s"Received ${cards.map(_.name).mkString(",")}")
     case ResourceUpdate(_) => IO.unit
     case EnemyPlayed(card, discarded) =>
       if (discarded) putStrLn(s"Enemy discarded ${card.name}")

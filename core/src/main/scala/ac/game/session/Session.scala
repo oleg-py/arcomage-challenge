@@ -59,15 +59,17 @@ class Session[F[_]: Sync] private (
         case Discard(idx) =>
           cards1.modify(_.pull(idx.value).swap)
             .flatMap { card =>
+              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify) *>
               p2.notify(EnemyPlayed(card, discarded = true)) *>
-                p1.notify(CardPlayed(card, discarded = true))
+              p1.notify(CardPlayed(card, discarded = true))
             }
         case Play(idx) =>
           cards1.modify(_.pull(idx.value).swap)
             .flatMap { card =>
+              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify) *>
               p2.notify(EnemyPlayed(card, discarded = false)) *>
-                p1.notify(CardPlayed(card, discarded = false)) *>
-                state.update(card)
+              p1.notify(CardPlayed(card, discarded = false)) *>
+              state.update(card)
             }
       } *> notifyResources
     )
@@ -106,7 +108,7 @@ object Session {
 
   private def bootstrap[F[_]: Sync](conds: GameConditions, p: Participant[F]) = {
     Cards.initial[F](conds.handSize)
-      .flatTap(_.hand map CardReceived traverse_ p.notify)
+      .flatTap(x => p.notify(HandUpdated(x.hand)))
       .flatTap(_ => p.notify(GameStart))
       .flatMap(Ref[F].of(_))
   }

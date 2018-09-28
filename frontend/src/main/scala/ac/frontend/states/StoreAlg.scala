@@ -33,8 +33,8 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
         conds.initialStats,
         Vector()
       ), conds.victoryConditions))
-    case EngineNotification(CardReceived(card)) =>
-      cards.update(_ :+ card)
+    case EngineNotification(HandUpdated(hand)) =>
+      cards.set(hand)
     case EngineNotification(ResourceUpdate(state)) =>
       game.update(Progress.state.set(state))
     case EngineNotification(CardPlayed(card, _)) =>
