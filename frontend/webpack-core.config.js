@@ -22,9 +22,9 @@ module.exports = {
         test: /\.styl$/,
         use: [ 'style-loader', 'css-loader', 'stylus-loader' ]
       },
-      // "file" loader for svg
+      // "file" loader for png
       {
-        test: /\.svg$/,
+        test: /\.png$/,
         use: [
           {
             loader: 'file-loader',
