@@ -32,7 +32,7 @@ class ConsoleParticipant extends Participant[IO] {
       abs = Math.abs(ans)
       ti <- if (line startsWith "d")
               putStrLn {
-                Try(hand(line.drop(1).toInt - 1).effect).map(DescribeInterpreter(_))
+                Try(hand(line.drop(1).toInt - 1).effect).map(DescribeInterpreter(_).mkString_("","\n",""))
                   .getOrElse("Wrong card!")
               } *> getTurn(hand, rsc)
             else if (abs == 0 || abs > hand.length)

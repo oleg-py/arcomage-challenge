@@ -77,7 +77,7 @@ lazy val frontend = crossProject(JSPlatform)
 
 lazy val console = crossProject(JVMPlatform)
   .withoutSuffixFor(JVMPlatform)
-  .crossType(CrossType.Pure)
+  .crossType(SinglePlatform)
   .settings(compilerFlags, plugins)
   .dependsOn(core)
   .jvmSettings(
