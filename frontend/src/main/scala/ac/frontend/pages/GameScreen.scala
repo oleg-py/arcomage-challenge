@@ -28,7 +28,7 @@ object GameScreen extends Store.Container(
       div(className := "battlefield")(
         DummyCards(),
         Castles(state, conds.tower),
-        PlayerCards(cards)
+        PlayerCards(cards, state.stats.resources, true)
       ),
       div(className := "stats enemy")(
         PlayerDisplay(enemy),

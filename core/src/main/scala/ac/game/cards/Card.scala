@@ -19,6 +19,9 @@ case class Card (
   override def apply(s: CardScope): CardScope =
     ExecInterpreter(effect).apply(s)
 
+  def canPlayWith[N: IntLike](rs: Resources[N]): Boolean =
+    cost all_<= rs
+
   override def toString(): String = s"Card($name)"
 }
 
