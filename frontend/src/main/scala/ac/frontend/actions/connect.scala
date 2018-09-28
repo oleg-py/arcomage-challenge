@@ -70,6 +70,7 @@ object connect {
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     import F.implicits._
-    F.send(ConditionsSet(gc)) *> F.app.set(Playing)
+    val cs = ConditionsSet(gc)
+    F.gameEvents.emit1(cs) *> F.send(cs) *> F.app.set(Playing)
   }
 }
