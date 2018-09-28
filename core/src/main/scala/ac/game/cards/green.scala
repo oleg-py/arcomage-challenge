@@ -63,7 +63,7 @@ object green {
     ),
 
     "Goblin Archers" worth 4 recruits (
-      -3 player tower,
+      -3 enemy tower,
       1 damage received
     ),
 
