@@ -3,7 +3,11 @@
   flex-direction: row
 
   .stats
-    max-width: 130px
+    max-width: 154px
+    display: flex
+    flex-direction: column
+    align-items: center
+    margin: 15px 15px 0
 
 colors()
   &.red
@@ -17,15 +21,19 @@ colors()
 
 .resource-box
   border: 1px solid black
-  width: 100px
-  height: 80px
-  margin: 15px
-  padding: 3px
-  colors()
-
+  width: 154px
+  height: 144px
+  margin: 15px 0
+  padding: 60px 16px 3px
+  background-image: url(./resources.png)
+  &.blue
+    background-position-y: 288px
+  &.green
+    background-position-y: 144px
 
   .income
-    font-size: 24pt
+    font-size: 36pt
+    color: #faefd5
 
   .amount
     text-align: right
@@ -48,11 +56,15 @@ colors()
       opacity: 0.5
 
     label
-      padding-top: 4px
+      padding: 2px 0
       text-align: center
-      width: 100%
+      width: 90%
+      margin: 2px auto 0
+      border: 1px solid gray
       font-weight: bold
       display: block
+      border-radius: 8px
+      background: hsla(0, 0%, 100%, 0.3)
 
     .image
       background-color: lightgray
