@@ -39,6 +39,10 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       game.update(Progress.state.set(state))
     case EngineNotification(CardPlayed(card, _)) =>
       cards.update(_.filterNot(_ == card))
+    case EngineNotification(Victory) =>
+      app.set(AppState.Victory)
+    case EngineNotification(Defeat) =>
+      app.set(AppState.Defeat)
     case RemoteTurnRequest(hand, rsc) =>
       /*_*/
       cards.set(hand) *> game.update(

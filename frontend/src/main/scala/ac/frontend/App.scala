@@ -24,8 +24,17 @@ object App extends Store.Container(
           div("Waiting for host...")
         case ((AppState.SupplyingConditions, Some(me)), Some(enemy)) =>
           ConditionsSelectPage(me, enemy)
-        case ((AppState.Playing, _), _) =>
-          GameScreen()
+        case ((v @ (AppState.Playing | AppState.Defeat | AppState.Victory), _), _) =>
+          div(
+            GameScreen(),
+            if (v == AppState.Victory) {
+              div(className := "endgame-notice")("You win!")
+            } else if (v == AppState.Defeat) {
+              div(className := "endgame-notice")("You've lost.")
+            } else {
+              div()
+            }
+          )
         case _ =>
           div("Unsupported state reached")
       }
