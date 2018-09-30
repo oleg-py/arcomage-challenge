@@ -46,11 +46,13 @@ lazy val frontend = crossProject(JSPlatform)
       "style-loader"        -> "0.20.3",
       "css-loader"          -> "0.28.11",
       "stylus-loader"       -> "3.0.2",
+      "csv-loader"          -> "3.0.2",
       "html-webpack-plugin" -> "3.2.0",
       "copy-webpack-plugin" -> "4.5.1",
       "webpack-merge"       -> "4.1.2",
-      "stylus"              -> "0.54.5"
-    ),
+      "stylus"              -> "0.54.5",
+      "papaparse"           -> "4.6.0"
+),
 
     resolvers += Resolver.sonatypeRepo("snapshots"),
 
