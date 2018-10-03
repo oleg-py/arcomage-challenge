@@ -1,9 +1,10 @@
 package ac.frontend.pages
 
-import ac.frontend.{Store, Taverns}
+import ac.frontend.Store
 import ac.frontend.actions.connect
 import ac.frontend.components.PlayerDisplay
 import ac.frontend.states.AppState.User
+import ac.frontend.states.Taverns
 import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 import eu.timepit.refined.api.Refined
 import org.scalajs.dom.raw.HTMLSelectElement

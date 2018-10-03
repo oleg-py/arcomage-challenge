@@ -3,7 +3,6 @@ package ac.frontend.pages
 import ac.frontend.Store
 import slinky.core.facade.ReactElement
 import slinky.web.html.{className, div}
-import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 import ac.frontend.utils.StreamOps
 import Store.implicits._
 import ac.frontend.components._

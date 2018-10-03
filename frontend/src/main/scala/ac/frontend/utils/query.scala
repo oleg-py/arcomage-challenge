@@ -1,18 +1,15 @@
-package ac.frontend
-
+package ac.frontend.utils
 
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.global
 
 import ac.syntax.delay
-import cats.data.Nested
-import cats.effect.{Concurrent, Sync}
-import fs2.Stream
+import cats.effect.Sync
 import org.scalajs.dom.raw.Location
 import org.scalajs.dom.window
-import cats.implicits._
 
-object utils {
+
+object query {
   def parseQueryString(str: String): Map[String, String] = {
     val norm = if (str startsWith "?") str.drop(1) else str
     norm
@@ -29,13 +26,4 @@ object utils {
 
   def currentUrl[F[_]: Sync]: F[Location] =
     delay[F].of(window.location)
-
-  /*_*/
-  implicit class StreamOps[F[_], A](private val self: Stream[F, A]) {
-    def withLatestFrom[B](other: Stream[F, B])(implicit F: Concurrent[F]): Stream[F, (A, B)] =
-      Nested(self.holdOption).product(Nested(other.holdOption)).value.flatMap(_.discrete).collect {
-        case (Some(a), Some(b)) => (a, b)
-      }
-  }
-  /*_*/
 }

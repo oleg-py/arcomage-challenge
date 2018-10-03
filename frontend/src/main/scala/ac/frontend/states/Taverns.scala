@@ -1,4 +1,4 @@
-package ac.frontend
+package ac.frontend.states
 
 import scala.collection.immutable.ListMap
 import scala.scalajs.js

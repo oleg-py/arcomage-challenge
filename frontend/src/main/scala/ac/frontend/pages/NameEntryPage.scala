@@ -1,7 +1,6 @@
 package ac.frontend.pages
 
 import ac.frontend.Store
-import ac.frontend.GravatarUrl
 import ac.frontend.actions.connect
 import ac.frontend.states.AppState.User
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
@@ -10,6 +9,8 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import scala.scalajs.js.Dynamic.literal
+
+import ac.frontend.utils.gravatarUrl
 
 
 @react class NameEntryPage extends Component {
@@ -20,7 +21,7 @@ import scala.scalajs.js.Dynamic.literal
 
   private def avatarUrl = {
     if (state.email contains "@") {
-      GravatarUrl(state.email, literal(size = 128, default = DefaultAvatarType))
+      gravatarUrl(state.email, literal(size = 128, default = DefaultAvatarType))
     } else {
       s"https://gravatar.com/avatar/${state.name.hashCode.toHexString}?size=128&default=$DefaultAvatarType"
     }

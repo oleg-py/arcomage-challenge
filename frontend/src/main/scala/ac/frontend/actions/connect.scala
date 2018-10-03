@@ -2,7 +2,6 @@ package ac.frontend.actions
 
 import scala.scalajs.js.typedarray.ArrayBuffer
 
-import ac.frontend.utils
 import ac.frontend.peering.Peer.Sink1
 import ac.frontend.states.AppState._
 import ac.frontend.states._
@@ -10,6 +9,7 @@ import cats.syntax.all._
 import cats.effect.syntax.all._
 import scala.concurrent.duration._
 
+import ac.frontend.utils.query
 import ac.game.GameConditions
 import ac.game.session.{Registration, Session}
 
@@ -27,7 +27,7 @@ object connect {
     def host(me: User): F[Unit] =
       for {
         peer <- Store.peer
-        url  <- utils.currentUrl[F]
+        url  <- query.currentUrl[F]
         _    <- Store.me.set(me.some)
         _    <- Store.app.set(AwaitingGuest(
           s"${url.toString}?$ConnectionKey=${peer.id}"))
@@ -62,8 +62,8 @@ object connect {
       } yield ()
 
     for {
-      url <- utils.currentUrl[F]
-      key =  utils.parseQueryString(url.search).get(ConnectionKey)
+      url <- query.currentUrl[F]
+      key =  query.parseQueryString(url.search).get(ConnectionKey)
       _   <- key.fold(host(me))(connectToUser(_, me))
     } yield ()
   }
