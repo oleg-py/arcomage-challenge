@@ -31,7 +31,9 @@ case class Play(idx: NonNegInt) extends TurnIntent
 
 trait Participant[F[_]] {
   def proposeConditions: F[GameConditions]
-  def getTurn(hand: Vector[Card], rsc: Resources[NonNegInt]): F[TurnIntent]
+  protected def getTurn(hand: Vector[Card], rsc: Resources[NonNegInt]): F[TurnIntent]
+  final def getValidIntent(hand: Vector[Card], rsc: Resources[NonNegInt])(implicit F: Monad[F]): F[TurnIntent] =
+    F.iterateUntil(getTurn(hand, rsc))(_.canPlay(hand, rsc))
   def notify(notification: Notification): F[Unit]
 }
 

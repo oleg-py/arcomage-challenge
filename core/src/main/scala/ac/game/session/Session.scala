@@ -23,7 +23,7 @@ class Session[F[_]: Sync] private (
     for {
       cards <- cards1.get.map(_.hand)
       res <- state.get.map(_.stats.resources)
-      ti <- p1.getTurn(cards, res)
+      ti <- p1.getValidIntent(cards, res)
       mustDiscard <- state.get.map(_.requireDiscard)
       checked <- ti match {
         case t @ Discard(idx) if idx.value < cards.length => t.pure[F]
