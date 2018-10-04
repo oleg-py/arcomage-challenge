@@ -5,7 +5,7 @@ import scala.util.Try
 import ac.game.{GameConditions, Resources}
 import ac.game.cards.Card
 import ac.game.cards.dsl.DescribeInterpreter
-import ac.game.flow._
+import ac.game.flow._, TurnIntent._, Notification._
 import cats.effect.IO
 import cats.effect.Console.io._
 import cats.implicits._

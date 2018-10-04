@@ -10,7 +10,7 @@ import eu.timepit.refined.types.numeric.NonNegInt
 class MrDerp[F[_]: Applicative] extends Participant[F] {
   def getTurn(hand: Vector[Card], rsc: Resources[NonNegInt]): F[TurnIntent] = {
     val is = hand.indices.toStream.map(NonNegInt.unsafeFrom)
-    (is.map(Play) #::: is.map(Discard)).find(_.canPlay(hand, rsc))
+    (is.map(TurnIntent.Play) #::: is.map(TurnIntent.Discard)).find(_.canPlay(hand, rsc))
       .getOrElse(sys.error("No valid moves"))
       .pure[F]
   }

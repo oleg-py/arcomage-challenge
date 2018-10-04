@@ -5,7 +5,7 @@ import scala.scalajs.js.typedarray.ArrayBuffer
 import ac.frontend.peering.Peer
 import ac.frontend.states.AppState.{NameEntry, User}
 import ac.game.cards.Card
-import ac.game.flow._
+import ac.game.flow._, Notification._
 import ac.game.player.CardScope
 import cats.effect._
 import com.olegpy.shironeko.StoreBase
