@@ -21,17 +21,19 @@ colors()
 
 .resource-box
   border: 1px solid black
-  width: 154px
-  height: 144px
+  width: 103px
+  height: 95px
   margin: 15px 0
-  padding: 60px 16px 3px
+  padding: 30px 6px 0 12px
+  background-size: 100%
   background-image: url(./resources.png)
   &.blue
-    background-position-y: 288px
+    background-position-y: 188px
   &.green
-    background-position-y: 144px
+    background-position-y: 94px
 
   .income
+    line-height: 34pt
     font-size: 36pt
     color: #faefd5
 
@@ -44,12 +46,15 @@ colors()
   flex-direction: row
 
   .card
+    inner-border = #595959
+    border-radius: 5px
     border: 1px solid black
-    width: 180px
-    height: 240px
+    width: 144px
+    height: 192px
     position: relative
     margin: 0 2px
     background-image: url("./card-fill4.png")
+    font-size: 10pt
     colors()
 
     &.disabled
@@ -59,27 +64,29 @@ colors()
       padding: 2px 0
       text-align: center
       width: 90%
-      margin: 2px auto 0
-      border: 1px solid gray
+      margin: 2px auto 1px
+      border: 1px solid inner-border
       font-weight: bold
       display: block
       border-radius: 8px
       background: hsla(0, 0%, 100%, 0.3)
 
     .image
-      background-image: url("./card-sprites.png")
+      background-image: url("./card-sprites2.png")
       background-color: lightgray
-      margin: 4px auto
-      width: 160px
-      height: 95px
+      margin: 4px auto 0
+      width: 128px
+      height: 76px
+      border-radius: 3px
+      border: 1px solid inner-border
 
     .description
-      font-size: 10pt
-      margin: 6px 10px
+      font-size: 9pt
+      margin: 4px 6px
       text-align: center
       border-radius: 3px
-      border: 1px solid gray
-      height: 100px
+      border: 1px solid inner-border
+      height: 70px
       display: flex
       align-items: center
       flex-direction: column
@@ -93,13 +100,24 @@ colors()
       line-height: 24px
       font-weight: bold
       position: absolute
-      background: rgba(255, 255, 255, 0.25)
       border: 1px solid black
       bottom: 4px
       right: 4px
       border-radius: 24px
       width: 24px
       height: 24px
+
+    grad(col)
+      background-image: radial-gradient(circle at top left, #e7e7e7 30%, col 100%)
+
+    &.red .footer
+      grad(#de3745)
+
+    &.blue .footer
+      grad(#3489cf)
+
+    &.green .footer
+      grad(#2db370)
 
 .castles
   height: 450px
@@ -110,15 +128,18 @@ colors()
   .spacer
     flex-grow: 10
   .tower .block
-    width: 88px
+    width: 70px
+    background-size: 100%
     background-image: url("./tower.png")
   .wall .block
-    width: 48px
+    width: 38px
+    background-size: 100%
     background-image: url("./wall.png")
     background-position: bottom center
   .capstone
-    width: 134px
-    height: 186px
+    width: 107px
+    height: 149px
+    background-size: 100%
     background-image: url("./capstones.png")
   .enemy .capstone
     background-position: bottom

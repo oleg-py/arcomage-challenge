@@ -47,7 +47,7 @@ import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
         div(
           className := "image",
           style := literal(backgroundPosition =
-            s"${offsets.offset_x * -175}px ${offsets.offset_y * - 104}px")
+            s"${offsets.offset_x * -128}px ${offsets.offset_y * -76}px")
         ),
         div(className := "description")(
           English.cardDescription(card.effect)
