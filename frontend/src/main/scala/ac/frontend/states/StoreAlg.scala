@@ -5,7 +5,9 @@ import scala.scalajs.js.typedarray.ArrayBuffer
 import ac.frontend.peering.Peer
 import ac.frontend.states.AppState.{NameEntry, User}
 import ac.game.cards.Card
-import ac.game.flow._, Notification._
+import ac.game.flow._
+import Notification._
+import ac.frontend.i18n.Lang
 import ac.game.player.CardScope
 import cats.effect._
 import com.olegpy.shironeko.StoreBase
@@ -23,6 +25,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val cards = Cell(Vector.empty[Card])
   val me    = Cell(none[User])
   val enemy = Cell(none[User])
+  val locale = Cell[Lang](Lang.En)
 
   val gameEvents = Events.handled[GameMessage] {
     case OpponentReady(other) =>

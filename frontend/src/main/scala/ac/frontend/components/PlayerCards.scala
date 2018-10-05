@@ -2,7 +2,7 @@ package ac.frontend.components
 
 import ac.frontend.{CardData, Store}
 import ac.frontend.actions.card
-import ac.frontend.i18n.English
+import ac.frontend.i18n.Lang
 import ac.game.Resources
 import ac.game.cards.Card
 import cats.effect.IO
@@ -10,6 +10,7 @@ import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.NonNegInt
 import org.scalajs.dom.MouseEvent
 import scala.scalajs.js.Dynamic.literal
+
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
@@ -18,7 +19,12 @@ import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 
 
 @react class PlayerCards extends StatelessComponent {
-  case class Props(cards: Vector[Card], resources: Resources[NonNegInt], myTurn: Boolean)
+  case class Props(
+    lang: Lang,
+    cards: Vector[Card],
+    resources: Resources[NonNegInt],
+    myTurn: Boolean
+  )
 
   private def handleClick(i: Int)(e: MouseEvent): Unit = Store.execS { implicit alg =>
     e.preventDefault()
@@ -43,14 +49,14 @@ import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
         className := s"card ${card.color.toString.toLowerCase}" ++ suffix,
         onMouseDown := handleClick(i) _
       )(
-        label(className := "card-name")(card.name),
+        label(className := "card-name")(props.lang.cardName(card.name)),
         div(
           className := "image",
           style := literal(backgroundPosition =
             s"${offsets.offset_x * -128}px ${offsets.offset_y * -76}px")
         ),
         div(className := "description")(
-          English.cardDescription(card.effect)
+          props.lang.cardDescription(card.effect)
             .toList
             .zipWithIndex
             .map { case (line, j) =>

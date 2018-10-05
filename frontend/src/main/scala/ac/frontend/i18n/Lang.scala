@@ -10,7 +10,7 @@ import cats.data.Chain
 trait Lang {
   def cardName(str: String): String = str
   def cardDescription(dslEntry: DSLEntry): Chain[String] =
-    DescribeInterpreter(dslEntry)
+    DescribeInterpreter.en(dslEntry)
 
   def resourceName(color: Card.Color): String = color match {
     case Color.Red   => "Bricks"

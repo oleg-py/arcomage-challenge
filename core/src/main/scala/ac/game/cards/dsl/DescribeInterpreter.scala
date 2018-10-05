@@ -12,10 +12,6 @@ import cats.syntax.foldable._
 import cats.instances.list._
 
 object DescribeInterpreter {
-  @deprecated("Use locale-specific version", "")
-  def apply(dslEntry: DSLEntry): Chain[String] =
-    en(dslEntry)
-
   val en = scheme.cata(En.algebra)
 
   private object En {

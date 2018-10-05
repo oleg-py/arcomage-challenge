@@ -6,6 +6,7 @@ import slinky.web.html.{className, div}
 import ac.frontend.utils.StreamOps
 import Store.implicits._
 import ac.frontend.components._
+import ac.frontend.i18n.Lang
 import ac.frontend.states.AppState.User
 import ac.frontend.states.Progress
 import ac.game.cards.Card
@@ -15,10 +16,11 @@ object GameScreen extends Store.Container(
     .withLatestFrom(Store.me.listen.unNone)
     .withLatestFrom(Store.enemy.listen.unNone)
     .withLatestFrom(Store.cards.listen)
-    .map { case (((a, b), c), d) => (a, b, c, d) }
+    .withLatestFrom(Store.locale.listen)
+    .map { case ((((a, b), c), d), e) => (a, b, c, d, e) }
 ) {
-  def render(a: (Progress, User, User, Vector[Card])): ReactElement = {
-    val (Progress(state, conds), me, enemy, cards) = a
+  def render(a: (Progress, User, User, Vector[Card], Lang)): ReactElement = {
+    val (Progress(state, conds), me, enemy, cards, lang) = a
     div(className := "game-screen")(
       div(className := "stats mine")(
         PlayerDisplay(me),
@@ -27,7 +29,7 @@ object GameScreen extends Store.Container(
       div(className := "battlefield")(
         DummyCards(),
         Castles(state, conds.tower),
-        PlayerCards(cards, state.stats.resources, true)
+        PlayerCards(lang, cards, state.stats.resources, true)
       ),
       div(className := "stats enemy")(
         PlayerDisplay(enemy),
