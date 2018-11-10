@@ -4,6 +4,7 @@ import cats.effect._
 import cats.effect.syntax.effect._
 import cats.implicits._
 import scala.concurrent.duration._
+import scala.scalajs.js
 import scala.scalajs.js.typedarray.ArrayBuffer
 
 import fs2.Stream
@@ -45,7 +46,7 @@ object Peer {
 
   def apply[F[_]](implicit F: ConcurrentEffect[F], timer: Timer[F]): F[Peer[F]] =
     for {
-      js    <- F.delay(new PeerJS)
+      js    <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
       _     <- timer.sleep(500.millis).whileM_(F.delay(js.id.isEmpty))
       id    <- F.delay(js.id.get)
       conns <- Queue.synchronous[F, Duplex[F, ArrayBuffer]]

@@ -5,6 +5,8 @@ import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
 import cats.effect._
+import monix.eval.{Task, TaskApp}
+import monix.execution.Scheduler
 import slinky.web.ReactDOM
 import slinky.hot
 import org.scalajs.dom.document
@@ -15,20 +17,18 @@ object IndexCSS extends js.Object
 
 
 @JSExportTopLevel("entrypoint")
-object Main extends IOApp {
-  //noinspection TypeAnnotation
-  override implicit def timer: Timer[IO] = super.timer
+object Main extends TaskApp {
+  lazy val Instance: ConcurrentEffect[Task] = ConcurrentEffect[Task]
 
-  override implicit def contextShift: ContextShift[IO] = super.contextShift
-  lazy val Instance: ConcurrentEffect[IO] = ConcurrentEffect[IO]
+  override def scheduler: Scheduler = super.scheduler
 
-  def run(args: List[String]): IO[ExitCode] = for {
-    _    <- IO(IndexCSS)
-    _    <- if (LinkingInfo.developmentMode) IO { hot.initialize() }
-            else IO.unit
-    root <- IO { document.getElementById("root") }
-    _    <- IO { ReactDOM.render(App(), root) }
-  } yield ExitCode.Success
+  def run(args: List[String]): Task[ExitCode] = Task {
+    locally(IndexCSS)
+    if (LinkingInfo.developmentMode) hot.initialize()
+    val root = document.getElementById("root")
+    ReactDOM.render(App(), root)
+    ExitCode.Success
+  }
 
   @JSExport
   def exec(): Unit = main(Array())

@@ -8,7 +8,7 @@ import com.github.ghik.silencer.silent
 
 @JSImport("peerjs", JSImport.Default)
 @js.native
-@silent class PeerJS extends js.Object {
+@silent class PeerJS(options: js.Any = js.undefined) extends js.Object {
   def id: js.UndefOr[String] = js.native
   def connect(otherId: String): PeerJS.Connection = js.native
   def on(event: String, fn: js.Function0[Unit]): Unit = js.native

@@ -5,7 +5,6 @@ import ac.frontend.actions.card
 import ac.frontend.i18n.Lang
 import ac.game.Resources
 import ac.game.cards.Card
-import cats.effect.IO
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.NonNegInt
 import org.scalajs.dom.MouseEvent
@@ -16,6 +15,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
+import monix.eval.Task
 
 
 @react class PlayerCards extends StatelessComponent {
@@ -34,7 +34,7 @@ import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
       case 2 if props.myTurn =>
         card.discard(Refined.unsafeApply(i))
       case _ =>
-        IO.unit
+        Task.unit // TODO abstract away?
     }
   }
 
