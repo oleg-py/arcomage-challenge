@@ -38,6 +38,10 @@ object Lang {
   object En extends Lang
 
   object Ru extends Lang {
+
+    override def cardDescription(dslEntry: DSLEntry): Chain[String] =
+      DescribeInterpreter.ru(dslEntry)
+
     override def resourceName(color: Color): String = color match {
       case Color.Red   => "Кирпичи"
       case Color.Blue  => "Драгоценности"
