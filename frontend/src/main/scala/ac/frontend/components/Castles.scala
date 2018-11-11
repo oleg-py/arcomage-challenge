@@ -7,7 +7,6 @@ import eu.timepit.refined.types.numeric.PosInt
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
-import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 import slinky.web.html.{className, div, label, style}
 
 @react class Castles extends StatelessComponent {

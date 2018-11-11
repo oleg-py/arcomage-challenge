@@ -6,7 +6,7 @@ name := "arcomage-challenge"
 
 inThisBuild(Seq(
   version := "0.0.1",
-  scalaVersion := "2.12.6",
+  scalaVersion := "2.12.7",
 ))
 
 val SinglePlatform: CrossType = new CrossType {
@@ -57,11 +57,11 @@ lazy val frontend = crossProject(JSPlatform)
     resolvers += Resolver.sonatypeRepo("snapshots"),
 
     libraryDependencies ++= Seq(
-      "me.shadaj" %%% "slinky-web" % "0.4.3",
-      "me.shadaj" %%% "slinky-hot" % "0.4.3",
+      "me.shadaj" %%% "slinky-web" % "0.5.1",
+      "me.shadaj" %%% "slinky-hot" % "0.5.1",
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
       "io.suzaku" %%% "boopickle" % "1.3.0",
-      "com.olegpy" %%% "shironeko-slinky" % "0.0.4"
+      "com.olegpy" %%% "shironeko-slinky" % "0.0.7"
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

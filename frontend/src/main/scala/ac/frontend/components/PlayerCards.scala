@@ -14,7 +14,6 @@ import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import com.olegpy.shironeko.internals.SlinkyHotLoadingWorkaround._
 import monix.eval.Task
 
 
