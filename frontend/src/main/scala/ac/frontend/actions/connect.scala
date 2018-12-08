@@ -34,16 +34,14 @@ object connect {
         _    <- peer.incoming
           .evalMap { Function.tupled(establishConnection) }
           .compile.drain.start
-        user <- Store.gameEvents.await1 {
-          case OpponentReady(other) => other
-        }
+        _ <- Store.gameEvents.await1 { case OpponentReady(_) => }
         reg  <- Registration[F]
         _    <- Session.start(reg).start
         _    <- reg.enlist(new LocalParticipant[F])
         _    <- reg.enlist(new RemoteParticipant[F])
 
         _    <- Store.send(OpponentReady(me))
-        _    <- Store.app.set(Playing)
+        _    <- Store.app.set(AwaitingConditions)
       } yield ()
 
     def connectToUser(id: String, me: User): F[Unit] =
@@ -51,8 +49,7 @@ object connect {
         peer <- Store.peer
         _    <- Store.me.set(me.some)
         _    <- peer.connect(id).flatMap(Function.tupled(establishConnection))
-        _    <- Store.app.set(AwaitingHost)
-        _    <- timer.sleep(1.second)
+        _    <- timer.sleep(1.second) // TODO - Should go away
         _    <- Store.send(OpponentReady(me))
         _    <- Store.app.set(SupplyingConditions)
         _    <- Store.myTurnIntents.listen
@@ -71,6 +68,6 @@ object connect {
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     import F.implicits._
     val cs = ConditionsSet(gc)
-    F.gameEvents.emit1(cs) *> F.send(cs) *> F.app.set(Playing)
+    F.gameEvents.emit1(cs) *> F.send(cs)
   }
 }

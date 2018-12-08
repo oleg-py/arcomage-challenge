@@ -36,6 +36,8 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
         conds.initialStats,
         Vector()
       ), conds.victoryConditions))
+    case EngineNotification(GameStart) =>
+      app.set(AppState.Playing)
     case EngineNotification(HandUpdated(hand)) =>
       cards.set(hand)
     case EngineNotification(ResourceUpdate(state)) =>
@@ -59,10 +61,8 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
 
   def send(gm: GameMessage): F[Unit] = {
     sendF.get.flatMap {
-      case None => F.delay(println("Connection is not yet established"))
-      case Some(f) =>
-        println(s"Sending $f (${f.getClass.getName}) to Remote")
-        f(gm.asBytes)
+      case None => F.raiseError(new Exception("Connection not yet established"))
+      case Some(f) => f(gm.asBytes)
     }
   }
 

@@ -20,8 +20,6 @@ object App extends Store.Container(
           NameEntryPage()
         case ((AppState.AwaitingGuest(link), Some(me)), _) =>
           AwaitingGuestPeerPage(me, link)
-        case ((AppState.AwaitingHost, _), _) =>
-          div("Waiting for host...")
         case ((AppState.SupplyingConditions, Some(me)), Some(enemy)) =>
           ConditionsSelectPage(me, enemy)
         case ((v @ (AppState.Playing | AppState.Defeat | AppState.Victory), _), _) =>
@@ -36,7 +34,7 @@ object App extends Store.Container(
             }
           )
         case _ =>
-          div("Unsupported state reached")
+          div("<-Spinner->")
       }
     )
   }

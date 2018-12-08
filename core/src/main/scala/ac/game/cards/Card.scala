@@ -28,7 +28,7 @@ case class Card (
 object Card {
   type Fn = Endo[CardScope]
 
-  sealed trait Color { // TODO move out of card
+  sealed trait Color {
     import Color._
     def resource: Resources[NonNegInt] = this match {
       case Red   => Resources(1, 0, 0)

@@ -14,7 +14,6 @@ import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import monix.eval.Task
 
 
 @react class PlayerCards extends StatelessComponent {
@@ -33,7 +32,7 @@ import monix.eval.Task
       case 2 if props.myTurn =>
         card.discard(Refined.unsafeApply(i))
       case _ =>
-        Task.unit // TODO abstract away?
+        alg.implicits.concurrent.unit
     }
   }
 
