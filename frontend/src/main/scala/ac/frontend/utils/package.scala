@@ -1,5 +1,7 @@
 package ac.frontend
 
+import scala.scalajs.LinkingInfo
+
 import cats.data.Nested
 import cats.effect.Concurrent
 import fs2.Stream
@@ -15,4 +17,6 @@ package object utils {
       }
   }
   /*_*/
+
+  def isDevelopment: Boolean = LinkingInfo.developmentMode
 }

@@ -61,12 +61,13 @@ body
 .connection-data
   overflow: hidden
   padding-left: 8px
-  pre
-    overflow-x: auto
-    padding: 8px
-    border-radius: 4px
-    background: lightgray
-    border: 1px solid gray
+  & > div
+    display: flex
+    padding-top: 4px
+    input
+      flex-grow: 1
+    button
+      margin-left: 4px
 
 .endgame-notice
   position: absolute

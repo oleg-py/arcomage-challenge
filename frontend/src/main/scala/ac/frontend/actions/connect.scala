@@ -12,9 +12,15 @@ import scala.concurrent.duration._
 import ac.frontend.utils.query
 import ac.game.GameConditions
 import ac.game.session.{Registration, Session}
+import cats.effect.Sync
 
 object connect {
   private val ConnectionKey = "ac_game"
+
+  def isGuest[F[_]: Sync]: F[Boolean] = query.currentUrl[F]
+    .map(_.search)
+    .map(query.parseQueryString)
+    .map(_ contains ConnectionKey)
 
   def apply[F[_]](me: User)(implicit Store: StoreAlg[F]): F[Unit] = {
     import Store.implicits._

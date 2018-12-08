@@ -1,6 +1,6 @@
 package ac.frontend.pages
 
-import ac.frontend.Store
+import ac.frontend.{Store, utils}
 import ac.frontend.actions.connect
 import ac.frontend.states.AppState.User
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
@@ -18,12 +18,15 @@ import ac.frontend.utils.gravatarUrl
   case class State(name: String = "", email: String = "")
 
   private val DefaultAvatarType = "monsterid"
+  private val DummyName = utils.names.pick()
+
+  private def avatarName = if (state.name.nonEmpty) state.name else DummyName
 
   private def avatarUrl = {
     if (state.email contains "@") {
       gravatarUrl(state.email, literal(size = 128, default = DefaultAvatarType))
     } else {
-      s"https://gravatar.com/avatar/${state.name.hashCode.toHexString}?size=128&default=$DefaultAvatarType"
+      s"https://gravatar.com/avatar/${avatarName.hashCode.toHexString}?size=128&default=$DefaultAvatarType"
     }
   }
 
@@ -37,6 +40,7 @@ import ac.frontend.utils.gravatarUrl
         label(
           div("Nickname"),
           input(
+            placeholder := DummyName,
             value := state.name,
             onChange := { e: Event =>
               val target = e.target.asInstanceOf[HTMLInputElement]
@@ -56,7 +60,7 @@ import ac.frontend.utils.gravatarUrl
           button(
             className := "button",
             onClick := { _ => Store.execS { implicit alg =>
-            connect(User(state.name, avatarUrl))
+            connect(User(avatarName, avatarUrl))
           }
           })("Enter a game")
         )
