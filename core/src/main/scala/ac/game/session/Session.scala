@@ -50,9 +50,8 @@ class Session[F[_]: Sync] private (
       p1.notify(Defeat) *> p2.notify(Victory)
     )
 
-  private def turn(firstTurn: Boolean = false) =
-    (!firstTurn).ifA {
-      // TODO - we probably shouldn't receive income on same turn cards
+  private def turn(noIncome: Boolean = false) =
+    (!noIncome).ifA {
       state.update(CardScope.stats.modify(_.receiveIncome))
     } *> notifyResources *> isEndgame.ifM(
       notifyEndgame,
@@ -83,13 +82,13 @@ class Session[F[_]: Sync] private (
         state.get
           .map(_.turnMods.headOption.contains(TurnMod.PlayAgain))
           .ifM(
-            state.update(CardScope.turnMods.modify(_.drop(1))) *> turn() *> continuation,
+            state.update(CardScope.turnMods.modify(_.drop(1))) *> turn(true) *> continuation,
             swap.flatMap(s => s.turn() *> s.continuation)
           )
       )
 
 
-  private def loop = turn(firstTurn = true) *> continuation
+  private def loop = turn(noIncome = true) *> continuation
 
   private def swap = state.update(_.reverse)
     .as(new Session(p2, p1, cards2, cards1, state, conds))
