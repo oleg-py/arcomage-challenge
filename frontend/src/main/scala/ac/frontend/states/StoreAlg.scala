@@ -10,9 +10,11 @@ import Notification._
 import ac.frontend.i18n.Lang
 import ac.game.player.CardScope
 import cats.effect._
+import cats.effect.implicits._
 import com.olegpy.shironeko.StoreBase
-import cats.syntax.all._
+import cats.implicits._
 import monocle.macros.GenLens
+import scala.concurrent.duration._
 
 //noinspection TypeAnnotation
 trait StoreAlg[F[_]] { this: StoreBase[F] =>
@@ -42,8 +44,11 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       cards.set(hand)
     case EngineNotification(ResourceUpdate(state)) =>
       game.update(Progress.state.set(state))
-    case EngineNotification(CardPlayed(card, _)) =>
-      cards.update(_.filterNot(_ == card))
+    case EngineNotification(CardPlayed(card, discarded)) =>
+      cards.update(_.filterNot(_ == card)) *>
+      animate(card, isEnemy = false, discarded)
+    case EngineNotification(EnemyPlayed(card, discarded)) =>
+      animate(card, isEnemy = true, discarded)
     case EngineNotification(Victory) =>
       app.set(AppState.Victory)
     case EngineNotification(Defeat) =>
@@ -57,6 +62,32 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
     case msg => F.delay(println(msg))
   }
   val myTurnIntents = Events[TurnIntent]
+
+  object animate {
+    private[this] val cell = Cell(none[AnimatedCard])
+    val state = cell.listen
+    val fadeDuration = 500.millis
+    val showDuration = 1500.millis
+
+    def apply(card: Card, isEnemy: Boolean, isDiscarded: Boolean): F[Unit] = {
+      import AnimatedCard._
+      val List(in, show, out) = List(FadeIn, Show, FadeOut)
+        .map(AnimatedCard(_, card, isEnemy, isDiscarded))
+        .map(_.some).map(cell.set)
+
+      for {
+        _ <- in
+        _ <- timer.sleep(fadeDuration)
+        _ <- show
+        _ <- {
+          timer.sleep(showDuration) *>
+            out *>
+            timer.sleep(fadeDuration) *>
+            cell.set(None)
+        }.start
+      } yield ()
+    }
+  }
 
 
   def send(gm: GameMessage): F[Unit] = {

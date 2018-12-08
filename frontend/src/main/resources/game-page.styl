@@ -1,6 +1,7 @@
 .game-screen
   display: flex
   flex-direction: row
+  justify-content: center
 
   .stats
     max-width: 154px
@@ -45,79 +46,79 @@ colors()
   display: flex
   flex-direction: row
 
-  .card
-    inner-border = #595959
-    border-radius: 5px
+.card
+  inner-border = #595959
+  border-radius: 5px
+  border: 1px solid black
+  width: 144px
+  height: 192px
+  position: relative
+  margin: 0 2px
+  background-image: url("./card-fill4.png")
+  font-size: 10pt
+  colors()
+
+  &.disabled
+    opacity: 0.5
+
+  label
+    padding: 2px 0
+    text-align: center
+    width: 90%
+    margin: 2px auto 1px
+    border: 1px solid inner-border
+    font-weight: bold
+    display: block
+    border-radius: 8px
+    background: hsla(0, 0%, 100%, 0.3)
+
+  .image
+    background-image: url("./card-sprites2.png")
+    background-color: lightgray
+    margin: 4px auto 0
+    width: 128px
+    height: 76px
+    border-radius: 3px
+    border: 1px solid inner-border
+
+  .description
+    font-size: 9pt
+    margin: 4px 6px
+    text-align: center
+    border-radius: 3px
+    border: 1px solid inner-border
+    height: 70px
+    display: flex
+    align-items: center
+    flex-direction: column
+    justify-content: center
+    background: hsla(0, 0%, 100%, 0.3)
+    p
+      margin: 0
+
+  .footer
+    text-align: center
+    line-height: 24px
+    font-weight: bold
+    position: absolute
     border: 1px solid black
-    width: 144px
-    height: 192px
-    position: relative
-    margin: 0 2px
-    background-image: url("./card-fill4.png")
-    font-size: 10pt
-    colors()
+    bottom: 4px
+    right: 4px
+    border-radius: 24px
+    width: 24px
+    height: 24px
 
-    &.disabled
-      opacity: 0.5
+  grad(col)
+    background-image: radial-gradient(circle at top left, #e7e7e7 30%, col 100%)
 
-    label
-      padding: 2px 0
-      text-align: center
-      width: 90%
-      margin: 2px auto 1px
-      border: 1px solid inner-border
-      font-weight: bold
-      display: block
-      border-radius: 8px
-      background: hsla(0, 0%, 100%, 0.3)
+  &.red .footer
+    grad(#de3745)
 
-    .image
-      background-image: url("./card-sprites2.png")
-      background-color: lightgray
-      margin: 4px auto 0
-      width: 128px
-      height: 76px
-      border-radius: 3px
-      border: 1px solid inner-border
+  &.blue .footer
+    grad(#3489cf)
 
-    .description
-      font-size: 9pt
-      margin: 4px 6px
-      text-align: center
-      border-radius: 3px
-      border: 1px solid inner-border
-      height: 70px
-      display: flex
-      align-items: center
-      flex-direction: column
-      justify-content: center
-      background: hsla(0, 0%, 100%, 0.3)
-      p
-        margin: 0
-
-    .footer
-      text-align: center
-      line-height: 24px
-      font-weight: bold
-      position: absolute
-      border: 1px solid black
-      bottom: 4px
-      right: 4px
-      border-radius: 24px
-      width: 24px
-      height: 24px
-
-    grad(col)
-      background-image: radial-gradient(circle at top left, #e7e7e7 30%, col 100%)
-
-    &.red .footer
-      grad(#de3745)
-
-    &.blue .footer
-      grad(#3489cf)
-
-    &.green .footer
-      grad(#2db370)
+  &.green .footer
+    grad(#2db370)
 
 .castles
   height: 450px
@@ -162,3 +163,9 @@ colors()
       background: hsla(0, 0%, 20%, .75)
       box-shadow:0 0 3px hsla(0, 0, 0%, .75)
       border: 1px solid hsla(0, 0%, 100%, .75)
+
+
+.animation-overlay
+  .card
+    margin: 0 auto
+    top: 144px
