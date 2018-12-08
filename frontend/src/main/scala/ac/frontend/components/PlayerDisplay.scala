@@ -16,3 +16,5 @@ import slinky.web.html._
       label(props.name)
     )
 }
+
+object PlayerDisplay

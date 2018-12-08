@@ -14,6 +14,7 @@ object App extends Store.Container(
     .withLatestFrom(Store.enemy.listen)
 ) {
   def render(a: ((AppState, Option[User]), Option[User])): ReactElement = {
+    /*_*/
     div(className := "App")(
       a match {
         case ((_, None), _) =>
