@@ -7,6 +7,7 @@ import slinky.web.html._
 import Store.implicits._
 import ac.frontend.states.AppState._
 import ac.frontend.utils.StreamOps
+import ac.frontend.utils.spinners._
 
 object App extends Store.Container(
   Store.app.listen
@@ -36,7 +37,9 @@ object App extends Store.Container(
             }
           )
         case _ =>
-          div("<-Spinner->")
+          div(className := "spinner-container")(
+            CircleLoader(64)
+          )
       }
     )
   }

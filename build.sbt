@@ -40,6 +40,7 @@ lazy val frontend = crossProject(JSPlatform)
       "peerjs"             -> "0.3.16",
       "gravatar-url"       -> "2.0.0",
       "clipboard"          -> "2.0.4",
+      "react-spinners"     -> "0.4.7",
     ),
 
     npmDevDependencies in Compile ++= Seq(
