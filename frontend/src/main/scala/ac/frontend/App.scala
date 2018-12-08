@@ -5,30 +5,31 @@ import ac.frontend.states.AppState
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import Store.implicits._
-import ac.frontend.states.AppState.User
+import ac.frontend.states.AppState._
 import ac.frontend.utils.StreamOps
 
 object App extends Store.Container(
   Store.app.listen
     .withLatestFrom(Store.me.listen)
     .withLatestFrom(Store.enemy.listen)
+    .map { case ((a, b), c) => (a, b, c) }
 ) {
-  def render(a: ((AppState, Option[User]), Option[User])): ReactElement = {
+  def render(a: (AppState, Option[User], Option[User])): ReactElement = {
     /*_*/
     div(className := "App")(
       a match {
-        case ((_, None), _) =>
+        case (_, None, _) =>
           NameEntryPage()
-        case ((AppState.AwaitingGuest(link), Some(me)), _) =>
+        case (AwaitingGuest(link), Some(me), _) =>
           AwaitingGuestPeerPage(me, link)
-        case ((AppState.SupplyingConditions, Some(me)), Some(enemy)) =>
+        case (SupplyingConditions, Some(me), Some(enemy)) =>
           ConditionsSelectPage(me, enemy)
-        case ((v @ (AppState.Playing | AppState.Defeat | AppState.Victory), _), _) =>
+        case (v @ (Playing | Defeat | Victory), _, _) =>
           div(
             GameScreen(),
-            if (v == AppState.Victory) {
+            if (v == Victory) {
               div(className := "endgame-notice")("You win!")
-            } else if (v == AppState.Defeat) {
+            } else if (v == Defeat) {
               div(className := "endgame-notice")("You've lost.")
             } else {
               div()
