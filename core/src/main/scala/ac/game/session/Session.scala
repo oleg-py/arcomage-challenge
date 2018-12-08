@@ -52,6 +52,7 @@ class Session[F[_]: Sync] private (
 
   private def turn(firstTurn: Boolean = false) =
     (!firstTurn).ifA {
+      // TODO - we probably shouldn't receive income on same turn cards
       state.update(CardScope.stats.modify(_.receiveIncome))
     } *> notifyResources *> isEndgame.ifM(
       notifyEndgame,
@@ -66,6 +67,7 @@ class Session[F[_]: Sync] private (
         case Play(idx) =>
           cards1.modify(_.pull(idx.value).swap)
             .flatMap { card =>
+              state.update(CardScope.stats.modify(_.addResources(-card.cost))) *>
               cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify) *>
               p2.notify(EnemyPlayed(card, discarded = false)) *>
               p1.notify(CardPlayed(card, discarded = false)) *>
