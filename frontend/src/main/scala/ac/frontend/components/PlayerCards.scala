@@ -25,6 +25,7 @@ import slinky.web.html._
 
   private def handleClick(i: Int)(e: MouseEvent): Unit = Store.execS { implicit alg =>
     e.preventDefault()
+    e.stopPropagation()
     e.button match {
       case 0 | 1 if props.myTurn && props.cards(i).canPlayWith(props.resources) =>
         card.play(Refined.unsafeApply(i))
@@ -36,7 +37,8 @@ import slinky.web.html._
   }
 
   def render(): ReactElement = div(
-    className := "hand"
+    className := "hand",
+    onContextMenu := { _.preventDefault() }
   )(
     props.cards.zipWithIndex.map { case (card, i) =>
       CardDisplay(

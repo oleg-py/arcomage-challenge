@@ -28,14 +28,14 @@ import slinky.web.html._
       className := (s"card ${card.color.toString.toLowerCase}" ++ customClass.fold("")(" " ++ _)),
       onMouseDown := onClick
     )(
-      label(className := "card-name")(props.lang.cardName(card.name)),
+      label(className := "card-name")(lang.cardName(card.name)),
       div(
         className := "image",
         style := literal(backgroundPosition =
           s"${offsets.offset_x * -128}px ${offsets.offset_y * -76}px"),
       ),
       div(className := "description")(
-        props.lang.cardDescription(card.effect)
+        lang.cardDescription(card.effect)
           .toList
           .zipWithIndex
           .map { case (line, j) =>
