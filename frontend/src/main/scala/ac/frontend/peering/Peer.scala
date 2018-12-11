@@ -47,8 +47,10 @@ object Peer {
   def apply[F[_]](implicit F: ConcurrentEffect[F], timer: Timer[F]): F[Peer[F]] =
     for {
       js    <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
-      _     <- timer.sleep(500.millis).whileM_(F.delay(js.id.isEmpty))
+      _     <- timer.sleep(250.millis).whileM_(F.delay(js.id.isEmpty))
       id    <- F.delay(js.id.get)
+      _     <- F.raiseError(new Exception("Peer server is not available"))
+                .whenA(id == null)
       conns <- Queue.synchronous[F, Duplex[F, ArrayBuffer]]
       peer  <- F.delay(new Peer(id, js, conns))
     } yield peer

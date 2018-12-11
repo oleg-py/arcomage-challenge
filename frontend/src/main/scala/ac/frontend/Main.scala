@@ -26,7 +26,7 @@ object Main extends TaskApp {
     locally(IndexCSS)
     if (LinkingInfo.developmentMode) hot.initialize()
     val root = document.getElementById("root")
-    ReactDOM.render(App(), root)
+    ReactDOM.render(ErrorDisplay(App()), root)
     ExitCode.Success
   }
 

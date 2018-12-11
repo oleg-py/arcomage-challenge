@@ -19,8 +19,7 @@ import scala.concurrent.duration._
 //noinspection TypeAnnotation
 trait StoreAlg[F[_]] { this: StoreBase[F] =>
   import implicits._
-  val peer: F[Peer[F]] = preload(Peer[F])
-
+  val error = Cell(none[String])
   val app   = Cell[AppState](NameEntry)
   val game  = Cell[Progress](Progress.NotStarted)
   val sendF = Cell(none[Peer.Sink1[F, ArrayBuffer]])
@@ -28,6 +27,11 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val me    = Cell(none[User])
   val enemy = Cell(none[User])
   val locale = Cell[Lang](Lang.En)
+
+  val peer: F[Peer[F]] = preload(Peer[F]).onError { case e: Exception =>
+    // TODO better error types
+    error.set(e.getMessage.some)
+  }
 
   val gameEvents = Events.handled[GameMessage] {
     case OpponentReady(other) =>
@@ -92,10 +96,13 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
 
   def send(gm: GameMessage): F[Unit] = {
     sendF.get.flatMap {
-      case None => F.raiseError(new Exception("Connection not yet established"))
+      case None => error.set("Attempted to send data without a connection".some)
       case Some(f) => f(gm.asBytes)
     }
   }
+
+  def fail[A](s: String): F[A] =
+    error.set(s.some) *> F.raiseError(new Exception(s))
 
   trait implicits {
     implicit def timer: Timer[F]
