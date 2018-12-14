@@ -40,13 +40,11 @@ object Taverns {
     ListMap(entries: _*)
   }
 
-  /*_*/
   private def validate(raw: Entry): ValidatedNel[String, (String, NonNegInt, NonNegInt, PosInt, PosInt)] =
     ( NonNegInt.validate(raw.tower)
     , NonNegInt.validate(raw.wall)
     , PosInt.validate(raw.win_tower)
     , PosInt.validate(raw.win_resource)).mapN((raw.name, _, _, _, _))
-  /*_*/
 
   private trait Entry extends js.Object {
     def name: String

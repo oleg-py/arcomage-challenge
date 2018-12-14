@@ -58,11 +58,9 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
     case EngineNotification(Defeat) =>
       app.set(AppState.Defeat)
     case RemoteTurnRequest(hand, rsc) =>
-      /*_*/
       cards.set(hand) *> game.update(
         GenLens[Progress](_.state.stats.resources).set(rsc)
       )
-      /*_*/
     case msg => F.delay(println(msg))
   }
   val myTurnIntents = Events[TurnIntent]

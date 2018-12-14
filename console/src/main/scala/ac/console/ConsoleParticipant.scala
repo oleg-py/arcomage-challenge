@@ -21,9 +21,7 @@ class ConsoleParticipant extends Participant[IO] {
         s"Recruits: ${rsc.recruits}")
       _ <- putStrLn("Your cards are:")
       _ <- hand.zipWithIndex.traverse_ { case (card, idx) =>
-        /*_*/
         putStrLn(s"${idx + 1}. ${card.name}")
-        /*_*/
       }
       _ <- putStrLn("Enter a number to play a card. Enter - in front of it to discard a card")
       _ <- putStrLn("Enter dX to show description")
