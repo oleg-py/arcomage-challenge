@@ -18,7 +18,6 @@ object GameScreen extends Store.Container(
     .withLatestFrom(Store.enemy.listen.unNone)
     .withLatestFrom(Store.cards.listen)
     .withLatestFrom(Store.locale.listen)
-    .map { case ((((a, b), c), d), e) => (a, b, c, d, e) }
 ) {
   def render(a: (Progress, User, User, Vector[Card], Lang)): ReactElement = {
     val (Progress(state, conds), me, enemy, cards, lang) = a

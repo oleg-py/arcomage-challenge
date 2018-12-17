@@ -13,7 +13,6 @@ object App extends Store.Container(
   Store.app.listen
     .withLatestFrom(Store.me.listen)
     .withLatestFrom(Store.enemy.listen)
-    .map { case ((a, b), c) => (a, b, c) }
 ) {
   def render(a: (AppState, Option[User], Option[User])): ReactElement = {
     /*_*/
