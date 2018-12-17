@@ -68,24 +68,13 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   object animate {
     private[this] val cell = Cell(none[AnimatedCard])
     val state = cell.listen
-    val fadeDuration = 500.millis
-    val showDuration = 1500.millis
+    val animDuration = 2500.millis
 
     def apply(card: Card, isEnemy: Boolean, isDiscarded: Boolean): F[Unit] = {
-      import AnimatedCard._
-      val List(in, show, out) = List(FadeIn, Show, FadeOut)
-        .map(AnimatedCard(_, card, isEnemy, isDiscarded))
-        .map(_.some).map(cell.set)
-
       for {
-        _ <- in
-        _ <- timer.sleep(fadeDuration)
-        _ <- show
+        _ <- cell.set(AnimatedCard(card, isEnemy, isDiscarded).some)
         _ <- {
-          timer.sleep(showDuration) *>
-            out *>
-            timer.sleep(fadeDuration) *>
-            cell.set(None)
+          timer.sleep(animDuration) *> cell.set(None)
         }.start
       } yield ()
     }
