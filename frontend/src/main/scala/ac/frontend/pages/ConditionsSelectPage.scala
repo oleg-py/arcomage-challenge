@@ -7,13 +7,25 @@ import ac.frontend.states.AppState.User
 import ac.frontend.states.Taverns
 import eu.timepit.refined.api.Refined
 import org.scalajs.dom.raw.HTMLSelectElement
-import slinky.core.{AttrPair, Component}
+import slinky.core.{AttrPair, Component, StatelessComponent}
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 
+@react class MatchmakingPage extends StatelessComponent {
+  case class Props(me: User, enemy: User, children: ReactElement*)
+
+  def render(): ReactElement = {
+    div(className := "box wide")(
+      PlayerDisplay(props.me),
+      props.children,
+      PlayerDisplay(props.enemy)
+    )
+  }
+}
+
 @react class ConditionsSelectPage extends Component {
-  case class Props(me: User, enemy: User)
+  type Props = Unit
   case class State(locationName: String, cards: Int)
 
   def initialState: State = State(Taverns().head._1, 6)
@@ -22,56 +34,51 @@ import slinky.web.html._
     val conds = Taverns().apply(state.locationName)
       .copy(handSize = Refined.unsafeApply(state.cards))
 
-    div(className := "box wide")(
-      PlayerDisplay(props.me),
+    div(
       div(
-        div(
-          s"Cards: ",
-          select(
-            (value := state.cards.toString).asInstanceOf[AttrPair[select.tag.type]],
-            onChange := { e =>
-              val value = e.target.asInstanceOf[HTMLSelectElement].value.toInt
-              setState(_.copy(cards = value))
-            }
-          )(
-            option(value := "5")("5"),
-            option(value := "6")("6"),
-            option(value := "7")("7")
-          )
-        ),
-
+        s"Cards: ",
         select(
-          (value := state.locationName).asInstanceOf[AttrPair[select.tag.type]],
+          (value := state.cards.toString).asInstanceOf[AttrPair[select.tag.type]],
           onChange := { e =>
-            val value = e.target.asInstanceOf[HTMLSelectElement].value
-            setState(_.copy(locationName = value))
+            val value = e.target.asInstanceOf[HTMLSelectElement].value.toInt
+            setState(_.copy(cards = value))
           }
         )(
-          Taverns().map { case (tavernName, _) =>
-            option(
-              key := tavernName,
-              value := tavernName
-            )(tavernName)
-          }
-        ),
-        div(s"Tower to win: ${conds.victoryConditions.tower}"),
-        div(s"Resources to win: ${conds.victoryConditions.resources}"),
-        hr(),
-        div(s"Tower: ${conds.initialStats.buildings.tower.value}"),
-        div(s"Wall: ${conds.initialStats.buildings.wall.value}"),
-        div(s"Income: ${conds.initialStats.income.bricks.value}"),
-        div(s"Resources: ${conds.initialStats.resources.bricks.value}"),
-        div(className := "button-container-right")(
-          button(
-            className := "button",
-            onClick := {() => Store.execS { implicit alg =>
-              connect.supplyConditions(conds)
-            }}
-          )(s"Confirm")
-        ),
+          option(value := "5")("5"),
+          option(value := "6")("6"),
+          option(value := "7")("7")
+        )
       ),
-      PlayerDisplay(props.enemy)
 
+      select(
+        (value := state.locationName).asInstanceOf[AttrPair[select.tag.type]],
+        onChange := { e =>
+          val value = e.target.asInstanceOf[HTMLSelectElement].value
+          setState(_.copy(locationName = value))
+        }
+      )(
+        Taverns().map { case (tavernName, _) =>
+          option(
+            key := tavernName,
+            value := tavernName
+          )(tavernName)
+        }
+      ),
+      div(s"Tower to win: ${conds.victoryConditions.tower}"),
+      div(s"Resources to win: ${conds.victoryConditions.resources}"),
+      hr(),
+      div(s"Tower: ${conds.initialStats.buildings.tower.value}"),
+      div(s"Wall: ${conds.initialStats.buildings.wall.value}"),
+      div(s"Income: ${conds.initialStats.income.bricks.value}"),
+      div(s"Resources: ${conds.initialStats.resources.bricks.value}"),
+      div(className := "button-container-right")(
+        button(
+          className := "button",
+          onClick := {() => Store.execS { implicit alg =>
+            connect.supplyConditions(conds)
+          }}
+        )(s"Confirm")
+      ),
     )
   }
 }

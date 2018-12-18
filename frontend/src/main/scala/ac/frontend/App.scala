@@ -24,7 +24,16 @@ object App extends Store.Container(
         case (AwaitingGuest(link), Some(me), _) =>
           AwaitingGuestPeerPage(me, link)
         case (SupplyingConditions, Some(me), Some(enemy)) =>
-          ConditionsSelectPage(me, enemy)
+          MatchmakingPage(me, enemy)(
+            ConditionsSelectPage()
+          )
+        case (AwaitingConditions, Some(me), Some(enemy)) =>
+          MatchmakingPage(me, enemy)(
+            div(className := "conditions-waiting-notice")(
+              div(className := "spinner")(CircleLoader(64)),
+              div("Waiting for opponent to supply conditions")
+            )
+          )
         case (v @ (Playing | Defeat | Victory), _, _) =>
           div(
             GameScreen(),

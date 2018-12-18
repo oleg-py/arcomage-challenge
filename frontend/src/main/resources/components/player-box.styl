@@ -23,3 +23,26 @@
     border: 1px solid hsla(0, 0%, 100%, .75)
     left: 50%
     transform: translateX(-50%)
+
+.conditions-waiting-notice
+  display: flex
+  justify-content: center
+  align-items: center
+
+  .spinner
+    animation: spinner-color 5s infinite
+    padding: 0 16px
+    *
+      border-color: initial !important
+
+@keyframes spinner-color
+  0%
+    color: darkred
+  25%
+    color: darkgoldenrod
+  50%
+    color: darkslateblue
+  75%
+    color: darkgreen
+  100%
+    color: darkred
