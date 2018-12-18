@@ -20,19 +20,21 @@ import slinky.web.html._
     lang: Lang,
     cards: Vector[Card],
     resources: Resources[NonNegInt],
-    myTurn: Boolean
+    disableAll: Boolean
   )
 
   private def handleClick(i: Int)(e: MouseEvent): Unit = Store.execS { implicit alg =>
     e.preventDefault()
     e.stopPropagation()
     e.button match {
-      case 0 | 1 if props.myTurn && props.cards(i).canPlayWith(props.resources) =>
+      case _ if props.disableAll =>
+        alg.unit
+      case 0 | 1 if props.cards(i).canPlayWith(props.resources) =>
         card.play(Refined.unsafeApply(i))
-      case 2 if props.myTurn =>
+      case 2 =>
         card.discard(Refined.unsafeApply(i))
       case _ =>
-        alg.implicits.concurrent.unit
+        alg.unit
     }
   }
 
@@ -44,7 +46,8 @@ import slinky.web.html._
       CardDisplay(
         card,
         props.lang,
-        Some("disabled").filter(_ => !card.canPlayWith(props.resources)),
+        Some("disabled").filter(_ =>
+          props.disableAll || !card.canPlayWith(props.resources)),
         handleClick(i)
       ).withKey(i.toString)
     }
