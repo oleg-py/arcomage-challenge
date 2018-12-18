@@ -8,11 +8,13 @@ import Store.implicits._
 import ac.frontend.states.AppState._
 import ac.frontend.utils.StreamOps
 import ac.frontend.utils.spinners._
+import scala.concurrent.duration._
 
 object App extends Store.Container(
   Store.app.listen
     .withLatestFrom(Store.me.listen)
     .withLatestFrom(Store.enemy.listen)
+    .debounce(16.millis) // ~ 1 frame, skips intermediate spinner
 ) {
   def render(a: (AppState, Option[User], Option[User])): ReactElement = {
     /*_*/
