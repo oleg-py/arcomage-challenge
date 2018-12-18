@@ -30,8 +30,6 @@ class Session[F[_]: Sync] private (
         case t @ Play(idx) if idx.value < cards.length && !mustDiscard => t.pure[F]
         case _ => getIntent(recheck = true)
       }
-      _ <- (mustDiscard && !recheck)
-        .ifA(state.update(CardScope.turnMods.modify(_.drop(1))))
     } yield checked
 
   private def notifyResources: F[Unit] =
@@ -59,18 +57,18 @@ class Session[F[_]: Sync] private (
         case Discard(idx) =>
           cards1.modify(_.pull(idx.value).swap)
             .flatMap { card =>
-              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify) *>
               p2.notify(EnemyPlayed(card, discarded = true)) *>
-              p1.notify(CardPlayed(card, discarded = true))
+              p1.notify(CardPlayed(idx, discarded = true)) *>
+              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify)
             }
         case Play(idx) =>
           cards1.modify(_.pull(idx.value).swap)
             .flatMap { card =>
               state.update(CardScope.stats.modify(_.addResources(-card.cost))) *>
-              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify) *>
               p2.notify(EnemyPlayed(card, discarded = false)) *>
-              p1.notify(CardPlayed(card, discarded = false)) *>
-              state.update(card)
+              p1.notify(CardPlayed(idx, discarded = false)) *>
+              state.update(card) *>
+              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify)
             }
       } *> notifyResources
     )

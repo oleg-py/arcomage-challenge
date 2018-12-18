@@ -8,8 +8,7 @@ import CardScope._
 
 object Play {
   val cardByName: Map[String, Card] =
-    Vector(red cards, blue cards, green cards)
-      .flatten
+    Cards.allCards
       .map(c => (c.name, c))
       .toMap
 

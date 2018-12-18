@@ -49,9 +49,11 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       cards.set(hand)
     case EngineNotification(ResourceUpdate(state)) =>
       game.update(Progress.state.set(state))
-    case EngineNotification(CardPlayed(card, discarded)) =>
-      cards.update(_.filterNot(_ == card)) *>
-      animate(card, isEnemy = false, discarded)
+    case EngineNotification(CardPlayed(idx, discarded)) =>
+      for {
+        card <- cards.get.map(_(idx.value))
+        _    <- animate(card, isEnemy = false, discarded)
+      } yield ()
     case EngineNotification(EnemyPlayed(card, discarded)) =>
       animate(card, isEnemy = true, discarded)
     case EngineNotification(Victory) =>
