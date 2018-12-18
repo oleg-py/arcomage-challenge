@@ -13,7 +13,12 @@ object CardAnimation extends Store.Container(
   def render(a: (Option[AnimatedCard], Lang)): ReactElement = a._1.map {
     case AnimatedCard(card, enemy, isDiscarded) =>
       div(className := cls"animation-overlay ${enemy -> "enemy"}")(
-        CardDisplay(card, a._2)
+        div(className := "card-overlay")(
+          CardDisplay(card, a._2, overlay =
+            if (isDiscarded) span(className := "discarded-text")("Discarded")
+            else None
+          )
+        )
       )
   }
 }

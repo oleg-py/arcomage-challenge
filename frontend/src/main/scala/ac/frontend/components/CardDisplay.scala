@@ -17,11 +17,12 @@ import slinky.web.html._
     card: Card,
     lang: Lang,
     className: Option[String] = None,
-    onClick: MouseEvent => Unit = _ => {}
+    onClick: MouseEvent => Unit = _ => {},
+    overlay: ReactElement = None,
   )
 
   def render(): ReactElement = {
-    val Props(card, lang, customClass, onClick) = props
+    val Props(card, lang, customClass, onClick, overlay) = props
     val Some(offsets) = CardData.find(_.name_en == card.name)
 
     div(
@@ -34,6 +35,7 @@ import slinky.web.html._
         style := literal(backgroundPosition =
           s"${offsets.offset_x * -128}px ${offsets.offset_y * -76}px"),
       ),
+      overlay,
       div(className := "description")(
         lang.cardDescription(card.effect)
           .toList
