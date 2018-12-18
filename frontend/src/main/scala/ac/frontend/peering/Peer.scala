@@ -12,7 +12,7 @@ import fs2.concurrent.Queue
 
 class Peer[F[_]] private (
   val id: String,
-  js: PeerJS,
+  jsPeer: PeerJS,
   queue: Queue[F, Peer.Duplex[F, ArrayBuffer]]
 )(implicit F: ConcurrentEffect[F]) {
 
@@ -23,12 +23,12 @@ class Peer[F[_]] private (
     for {
       msgs <- Queue.synchronous[F, ArrayBuffer]
       sink = (msg: ArrayBuffer) => F.delay(conn.send(msg))
-      _ <- F.delay { conn.on("data", { data =>
+      _ <- F.delay { conn.on("data", { data: ArrayBuffer =>
         msgs.enqueue1(data).toIO.unsafeRunAsyncAndForget()
       }) }
     } yield (msgs.dequeue, sink)
 
-  js.on("connection", { conn =>
+  jsPeer.on("connection", { conn: PeerJS.Connection =>
     handleConnection(conn)
       .flatMap(queue.enqueue1)
       .toIO
@@ -36,10 +36,12 @@ class Peer[F[_]] private (
   })
 
   def connect(id: String): F[Peer.Duplex[F, ArrayBuffer]] = F.suspend {
-    val jsConn = js.connect(id)
+    val jsConn = jsPeer.connect(id)
     handleConnection(jsConn) <* F.async[Unit] { cb =>
       jsConn.on("open", () => cb(Right(())))
-      jsConn.on("error", err => cb(Left(new RuntimeException(err.toString))))
+      jsConn.on("error", (err: js.Error) =>
+        cb(Left(new RuntimeException(err.toString)))
+      )
     }
   }
 }
@@ -50,15 +52,12 @@ object Peer {
 
   def apply[F[_]](implicit F: ConcurrentEffect[F]): F[Peer[F]] =
     for {
-      js    <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
-      _     <- F.async[Unit] { cb =>
-        js.on("open", () => cb(Right(())))
-        js.on("error", err => println(err)) // TODO - will error handler work here?
+      jsp <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
+      id  <- F.async[String] { cb =>
+        jsp.on("open", (id: String) => cb(Right(id)))
+        jsp.on("error", (err: js.Error) => cb(Left(new Exception(err.toString))))
       }
-      id    <- F.delay(js.id.get)
-      _     <- F.raiseError(new Exception("Peer server is not available"))
-                .whenA(id == null)
       conns <- Queue.synchronous[F, Duplex[F, ArrayBuffer]]
-      peer  <- F.delay(new Peer(id, js, conns))
+      peer  <- F.delay(new Peer(id, jsp, conns))
     } yield peer
 }
