@@ -80,7 +80,7 @@ class Session[F[_]: Sync] private (
       .ifM(
         turn(),
         state.get
-          .map(_.turnMods.headOption.contains(TurnMod.PlayAgain))
+          .map(!_.passTurn)
           .ifM(
             state.update(CardScope.turnMods.modify(_.drop(1))) *> turn(true) *> continuation,
             swap.flatMap(s => s.turn() *> s.continuation)
