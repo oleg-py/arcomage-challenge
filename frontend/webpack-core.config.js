@@ -24,7 +24,7 @@ module.exports = {
       },
       // "file" loader for png
       {
-        test: /\.png$/,
+        test: /\.(png|jpe?g)$/,
         use: [
           {
             loader: 'file-loader',
