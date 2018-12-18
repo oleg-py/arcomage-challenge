@@ -20,6 +20,7 @@ import com.github.ghik.silencer.silent
   trait Connection extends js.Object {
     def send(data: ArrayBuffer): Unit = js.native
     def on(event: String, fn: js.Function1[ArrayBuffer, Unit]): Unit = js.native
+    def on(event: String, fn: js.Function0[Unit]): Unit = js.native
   }
 }
 

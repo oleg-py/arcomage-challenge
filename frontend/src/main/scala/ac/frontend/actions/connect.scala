@@ -55,7 +55,6 @@ object connect {
         peer <- Store.peer
         _    <- Store.me.set(me.some)
         _    <- peer.connect(id).flatMap(Function.tupled(establishConnection))
-        _    <- timer.sleep(1.second) // TODO - Should go away
         _    <- Store.send(OpponentReady(me)).timeoutTo(
                   5.seconds,
                   Store.fail("Connection could not be established")

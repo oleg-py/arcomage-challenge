@@ -3,7 +3,6 @@ package ac.frontend.peering
 import cats.effect._
 import cats.effect.syntax.effect._
 import cats.implicits._
-import scala.concurrent.duration._
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.ArrayBuffer
 
@@ -36,18 +35,26 @@ class Peer[F[_]] private (
       .unsafeRunAsyncAndForget()
   })
 
-  def connect(id: String): F[Peer.Duplex[F, ArrayBuffer]] =
-    handleConnection(js.connect(id))
+  def connect(id: String): F[Peer.Duplex[F, ArrayBuffer]] = F.suspend {
+    val jsConn = js.connect(id)
+    handleConnection(jsConn) <* F.async[Unit] { cb =>
+      jsConn.on("open", () => cb(Right(())))
+      jsConn.on("error", err => cb(Left(new RuntimeException(err.toString))))
+    }
+  }
 }
 
 object Peer {
   type Sink1[F[_], A] = A => F[Unit]
   type Duplex[F[_], A] = (Stream[F, A], Sink1[F, A])
 
-  def apply[F[_]](implicit F: ConcurrentEffect[F], timer: Timer[F]): F[Peer[F]] =
+  def apply[F[_]](implicit F: ConcurrentEffect[F]): F[Peer[F]] =
     for {
       js    <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
-      _     <- timer.sleep(250.millis).whileM_(F.delay(js.id.isEmpty))
+      _     <- F.async[Unit] { cb =>
+        js.on("open", () => cb(Right(())))
+        js.on("error", err => println(err)) // TODO - will error handler work here?
+      }
       id    <- F.delay(js.id.get)
       _     <- F.raiseError(new Exception("Peer server is not available"))
                 .whenA(id == null)
