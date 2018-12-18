@@ -4,8 +4,9 @@ import scala.scalajs.LinkingInfo
 
 import cats.data.Nested
 import cats.effect.Concurrent
-import fs2.Stream
 import cats.implicits._
+import fs2.Stream
+import org.scalajs.dom.window
 
 
 package object utils {
@@ -19,6 +20,9 @@ package object utils {
   }
 
   def isDevelopment: Boolean = LinkingInfo.developmentMode
+
+  def pageIsReloading(): Boolean =
+    window.performance.navigation.`type` != 0
 
   implicit class ClassSetOps (sc: StringContext) {
     def cls(args: Any*): String = {

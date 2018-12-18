@@ -6,6 +6,7 @@ import cats.implicits._
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.ArrayBuffer
 
+import ac.frontend.utils
 import fs2.Stream
 import fs2.concurrent.Queue
 
@@ -55,7 +56,9 @@ object Peer {
       jsp <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
       id  <- F.async[String] { cb =>
         jsp.on("open", (id: String) => cb(Right(id)))
-        jsp.on("error", (err: js.Error) => cb(Left(new Exception(err.toString))))
+        jsp.on("error", (err: js.Error) => {
+          if (!utils.pageIsReloading()) cb(Left(new Exception(err.toString)))
+        })
       }
       conns <- Queue.synchronous[F, Duplex[F, ArrayBuffer]]
       peer  <- F.delay(new Peer(id, jsp, conns))
