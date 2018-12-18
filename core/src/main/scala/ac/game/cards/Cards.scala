@@ -18,10 +18,11 @@ class Cards private (
 }
 
 object Cards {
+  private val MaxDuplicates = 4
   val allCards = Vector(red cards, blue cards, green cards).flatten
 
   def initial[F[_]: Randomizer: Functor](handSize: Int Refined Greater[W.`4`.T]): F[Cards] =
-    Randomizer[F].shuffles(allCards).map { stream =>
+    Randomizer[F].shuffles(Stream.fill(MaxDuplicates)(allCards).flatten).map { stream =>
       val (hand, source) = stream splitAt handSize.value
       new Cards(hand.toVector, source)
     }
