@@ -4,6 +4,8 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
+import ac.frontend.actions.connect
+import cats.syntax.functor._
 import cats.effect._
 import monix.eval.{Task, TaskApp}
 import monix.execution.Scheduler
@@ -22,12 +24,12 @@ object Main extends TaskApp {
 
   override def scheduler: Scheduler = super.scheduler
 
-  def run(args: List[String]): Task[ExitCode] = Task {
+  def run(args: List[String]): Task[ExitCode] = Task.defer {
     locally(IndexCSS)
     if (LinkingInfo.developmentMode) hot.initialize()
     val root = document.getElementById("root")
     ReactDOM.render(ErrorDisplay(App()), root)
-    ExitCode.Success
+    connect.preinitIfGuest(Store).start.as(ExitCode.Success)
   }
 
   @JSExport

@@ -7,7 +7,6 @@ import ac.frontend.states.AppState._
 import ac.frontend.states._
 import cats.syntax.all._
 import cats.effect.syntax.all._
-import scala.concurrent.duration._
 
 import ac.frontend.utils.query
 import ac.game.GameConditions
@@ -22,13 +21,17 @@ object connect {
     .map(query.parseQueryString)
     .map(_ contains ConnectionKey)
 
+  private def establishConnection[F[_]](
+    msgs: fs2.Stream[F, ArrayBuffer],
+    sink: Sink1[F, ArrayBuffer]
+  )(implicit Store: StoreAlg[F]): F[Unit] = {
+    import Store.implicits._
+    msgs.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain.start *>
+      Store.sendF.set(Some(sink))
+  }
+
   def apply[F[_]](me: User)(implicit Store: StoreAlg[F]): F[Unit] = {
     import Store.implicits._
-
-    def establishConnection(msgs: fs2.Stream[F, ArrayBuffer], sink: Sink1[F, ArrayBuffer]): F[Unit] = {
-      msgs.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain.start *>
-        Store.sendF.set(Some(sink))
-    }
 
     def host(me: User): F[Unit] =
       for {
@@ -38,28 +41,23 @@ object connect {
         _    <- Store.app.set(AwaitingGuest(
           s"${url.toString}?$ConnectionKey=${peer.id}"))
         _    <- peer.incoming
-          .evalMap { Function.tupled(establishConnection) }
-          .compile.drain.start
+          .evalMap { Function.tupled(establishConnection[F]) }
+          .head.compile.drain
+        _    <- Store.send(OpponentReady(me))
         _ <- Store.gameEvents.await1 { case OpponentReady(_) => }
         reg  <- Registration[F]
         _    <- Session.start(reg).start
         _    <- reg.enlist(new LocalParticipant[F])
         _    <- reg.enlist(new RemoteParticipant[F])
 
-        _    <- Store.send(OpponentReady(me))
         _    <- Store.app.set(AwaitingConditions)
       } yield ()
 
-    def connectToUser(id: String, me: User): F[Unit] =
+    def connectToUser(me: User): F[Unit] =
       for {
-        peer <- Store.peer
-        _    <- Store.me.set(me.some)
-        _    <- peer.connect(id).flatMap(Function.tupled(establishConnection))
-        _    <- Store.send(OpponentReady(me)).timeoutTo(
-                  5.seconds,
-                  Store.fail("Connection could not be established")
-                )
         _    <- Store.app.set(SupplyingConditions)
+        _    <- Store.me.set(me.some)
+        _    <- Store.send(OpponentReady(me))
         _    <- Store.myTurnIntents.listen
                   .map(RemoteTurnIntent)
                   .evalMap(Store.send)
@@ -67,10 +65,23 @@ object connect {
       } yield ()
 
     for {
-      url <- query.currentUrl[F]
-      key =  query.parseQueryString(url.search).get(ConnectionKey)
-      _   <- key.fold(host(me))(connectToUser(_, me))
+      url  <- query.currentUrl[F]
+      guest = query.parseQueryString(url.search) contains ConnectionKey
+      _    <- if (guest) connectToUser(me) else host(me)
     } yield ()
+  }
+
+  def preinitIfGuest[F[_]](implicit Store: StoreAlg[F]): F[Unit] = {
+    import Store.implicits._
+    query.currentUrl[F]
+      .map(url => query.parseQueryString(url.search).get(ConnectionKey))
+      .flatMap {
+        case None => ().pure[F]
+        case Some(id) =>
+          Store.peer
+            .flatMap(_.connect(id))
+            .flatMap(Function.tupled(establishConnection[F]))
+      }
   }
 
   def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
