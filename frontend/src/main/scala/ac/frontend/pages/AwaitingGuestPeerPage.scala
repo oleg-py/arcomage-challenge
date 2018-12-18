@@ -31,15 +31,20 @@ import java.util.UUID
   def render(): ReactElement =
     div(className := "box")(
       PlayerDisplay(props.me),
-      div(className := "connection-data")(
-        span("Share this link with your friend to start a game:"),
-        div(
+      div(className := "input-container")(
+        label(
+          div("Share this link with your friend to start a game:"),
           input(id := inputId, value := props.connectionLink, readOnly := true),
-          button(className := btnClass, data-"clipboard-target" := "#" + inputId)("Copy")
+        ),
+        div(className := "button-container-right")(
+          button(
+            className := btnClass + " button",
+            data-"clipboard-target" := "#" + inputId
+          )("Copy")
         ),
         if (utils.isDevelopment) div(
           a(href := props.connectionLink, target := "_blank")("[Dev] in new tab")
-        ) else null
+        ) else None
       )
     )
 }
