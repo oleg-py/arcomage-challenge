@@ -51,7 +51,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       game.update(Progress.state.set(state))
     case EngineNotification(CardPlayed(idx, discarded)) =>
       for {
-        card <- cards.get.map(_(idx.value))
+        card <- cards.modify(vec => (vec.patch(idx.value, Nil, 1), vec(idx.value)))
         _    <- animate(card, isEnemy = false, discarded)
       } yield ()
     case EngineNotification(EnemyPlayed(card, discarded)) =>

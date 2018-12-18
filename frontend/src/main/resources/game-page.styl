@@ -1,6 +1,10 @@
+cardWidth = 144px
+minCardSpacing = 4px
+maxCards  = 7
+
 .game-screen
   display: flex
-  flex-direction: row
+  flex-direction: column
   justify-content: center
   background: hsla(0, 0%, 100%, 0.65)
   padding: 24px
@@ -13,6 +17,12 @@
     flex-direction: column
     align-items: center
     margin: 15px 15px 0
+
+
+.battlefield
+  display: flex
+  flex-direction: row
+  align-items: flex-end
 
 colors()
   &.red
@@ -47,14 +57,17 @@ colors()
 
 
 .hand
+  margin-top: 8px
   display: flex
   flex-direction: row
+  justify-content: space-evenly
+  width: (cardWidth + minCardSpacing * 2) * maxCards
 
 .card
   inner-border = #595959
   border-radius: 5px
   border: 1px solid black
-  width: 144px
+  width: cardWidth
   height: 192px
   position: relative
   margin: 0 2px
@@ -126,6 +139,7 @@ colors()
 
 .castles
   height: 450px
+  flex-grow: 10
   display: flex
   flex-direction: row
   align-items: flex-end
@@ -173,12 +187,12 @@ colors()
   position: absolute
   font-weight: bold
   font-size: x-large
-  color: red
+  color: antiquewhite
   text-align: center
   display: inline-block
   width: 100%
   margin-top: -50px
-  text-shadow: 0 0 8px black
+  text-shadow: 0 0 14px darkred, 0 0 8px darkred, 0 0 3px darkred
 
 .animation-overlay
   margin-top: -660px

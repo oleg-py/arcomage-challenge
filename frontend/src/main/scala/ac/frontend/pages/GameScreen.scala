@@ -29,19 +29,19 @@ object GameScreen extends Store.Container(
     val (Progress(state, conds), me, enemy, cards, lang, canMove) = a
     div(className := "field")(
       div(className := "game-screen")(
-        div(className := "stats mine")(
-          PlayerDisplay(me),
-          ResourceDisplay(state.stats)
-        ),
+        DummyCards(),
         div(className := "battlefield")(
-          DummyCards(),
+          div(className := "stats mine")(
+            PlayerDisplay(me),
+            ResourceDisplay(state.stats)
+          ),
           Castles(state, conds.tower),
-          PlayerCards(lang, cards, state.stats.resources, !canMove)
+          div(className := "stats enemy")(
+            PlayerDisplay(enemy),
+            ResourceDisplay(state.enemy)
+          )
         ),
-        div(className := "stats enemy")(
-          PlayerDisplay(enemy),
-          ResourceDisplay(state.enemy)
-        )
+        PlayerCards(lang, cards, state.stats.resources, !canMove)
       ),
       CardAnimation()
     )
