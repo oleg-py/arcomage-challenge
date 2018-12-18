@@ -18,7 +18,11 @@ object GameScreen extends Store.Container(
     .withLatestFrom(Store.enemy.listen.unNone)
     .withLatestFrom(Store.cards.listen)
     .withLatestFrom(Store.locale.listen)
-    .withLatestFrom(Store.canMove.listen)
+    .withLatestFrom {
+      Store.myTurn.listen
+        .withLatestFrom(Store.animate.state.map(_.isEmpty))
+        .map { case (a, b) => a && b }
+    }
     .frameDebounced
 ) {
   def render(a: (Progress, User, User, Vector[Card], Lang, Boolean)): ReactElement = {

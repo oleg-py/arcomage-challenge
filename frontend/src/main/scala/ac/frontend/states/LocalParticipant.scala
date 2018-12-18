@@ -13,9 +13,9 @@ class LocalParticipant[F[_]](implicit store: StoreAlg[F]) extends Participant[F]
     concurrent.raiseError(new Exception("Remote player is supposed to propose conditions"))
 
   def getTurn(hand: Vector[Card], rsc: Resources[NonNegInt]): F[TurnIntent] =
-    store.canMove.set(true) *>
+    store.myTurn.set(true) *>
       store.myTurnIntents.await1 { case ti => ti } <*
-      store.canMove.set(false)
+      store.myTurn.set(false)
 
   def notify(notification: Notification): F[Unit] =
     store.gameEvents.emit1(EngineNotification(notification))

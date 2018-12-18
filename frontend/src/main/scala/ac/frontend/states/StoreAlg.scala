@@ -15,7 +15,6 @@ import com.olegpy.shironeko.StoreBase
 import cats.implicits._
 import monocle.macros.GenLens
 import scala.concurrent.duration._
-import ac.frontend.utils.RefOps
 
 //noinspection TypeAnnotation
 trait StoreAlg[F[_]] { this: StoreBase[F] =>
@@ -28,7 +27,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val me    = Cell(none[User])
   val enemy = Cell(none[User])
   val locale = Cell[Lang](Lang.En)
-  val canMove = Cell(false)
+  val myTurn  = Cell(false)
 
   val peer: F[Peer[F]] = preload(Peer[F]).onError { case e: Exception =>
     // TODO better error types
@@ -60,12 +59,12 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
     case EngineNotification(Defeat) =>
       app.set(AppState.Defeat)
     case RemoteTurnRequest(hand, rsc) =>
-      canMove.set(true) *> cards.set(hand) *> game.update(
+      myTurn.set(true) *> cards.set(hand) *> game.update(
         GenLens[Progress](_.state.stats.resources).set(rsc)
       )
     case msg => F.delay(println(msg))
   }
-  val myTurnIntents = Events.handled[TurnIntent] { _ => canMove.set(false) }
+  val myTurnIntents = Events.handled[TurnIntent] { _ => myTurn.set(false) }
 
   object animate {
     private[this] val cell = Cell(none[AnimatedCard])
@@ -74,13 +73,10 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
     val sleepDelay = 500.millis
 
     def apply(card: Card, isEnemy: Boolean, isDiscarded: Boolean): F[Unit] =
-      canMove.bind(false) {
-        cell.set(AnimatedCard(card, isEnemy, isDiscarded).some) *>
-        timer.sleep(sleepDelay) *>
-          canMove.bind(false) {
-            timer.sleep(animDuration - sleepDelay) *> cell.set(None)
-          }.start.void
-      }
+      cell.set(AnimatedCard(card, isEnemy, isDiscarded).some) *>
+      timer.sleep(sleepDelay) *> {
+        timer.sleep(animDuration - sleepDelay) *> cell.set(None)
+      }.start.void
   }
 
 

@@ -3,14 +3,12 @@ package ac.frontend
 import scala.scalajs.LinkingInfo
 
 import cats.data.Nested
-import cats.effect.{Bracket, Concurrent, Timer}
+import cats.effect.{Concurrent, Timer}
 import cats.implicits._
-import cats.effect.implicits._
 import fs2.Stream
 import org.scalajs.dom.window
 import scala.concurrent.duration._
 
-import cats.effect.concurrent.Ref
 
 
 package object utils {
@@ -42,10 +40,5 @@ package object utils {
       }
       sc.s(args2: _*)
     }
-  }
-
-  implicit class RefOps[F[_], A] (private val self: Ref[F, A]) extends AnyVal {
-    def bind[B, E](a: A)(f: F[B])(implicit F: Bracket[F, E]): F[B] =
-      self.getAndSet(a).bracket(_ => f)(self.set)
   }
 }
