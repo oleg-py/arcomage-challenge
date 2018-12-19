@@ -12,22 +12,20 @@ import slinky.web.html.{className, div, label, style}
 @react class Castles extends StatelessComponent {
   case class Props(cs: CardScope, maxTower: PosInt)
 
-  private val ViewportHeight = 500
+  private val MaxTowerHeight = 340
 
   private val towerHeight = (_: Player).buildings.tower.value.toDouble /
-                              props.maxTower.value * ViewportHeight
+                              props.maxTower.value * MaxTowerHeight
 
   private val wallHeight = (_: Player).buildings.wall.value.toDouble /
-                              props.maxTower.value * 0.75 * ViewportHeight
+                              props.maxTower.value * 0.75 * MaxTowerHeight
 
   private def blockOf(height: Double): ReactElement = {
     div(className := "block", style := js(height = s"${Math.ceil(height)}px"))
   }
 
   def render(): ReactElement = {
-    val Props(cs, maxTower) = props
-    val myHeight = cs.stats.buildings.tower.value * 100 / maxTower.value
-    val enemyHeight = cs.enemy.buildings.tower.value * 100 / maxTower.value
+    val cs = props.cs
 
     div(className := "castles")(
       div(className := "tower mine")(
