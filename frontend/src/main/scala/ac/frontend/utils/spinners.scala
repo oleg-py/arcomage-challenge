@@ -23,7 +23,7 @@ object spinners {
   }
 
   @react object ScaleLoader extends ExternalComponent {
-    case class Props(size: Int)
+    case class Props(height: Int, width: Int, margin: String, radius: Int)
     val component = spinnersJS.ScaleLoader
   }
 }

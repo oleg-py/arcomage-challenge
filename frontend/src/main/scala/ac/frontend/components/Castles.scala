@@ -7,7 +7,7 @@ import eu.timepit.refined.types.numeric.PosInt
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
-import slinky.web.html.{className, div, label, style}
+import slinky.web.html._
 
 @react class Castles extends StatelessComponent {
   case class Props(cs: CardScope, maxTower: PosInt)
@@ -27,11 +27,16 @@ import slinky.web.html.{className, div, label, style}
   def render(): ReactElement = {
     val cs = props.cs
 
+    def infoSpan = span(className := "additional-info")(s"/${props.maxTower}")
+
     div(className := "castles")(
       div(className := "tower mine")(
         div(className := "capstone"),
         blockOf(towerHeight(cs.stats)),
-        label(s"${cs.stats.buildings.tower}")),
+        label(
+          span(s"${cs.stats.buildings.tower}"),
+          infoSpan
+        )),
       div(className := "wall mine")(
         blockOf(wallHeight(cs.stats)),
         label(s"${cs.stats.buildings.wall}"),
@@ -44,7 +49,10 @@ import slinky.web.html.{className, div, label, style}
       div(className := "tower enemy")(
         div(className := "capstone"),
         blockOf(towerHeight(cs.enemy)),
-        label(s"${cs.enemy.buildings.tower}"),
+        label(
+          span(s"${cs.enemy.buildings.tower}"),
+          infoSpan
+        ),
       )
     )
   }

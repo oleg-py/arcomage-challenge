@@ -27,20 +27,22 @@ object GameScreen extends Store.Container(
 ) {
   def render(a: (Progress, User, User, Vector[Card], Lang, Boolean)): ReactElement = {
     val (Progress(state, conds), me, enemy, cards, lang, canMove) = a
+    val maxRes = conds.resources
     div(className := "field")(
       div(className := "game-screen")(
         DummyCards(),
         div(className := "battlefield")(
           div(className := "stats mine")(
             PlayerDisplay(me),
-            ResourceDisplay(state.stats)
+            ResourceDisplay(state.stats, maxRes)
           ),
           Castles(state, conds.tower),
           div(className := "stats enemy")(
             PlayerDisplay(enemy),
-            ResourceDisplay(state.enemy)
+            ResourceDisplay(state.enemy, maxRes)
           )
         ),
+        Notice(),
         PlayerCards(lang, cards, state.stats.resources, !canMove)
       ),
       CardAnimation()

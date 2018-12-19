@@ -24,6 +24,49 @@ maxCards  = 7
   flex-direction: row
   align-items: flex-end
 
+
+.additional-info
+  opacity: 0
+  width: 0
+  display: inline-block
+  transition: all .3s linear
+  /.resources-display:hover &
+    opacity: 1
+    width: 32px
+  /.tower:hover &
+    opacity: 1
+    width: 25px
+
+.turn-status
+  text-align: center
+  height: 20px
+  .my-turn
+    animation: my-turn-anim 3s infinite
+    @keyframes my-turn-anim
+      0%
+        color: green
+      50%
+        color: limegreen
+      100%
+        color: green
+  & > div > div
+    border: 2px solid
+    background-color: transparent !important
+  .enemy-turn, & > div
+    animation: enemy-turn-anim 3s infinite
+    @keyframes enemy-turn-anim
+      0%
+        color: red
+      50%
+        color: darkred
+      100%
+        color: red
+
+  & > *
+    display: inline-block
+  > div + span
+    padding-left: 8px
+
 colors()
   &.red
     background-color: #ff808a;
