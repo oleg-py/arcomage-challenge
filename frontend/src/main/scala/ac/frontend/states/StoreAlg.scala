@@ -60,13 +60,17 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       app.set(AppState.Victory)
     case EngineNotification(Defeat) =>
       app.set(AppState.Defeat)
+    case EngineNotification(TurnStart) =>
+      myTurn.set(true)
+    case EngineNotification(TurnEnd) =>
+      myTurn.set(false)
     case RemoteTurnRequest(hand, rsc) =>
-      myTurn.set(true) *> cards.set(hand) *> game.update(
+      cards.set(hand) *> game.update(
         GenLens[Progress](_.state.stats.resources).set(rsc)
       )
     case msg => F.delay(println(msg))
   }
-  val myTurnIntents = Events.handled[TurnIntent] { _ => myTurn.set(false) }
+  val myTurnIntents = Events[TurnIntent]
 
   object animate {
     private[this] val cell = Cell(none[AnimatedCard])

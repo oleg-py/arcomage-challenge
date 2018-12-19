@@ -50,6 +50,7 @@ class Session[F[_]: Sync] private (
     state.update(CardScope.stats.modify(_.receiveIncome)).whenA(!noIncome) *>
     notifyResources *> isEndgame.ifM(
       notifyEndgame,
+      p1.notify(TurnStart) *>
       getIntent().flatMap {
         case Discard(idx) =>
           cards1.modify(_.pull(idx.value).swap)
@@ -78,7 +79,7 @@ class Session[F[_]: Sync] private (
           .map(!_.passTurn)
           .ifM(
             state.update(CardScope.turnMods.modify(_.drop(1))) *> turn(true) *> continuation,
-            swap.flatMap(s => s.turn() *> s.continuation)
+            p1.notify(TurnEnd) *> swap.flatMap(s => s.turn() *> s.continuation)
           )
       )
 
