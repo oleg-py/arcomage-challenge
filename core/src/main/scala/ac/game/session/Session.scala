@@ -2,10 +2,8 @@ package ac.game.session
 
 import ac.game.cards.Cards
 import ac.game.flow._, TurnIntent._, Notification._
-import ac.game.player.{CardScope, TurnMod}
+import ac.game.player.CardScope
 import ac.game.{GameConditions, VictoryConditions}
-import ac.syntax._
-import cats._
 import cats.effect.Sync
 import cats.effect.concurrent.Ref
 import cats.implicits._
@@ -49,9 +47,8 @@ class Session[F[_]: Sync] private (
     )
 
   private def turn(noIncome: Boolean = false) =
-    (!noIncome).ifA {
-      state.update(CardScope.stats.modify(_.receiveIncome))
-    } *> notifyResources *> isEndgame.ifM(
+    state.update(CardScope.stats.modify(_.receiveIncome)).whenA(!noIncome) *>
+    notifyResources *> isEndgame.ifM(
       notifyEndgame,
       getIntent().flatMap {
         case Discard(idx) =>
