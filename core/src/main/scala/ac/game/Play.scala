@@ -3,8 +3,8 @@ package ac.game
 import ac.game.player.CardScope
 import ac.game.cards._
 import scala.language.postfixOps
-import ac.syntax._
 import CardScope._
+import mouse.all._
 
 object Play {
   val cardByName: Map[String, Card] =
@@ -13,7 +13,7 @@ object Play {
       .toMap
 
   val playCard: Card => Card.Fn = card => _
-    .thru(turnMods.modify(_ drop 1))
-    .thru(stats.modify(_ addResources card.cost))
-    .when(_.passTurn, enemy.modify(_.receiveIncome))
+    .thrush(turnMods.modify(_ drop 1))
+    .thrush(stats.modify(_ addResources card.cost))
+    .thrush(_.incomeOnTurn)
 }

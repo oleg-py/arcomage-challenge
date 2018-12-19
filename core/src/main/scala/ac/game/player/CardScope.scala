@@ -14,6 +14,10 @@ import eu.timepit.refined.auto._
   def applyReversed(f: Card.Fn): CardScope = f(reverse).reverse
   def requireDiscard: Boolean = turnMods.headOption.contains(TurnMod.ForceDiscard)
   def passTurn: Boolean = turnMods.isEmpty
+
+  def incomeOnTurn: CardScope =
+    if (passTurn) CardScope.enemy.modify(_.receiveIncome)(this)
+    else this
 }
 
 object CardScope {

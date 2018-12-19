@@ -108,7 +108,7 @@ def coreLibs = {
     "com.github.mpilquist" %%% "simulacrum" % "0.13.0",
     "eu.timepit" %%% "refined"            % "0.9.2",
     "eu.timepit" %%% "refined-cats"       % "0.9.2",
-
+    "org.typelevel" %%% "mouse" % "0.19",
     "org.scalatest" %%% "scalatest" % "3.0.1" % Test
   )
 }

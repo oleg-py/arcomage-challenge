@@ -3,7 +3,6 @@ package ac.frontend.utils
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.global
 
-import ac.syntax.delay
 import cats.effect.Sync
 import org.scalajs.dom.raw.Location
 import org.scalajs.dom.window
@@ -25,5 +24,5 @@ object query {
   }
 
   def currentUrl[F[_]: Sync]: F[Location] =
-    delay[F].of(window.location)
+    Sync[F].delay(window.location)
 }
