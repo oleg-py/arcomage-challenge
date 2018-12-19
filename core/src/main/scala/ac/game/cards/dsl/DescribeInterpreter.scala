@@ -26,7 +26,7 @@ object DescribeInterpreter {
       case Val(value) => value.toString
       case Var(target, prop) =>
         val tgs = target match {
-          case structure.Player => "player"
+          case structure.Player => "your"
           case structure.Enemy => "enemy"
         }
 
