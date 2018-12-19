@@ -1,5 +1,6 @@
 package ac.frontend
 
+import scala.concurrent.duration.TimeUnit
 import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
@@ -8,7 +9,8 @@ import ac.frontend.actions.connect
 import cats.syntax.functor._
 import cats.effect._
 import monix.eval.{Task, TaskApp}
-import monix.execution.Scheduler
+import monix.execution.{Cancelable, ExecutionModel, Scheduler}
+import monix.execution.schedulers.ReferenceScheduler
 import slinky.web.ReactDOM
 import slinky.hot
 import org.scalajs.dom.document
@@ -22,7 +24,18 @@ object IndexCSS extends js.Object
 object Main extends TaskApp {
   lazy val Instance: ConcurrentEffect[Task] = ConcurrentEffect[Task]
 
-  override def scheduler: Scheduler = super.scheduler
+  override def scheduler: Scheduler = new ReferenceScheduler {
+    private[this] val global = Main.super.scheduler
+    def execute(command: Runnable): Unit = global.execute(command)
+    def reportFailure(t: Throwable): Unit = {
+      global.reportFailure(t)
+      Store.error.set(Some(t.getMessage)).runAsyncAndForget(this)
+    }
+    def scheduleOnce(initialDelay: Long, unit: TimeUnit, r: Runnable): Cancelable =
+      global.scheduleOnce(initialDelay, unit, r)
+
+    def executionModel: ExecutionModel = global.executionModel
+  }
 
   def run(args: List[String]): Task[ExitCode] = Task.defer {
     locally(IndexCSS)
