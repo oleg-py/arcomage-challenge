@@ -7,8 +7,7 @@ import ac.frontend.states.AppState._
 import ac.frontend.states._
 import cats.syntax.all._
 import cats.effect.syntax.all._
-
-import ac.frontend.utils.query
+import ac.frontend.utils.{JSException, query}
 import ac.game.GameConditions
 import ac.game.session.{Registration, Session}
 import cats.effect.Sync
@@ -26,7 +25,10 @@ object connect {
     sink: Sink1[F, ArrayBuffer]
   )(implicit Store: StoreAlg[F]): F[Unit] = {
     import Store.implicits._
-    msgs.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain.start *>
+    msgs.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain
+      .onError {
+        case ex: JSException => Store.error.set(ex.toString.some)
+      }.start *>
       Store.sendF.set(Some(sink))
   }
 

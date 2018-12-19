@@ -9,7 +9,6 @@ sealed trait Notification
 
 object Notification {
   case object GameStart                                       extends Notification
-  case object TurnEnd                                         extends Notification
   case object Victory                                         extends Notification
   case object Defeat                                          extends Notification
   case class  ResourceUpdate (state: CardScope)               extends Notification

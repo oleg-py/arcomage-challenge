@@ -7,8 +7,11 @@ import scala.scalajs.js
 import scala.scalajs.js.typedarray.ArrayBuffer
 
 import ac.frontend.utils
+import ac.frontend.utils.JSException
+import cats.effect.concurrent.Deferred
 import fs2.Stream
 import fs2.concurrent.Queue
+import java.util.concurrent.atomic.AtomicBoolean
 
 
 class Peer[F[_]] private (
@@ -27,11 +30,24 @@ class Peer[F[_]] private (
       _ <- F.delay { conn.on("data", { data: ArrayBuffer =>
         msgs.enqueue1(data).toIO.unsafeRunAsyncAndForget()
       }) }
+      fail <- Deferred[F, Throwable]
+      errStream = Stream.eval_(fail.get.map(_.asLeft[Unit]).rethrow)
       _  <- F.async[Unit] { cb =>
-        conn.on("open", () => cb(Right(())))
-        conn.on("error", (err: js.Error) => cb(Left(new RuntimeException(err.toString))))
+        val done = new AtomicBoolean(false)
+        conn.on("open", () =>
+          if (done.compareAndSet(false, true)) {
+            cb(Right(()))
+          })
+        conn.on("error", (err: js.Error) => {
+          val wrapped = new JSException(err)
+          if (done.compareAndSet(false, true)) {
+            cb(Left(wrapped))
+          } else {
+            fail.complete(wrapped).attempt.toIO.unsafeRunAsyncAndForget()
+          }
+        })
       }
-    } yield (msgs.dequeue, sink)
+    } yield (msgs.dequeue merge errStream, sink)
 
   jsPeer.on("connection", { conn: PeerJS.Connection =>
     handleConnection(conn)

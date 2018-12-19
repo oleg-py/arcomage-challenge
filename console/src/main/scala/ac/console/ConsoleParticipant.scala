@@ -45,7 +45,6 @@ class ConsoleParticipant extends Participant[IO] {
     } yield ti
 
   def notify(notification: Notification): IO[Unit] = notification match {
-    case TurnEnd => putStrLn("...at an end, your turn is")
     case Victory => putStrLn("You're a winner!!")
     case Defeat  => putStrLn("You're lose")
     case CardPlayed(_, _) => IO.unit
