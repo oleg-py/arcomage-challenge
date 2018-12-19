@@ -18,7 +18,7 @@ class Cards private (
 }
 
 object Cards {
-  private val MaxDuplicates = 4
+  private val MaxDuplicates = 2
   val allCards = Vector(red cards, blue cards, green cards).flatten
 
   def initial[F[_]: Randomizer: Functor](handSize: Int Refined Greater[W.`4`.T]): F[Cards] =
