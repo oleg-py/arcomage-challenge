@@ -27,6 +27,10 @@ class Peer[F[_]] private (
       _ <- F.delay { conn.on("data", { data: ArrayBuffer =>
         msgs.enqueue1(data).toIO.unsafeRunAsyncAndForget()
       }) }
+      _  <- F.async[Unit] { cb =>
+        conn.on("open", () => cb(Right(())))
+        conn.on("error", (err: js.Error) => cb(Left(new RuntimeException(err.toString))))
+      }
     } yield (msgs.dequeue, sink)
 
   jsPeer.on("connection", { conn: PeerJS.Connection =>
@@ -38,16 +42,12 @@ class Peer[F[_]] private (
 
   def connect(id: String): F[Peer.Duplex[F, ArrayBuffer]] = F.suspend {
     val jsConn = jsPeer.connect(id)
-    handleConnection(jsConn) <* F.async[Unit] { cb =>
-      jsConn.on("open", () => cb(Right(())))
-      jsConn.on("error", (err: js.Error) =>
-        cb(Left(new RuntimeException(err.toString)))
-      )
-    }
+    handleConnection(jsConn)
   }
 }
 
 object Peer {
+
   type Sink1[F[_], A] = A => F[Unit]
   type Duplex[F[_], A] = (Stream[F, A], Sink1[F, A])
 
