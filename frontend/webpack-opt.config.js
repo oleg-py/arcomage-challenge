@@ -11,7 +11,7 @@ module.exports = merge(core, {
   },
   output: {
     "path": path.resolve(__dirname, "../../../../build"),
-    "filename": "[name]-bundle.js"
+    "filename": "[name]-bundle.[hash:8].js"
   },
   plugins: [
     new HtmlWebpackPlugin({
