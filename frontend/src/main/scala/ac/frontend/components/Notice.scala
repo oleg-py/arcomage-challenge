@@ -1,4 +1,4 @@
-package ac.frontend.pages
+package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.utils.spinners.ScaleLoader
@@ -7,13 +7,14 @@ import ac.game.player.TurnMod
 import ac.game.player.TurnMod.ForceDiscard
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
-import scala.language.postfixOps
 
 
 object Notice extends Store.Container(
-  Store.myTurn.listen withLatestFrom
-  Store.animate.state.map(_.nonEmpty) withLatestFrom
-  Store.game.listen.map(_.state.turnMods.headOption) frameDebounced
+  Store.myTurn.listen
+    .withLatestFrom(Store.animate.state.map(_.nonEmpty))
+    .withLatestFrom(Store.game.listen.map(_.state.turnMods.headOption))
+    .frameDebounced
+    .cons1((false, false, None))
 ) {
   def render(a: (Boolean, Boolean, Option[TurnMod])): ReactElement = {
     val (myTurn, isAnimating, turnMod) = a
