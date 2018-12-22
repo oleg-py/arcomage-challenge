@@ -1,6 +1,6 @@
 name_en,offset_x,offset_y,description_en
 Brick Shortage,0,0,
-Earthquake,4,1,
+Earthquake,4,1,-1 all quarries
 Lucky Cache,1,0,
 Strip Mine,8,1,
 Friendly Terrain,2,0,
