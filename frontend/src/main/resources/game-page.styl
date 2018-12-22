@@ -24,6 +24,21 @@ maxCards  = 7
   flex-direction: row
   align-items: flex-end
 
+.history-overlayed
+  flex-grow: 10
+  display: flex
+  flex-direction: column
+
+.card-history
+  position: absolute
+  display: flex
+  flex-direction: row
+  align-items: flex-end
+  opacity: .5
+  margin-top: -25px
+  margin-left: 2px
+  .card.empty
+    background: url(card-back.jpg)
 
 .additional-info
   opacity: 0
@@ -182,7 +197,6 @@ colors()
 
 .castles
   height: 450px
-  flex-grow: 10
   display: flex
   flex-direction: row
   align-items: flex-end
@@ -250,24 +264,24 @@ colors()
 
 anim(topStart)
   0%
-    transform: translateX(100%)
+    transform: translateX(-100%)
     top: topStart
     opacity: 1
   20%
     transform: translateX(0)
-    top: 144px
+    top: 300px
     opacity: 1
   80%
     transform: translateX(0)
-    top: 144px
+    top: 300px
     opacity: 1
   100%
-    transform: translateX(-100%)
-    top: 0
+    transform: translateX(100%)
+    top: 100px
     opacity: 0.25
 
 @keyframes anim-player
-  anim(300px)
+  anim(420px)
 
 @keyframes anim-enemy
-  anim(0)
+  anim(100px)

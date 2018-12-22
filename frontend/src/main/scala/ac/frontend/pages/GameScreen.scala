@@ -30,13 +30,15 @@ object GameScreen extends Store.Container(
     val maxRes = conds.resources
     div(className := "field")(
       div(className := "game-screen")(
-        DummyCards(),
         div(className := "battlefield")(
           div(className := "stats mine")(
             PlayerDisplay(me),
             ResourceDisplay(state.stats, maxRes)
           ),
-          Castles(state, conds.tower),
+          div(className := "history-overlayed")(
+            HistoryDisplay(),
+            Castles(state, conds.tower)
+          ),
           div(className := "stats enemy")(
             PlayerDisplay(enemy),
             ResourceDisplay(state.enemy, maxRes)
