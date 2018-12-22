@@ -134,7 +134,7 @@ object blue {
     ),
 
     "Lightning Shard" worth 11 gems (
-      when (tower < enemy wall) {
+      when (tower > enemy wall) {
         -8 enemy tower
       } otherwise {
         8 damage dealt
