@@ -21,6 +21,16 @@ import slinky.web.html._
     overlay: ReactElement = None,
   )
 
+  private def describe(card: Card): List[String] =
+    CardData
+      .find(_.name_en == card.name)
+      .flatMap(card => Option(card.description_en)) // Nullable field in CSV
+      .filter(_.nonEmpty)
+      .map(_.split('|').toList)
+      .getOrElse {
+        props.lang.cardDescription(card.effect).toList
+      }
+
   def render(): ReactElement = {
     val Props(card, lang, customClass, onClick, overlay) = props
     val Some(offsets) = CardData.find(_.name_en == card.name)
@@ -37,8 +47,7 @@ import slinky.web.html._
       ),
       overlay,
       div(className := "description")(
-        lang.cardDescription(card.effect)
-          .toList
+        describe(card)
           .zipWithIndex
           .map { case (line, j) =>
             p(key := j.toString)(line)

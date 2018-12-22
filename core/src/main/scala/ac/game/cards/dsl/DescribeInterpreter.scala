@@ -64,7 +64,9 @@ object DescribeInterpreter {
           Chain(s"${stringify(value)} damage")
         case  Alt(c, ifTrue, ifFalse) =>
           val prefix = Chain(s"if ${stringify(c)}") ++ ifTrue
-          ifFalse.fold(prefix)(prefix.append("otherwise") ++ _)
+          ifFalse.flatMap(_.uncons).fold(prefix) { case (first, suffix) =>
+            prefix ++ Chain.one(s"else $first") ++ suffix
+          }
         case  Combination(as) =>
           as.combineAll
       }
