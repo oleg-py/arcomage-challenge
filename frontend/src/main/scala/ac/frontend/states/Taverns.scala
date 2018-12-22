@@ -4,13 +4,15 @@ import scala.collection.immutable.ListMap
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-import ac.game.{GameConditions, VictoryConditions}
+import ac.frontend.utils
+import ac.game.{GameConditions, Resources, VictoryConditions}
 import ac.game.player.{Buildings, Player}
 import cats.data.Validated.{Invalid, Valid}
 import cats.data.ValidatedNel
 import cats.implicits._
 import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
 import eu.timepit.refined.cats.syntax._
+import eu.timepit.refined.auto._
 
 
 object Taverns {
@@ -36,6 +38,14 @@ object Taverns {
           ),
           VictoryConditions(win_tower, win_resource)
         )
+    }
+    if (utils.isDevelopment) {
+      entries.push(
+        "DEV: QuickDeath" -> GameConditions.initialStats.modify(
+          Player.buildings.set(Buildings(1, 0)) andThen
+          Player.resources.set(Resources.all(99))
+        )(std)
+      )
     }
     ListMap(entries: _*)
   }

@@ -5,8 +5,8 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
-import ac.frontend.actions.connect
-import cats.syntax.functor._
+import ac.frontend.actions.{connect, matches}
+import cats.syntax.all._
 import cats.effect._
 import monix.eval.{Task, TaskApp}
 import monix.execution.{Cancelable, ExecutionModel, Scheduler}
@@ -42,6 +42,8 @@ object Main extends TaskApp {
     if (LinkingInfo.developmentMode) hot.initialize()
     val root = document.getElementById("root")
     ReactDOM.render(ErrorDisplay(App()), root)
+
+    matches.bootstrapRematching(Store) *>
     connect.preinitIfGuest(Store).start.as(ExitCode.Success)
   }
 

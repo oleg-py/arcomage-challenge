@@ -5,6 +5,7 @@ import ac.frontend.states.AppState
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import Store.implicits._
+import ac.frontend.components.EndgameNotice
 import ac.frontend.states.AppState._
 import ac.frontend.utils.StreamOps
 import ac.frontend.utils.spinners._
@@ -35,21 +36,13 @@ object App extends Store.Container(
             )
           )
         case (v @ (Playing | Defeat | Victory), _, _) =>
-          div(
-            GameScreen(),
-            if (v == Victory) {
-              div(className := "endgame-notice")("You win!")
-            } else if (v == Defeat) {
-              div(className := "endgame-notice")("You've lost.")
-            } else {
-              div()
-            }
-          )
+            GameScreen()
         case _ =>
           div(className := "spinner-container")(
             CircleLoader(64)
           )
-      }
+      },
+      EndgameNotice()
     )
   }
 }

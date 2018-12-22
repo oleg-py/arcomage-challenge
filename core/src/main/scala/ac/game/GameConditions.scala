@@ -3,10 +3,11 @@ package ac.game
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.auto._
 import eu.timepit.refined.numeric.Greater
+import monocle.macros.Lenses
 import player._
 import shapeless.{Witness => W}
 
-case class GameConditions (
+@Lenses case class GameConditions (
   handSize: Int Refined Greater[W.`4`.T],
   initialStats: Player,
   victoryConditions: VictoryConditions

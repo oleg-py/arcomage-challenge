@@ -7,7 +7,6 @@ import cats.syntax.all._
 import cats.effect.syntax.all._
 import ac.frontend.utils.{JSException, query}
 import ac.game.GameConditions
-import ac.game.session.{Registration, Session}
 import cats.effect.Sync
 import fs2._
 import scala.concurrent.duration._
@@ -55,10 +54,7 @@ object connect {
         }.stream.compile.drain
         _    <- Store.send(OpponentReady(me))
         _ <- Store.gameEvents.await1 { case OpponentReady(_) => }
-        reg  <- Registration[F]
-        _    <- Session.start(reg).start
-        _    <- reg.enlist(new LocalParticipant[F])
-        _    <- reg.enlist(new RemoteParticipant[F])
+        _    <- matches.begin[F]()
         _    <- Store.app.set(AwaitingConditions)
         _    <- Stream.awakeEvery[F](3.seconds).evalMap { _ =>
           Store.peerConnection.get.map(_.isDefined).ifM(

@@ -14,6 +14,7 @@ import cats.implicits._
 import monocle.macros.GenLens
 import scala.concurrent.duration._
 
+import ac.frontend.states.RematchState._
 import cats.data.OptionT
 import cats.effect.concurrent.Ref
 
@@ -29,6 +30,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val locale = Cell[Lang](Lang.En)
   val myTurn  = Cell(false)
   val peerConnection = Cell(none[Peer.Connection[F]])
+  val rematchState   = Cell[RematchState](NotAsked)
 
   val peer: F[Peer[F]] = preload(Peer[F]).onError { case e: Exception =>
     // TODO better error types
@@ -36,6 +38,11 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   }
 
   val gameEvents = Events.handled[GameMessage] {
+    case RematchRequest =>
+      rematchState.update {
+        case NotAsked => Asked
+        case _        => Accepted
+      }
     case KeepAlive => unit
     case ConnectionRecovery(progressV, cardsV, myTurnV) =>
       app.set(Playing) *>
@@ -78,7 +85,9 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       )
     case msg => F.delay(println(msg))
   }
-  val myTurnIntents = Events[TurnIntent]
+  val myTurnIntents = Events.handled[TurnIntent] {
+    case ti => F.delay(println(ti))
+  }
 
   object animate {
     private[this] val cell = Cell(none[AnimatedCard])
