@@ -24,7 +24,7 @@ Reinforced Wall,9,1,
 Secret Room,3,1,
 Crystal Rocks,1,2,
 Porticulus,0,2,
-Barracks,1,3,
+Barracks,1,3,"+6 recruits, +6 wall|if dungeon < enemy dungeon|+1 your dungeon"
 Harmonic Ore,2,2,
 Mondo Wall,3,2,
 Battlements,2,3,
