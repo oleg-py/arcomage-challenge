@@ -9,4 +9,11 @@ object settings {
       Repr.name.set(name) andThen Repr.email.set(email)
     )
   }
+
+  def persistConditions[F[_]](tavern: String, cards: Int)(implicit Store: StoreAlg[F]): F[Unit] = {
+    import Store.implicits._
+    PersistentSettings[F].modify(
+      Repr.tavern.set(tavern) andThen Repr.cards.set(cards)
+    )
+  }
 }

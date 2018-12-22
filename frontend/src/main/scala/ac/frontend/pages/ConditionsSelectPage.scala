@@ -1,12 +1,13 @@
 package ac.frontend.pages
 
 import ac.frontend.Store
-import ac.frontend.actions.connect
+import ac.frontend.actions.{connect, settings}
 import ac.frontend.components.PlayerDisplay
 import ac.frontend.states.AppState.User
 import ac.frontend.states.{PersistentSettings, Taverns}
 import eu.timepit.refined.api.Refined
 import monix.eval.Coeval
+import cats.syntax.apply._
 import org.scalajs.dom.raw.HTMLSelectElement
 import slinky.core.{AttrPair, Component, StatelessComponent}
 import slinky.core.annotations.react
@@ -27,7 +28,7 @@ import slinky.web.html._
 
 @react class ConditionsSelectPage extends Component {
   type Props = Unit
-  case class State(locationName: String, cards: Int)
+  case class State(locationName: String, cards: Int, buttonDisabled: Boolean = false)
 
   def initialState: State = {
     val s = PersistentSettings[Coeval].readAll.value()
@@ -78,7 +79,11 @@ import slinky.web.html._
       div(className := "button-container-right")(
         button(
           className := "button",
-          onClick := {() => Store.execS { implicit alg =>
+          disabled := state.buttonDisabled,
+          onClick := {() =>
+            this.setState(_.copy(buttonDisabled = true))
+            Store.execS { implicit alg =>
+            settings.persistConditions(state.locationName, state.cards) *>
             connect.supplyConditions(conds)
           }}
         )(s"Confirm")

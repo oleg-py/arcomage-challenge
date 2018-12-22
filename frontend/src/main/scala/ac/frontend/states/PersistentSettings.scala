@@ -18,16 +18,22 @@ trait PersistentSettings[F[_]] {
 }
 
 object PersistentSettings {
-  @Lenses case class Repr(name: String, email: String, tavern: String, cards: Int)
+  @Lenses case class Repr(
+    name: String = "",
+    email: String = "",
+    tavern: String = "Harmondale",
+    cards: Int = 6
+  )
+
   object Repr {
     implicit def codec: ReadWriter[Repr] = macroRW
   }
 
   def forLocalStorage[F[_]](key: String)(implicit F: Sync[F]): PersistentSettings[F] = new PersistentSettings[F] {
     def readAll: F[Repr] = F.delay {
-      Option(localStorage.getItem(key)).fold(Repr("", "", "Harmondale", 6))(read[Repr](_))
-    }.recover {
-      case ae: AbortException => Repr("", "", "Harmondale", 6)
+      Option(localStorage.getItem(key)).fold(Repr())(read[Repr](_))
+    } recover {
+      case _: AbortException => Repr()
     }
 
     def writeAll(s: Repr): F[Unit] = F.delay {
