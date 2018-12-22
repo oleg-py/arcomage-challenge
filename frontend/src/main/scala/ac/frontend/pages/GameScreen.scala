@@ -47,7 +47,8 @@ object GameScreen extends Store.Container(
         Notice(),
         PlayerCards(lang, cards, state.stats.resources, !canMove)
       ),
-      CardAnimation()
+      CardAnimation(),
+      ReconnectingOverlay(),
     )
   }
 }

@@ -3,7 +3,7 @@ package ac.frontend
 import scala.scalajs.LinkingInfo
 
 import cats.data.Nested
-import cats.effect.{Concurrent, Timer}
+import cats.effect._
 import cats.implicits._
 import fs2.Stream
 import org.scalajs.dom.window
@@ -40,5 +40,13 @@ package object utils {
       }
       sc.s(args2: _*)
     }
+  }
+
+  implicit class EffectOps[F[_], A](private val self: F[A]) extends AnyVal {
+    def unsafeRunLater()(implicit F: Effect[F]): Unit =
+      F.runAsync(self) {
+        case Right(_) => IO.unit
+        case Left(ex) => IO(Main.scheduler.reportFailure(ex))
+      }.unsafeRunSync()
   }
 }

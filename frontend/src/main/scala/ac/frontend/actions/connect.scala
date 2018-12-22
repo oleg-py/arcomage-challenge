@@ -1,8 +1,6 @@
 package ac.frontend.actions
 
-import scala.scalajs.js.typedarray.ArrayBuffer
-
-import ac.frontend.peering.Peer.Sink1
+import ac.frontend.peering.Peer
 import ac.frontend.states.AppState._
 import ac.frontend.states._
 import cats.syntax.all._
@@ -11,6 +9,8 @@ import ac.frontend.utils.{JSException, query}
 import ac.game.GameConditions
 import ac.game.session.{Registration, Session}
 import cats.effect.Sync
+import fs2._
+import scala.concurrent.duration._
 
 object connect {
   private val ConnectionKey = "ac_game"
@@ -21,15 +21,14 @@ object connect {
     .map(_ contains ConnectionKey)
 
   private def establishConnection[F[_]](
-    msgs: fs2.Stream[F, ArrayBuffer],
-    sink: Sink1[F, ArrayBuffer]
+    conn: Peer.Connection[F]
   )(implicit Store: StoreAlg[F]): F[Unit] = {
     import Store.implicits._
-    msgs.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain
+    conn.messages.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain
       .onError {
         case ex: JSException => Store.error.set(ex.toString.some)
-      }.start *>
-      Store.sendF.set(Some(sink))
+      }.start *> Store.peerConnection.set(conn.some) <*
+      conn.waitForClose.flatMap(_ => Store.peerConnection.set(none)).start
   }
 
   def apply[F[_]](me: User)(implicit Store: StoreAlg[F]): F[Unit] = {
@@ -42,22 +41,39 @@ object connect {
         _    <- Store.me.set(me.some)
         _    <- Store.app.set(AwaitingGuest(
           s"${url.toString}?$ConnectionKey=${peer.id}"))
-        _    <- peer.incoming
-          .evalMap { Function.tupled(establishConnection[F]) }
-          .head.compile.drain
+        _    <- peer.incoming.pull.uncons1.flatMap {
+          case Some((hd, tl)) =>
+            val handleOtherPeers = tl.evalMap { conn =>
+              Store.peerConnection.get.flatMap {
+                case Some(_) => conn.send(ConnectionRejected.asBytes)
+                case None => establishConnection(conn) *>
+                  Store.performRecovery
+              }
+            }.compile.drain.start
+            Pull.eval(establishConnection(hd) >> handleOtherPeers.void)
+          case None => Pull.raiseError(new RuntimeException("Unexpected end of stream"))
+        }.stream.compile.drain
         _    <- Store.send(OpponentReady(me))
         _ <- Store.gameEvents.await1 { case OpponentReady(_) => }
         reg  <- Registration[F]
         _    <- Session.start(reg).start
         _    <- reg.enlist(new LocalParticipant[F])
         _    <- reg.enlist(new RemoteParticipant[F])
-
         _    <- Store.app.set(AwaitingConditions)
+        _    <- Stream.awakeEvery[F](3.seconds).evalMap { _ =>
+          Store.peerConnection.get.map(_.isDefined).ifM(
+            Store.send(KeepAlive),
+            ().pure[F]
+          )
+        }.compile.drain.start
       } yield ()
 
     def connectToUser(me: User): F[Unit] =
       for {
-        _    <- Store.app.set(SupplyingConditions)
+        _    <- Store.app.update {
+          case NameEntry => SupplyingConditions
+          case other => other
+        }
         _    <- Store.me.set(me.some)
         _    <- Store.send(OpponentReady(me))
         _    <- Store.myTurnIntents.listen
@@ -78,7 +94,7 @@ object connect {
         case Some(id) =>
           Store.peer
             .flatMap(_.connect(id))
-            .flatMap(Function.tupled(establishConnection[F]))
+            .flatMap(establishConnection[F])
       }
   }
 

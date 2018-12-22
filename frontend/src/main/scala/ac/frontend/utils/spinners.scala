@@ -18,7 +18,7 @@ private[utils] object spinnersJS extends js.Object {
 
 object spinners {
   @react object CircleLoader extends ExternalComponent {
-    case class Props(size: Int)
+    case class Props(size: Int, color: js.UndefOr[String] = js.undefined)
     val component = spinnersJS.CircleLoader
   }
 

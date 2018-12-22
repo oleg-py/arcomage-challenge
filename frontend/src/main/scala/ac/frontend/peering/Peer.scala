@@ -1,7 +1,6 @@
 package ac.frontend.peering
 
 import cats.effect._
-import cats.effect.syntax.effect._
 import cats.implicits._
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.ArrayBuffer
@@ -11,27 +10,32 @@ import ac.frontend.utils.JSException
 import cats.effect.concurrent.Deferred
 import fs2.Stream
 import fs2.concurrent.Queue
+import utils.EffectOps
 import java.util.concurrent.atomic.AtomicBoolean
 
 
 class Peer[F[_]] private (
   val id: String,
   jsPeer: PeerJS,
-  queue: Queue[F, Peer.Duplex[F, ArrayBuffer]]
+  queue: Queue[F, Peer.Connection[F]]
 )(implicit F: ConcurrentEffect[F]) {
 
-  val incoming: fs2.Stream[F, Peer.Duplex[F, ArrayBuffer]] =
+  val incoming: fs2.Stream[F, Peer.Connection[F]] =
     queue.dequeue
 
-  private[this] def handleConnection(conn: PeerJS.Connection): F[Peer.Duplex[F, ArrayBuffer]] =
+  private[this] def handleConnection(conn: PeerJS.Connection): F[Peer.Connection[F]] =
     for {
       msgs <- Queue.synchronous[F, ArrayBuffer]
-      sink = (msg: ArrayBuffer) => F.delay(conn.send(msg))
       _ <- F.delay { conn.on("data", { data: ArrayBuffer =>
-        msgs.enqueue1(data).toIO.unsafeRunAsyncAndForget()
+        msgs.enqueue1(data).unsafeRunLater()
       }) }
       fail <- Deferred[F, Throwable]
-      errStream = Stream.eval_(fail.get.map(_.asLeft[Unit]).rethrow)
+      close <- Deferred[F, Unit]
+      scc = new Peer.Connection[F](
+        conn,
+        msgs.dequeue merge Stream.eval_(fail.get.map(_.asLeft[Unit]).rethrow),
+        close.get,
+      )
       _  <- F.async[Unit] { cb =>
         val done = new AtomicBoolean(false)
         conn.on("open", () =>
@@ -39,33 +43,39 @@ class Peer[F[_]] private (
             cb(Right(()))
           })
         conn.on("error", (err: js.Error) => {
-          val wrapped = new JSException(err)
+          val wrapped = JSException(err)
           if (done.compareAndSet(false, true)) {
             cb(Left(wrapped))
+          // Crazy PeerJS exceptions
+          } else if (err.message == "Connection is not open. You should listen for the `open` event before sending messages.") {
+            close.complete(()).attempt.unsafeRunLater()
           } else {
-            fail.complete(wrapped).attempt.toIO.unsafeRunAsyncAndForget()
+            fail.complete(wrapped).attempt.unsafeRunLater()
           }
         })
       }
-    } yield (msgs.dequeue merge errStream, sink)
+    } yield scc
 
   jsPeer.on("connection", { conn: PeerJS.Connection =>
     handleConnection(conn)
       .flatMap(queue.enqueue1)
-      .toIO
-      .unsafeRunAsyncAndForget()
+      .unsafeRunLater()
   })
 
-  def connect(id: String): F[Peer.Duplex[F, ArrayBuffer]] = F.suspend {
-    val jsConn = jsPeer.connect(id)
-    handleConnection(jsConn)
+  def connect(id: String): F[Peer.Connection[F]] = F.suspend {
+    handleConnection(jsPeer.connect(id))
   }
 }
 
 object Peer {
-
-  type Sink1[F[_], A] = A => F[Unit]
-  type Duplex[F[_], A] = (Stream[F, A], Sink1[F, A])
+  class Connection[F[_]] private[Peer] (
+    jsc: PeerJS.Connection,
+    val messages: Stream[F, ArrayBuffer],
+    val waitForClose: F[Unit]
+  )(implicit F: Sync[F]) {
+    def send(a: ArrayBuffer): F[Unit] = F.delay(jsc.send(a))
+    def close: F[Unit] = F.delay(jsc.close())
+  }
 
   def apply[F[_]](implicit F: ConcurrentEffect[F]): F[Peer[F]] =
     for {
@@ -76,7 +86,7 @@ object Peer {
           if (!utils.pageIsReloading()) cb(Left(new Exception(err.toString)))
         })
       }
-      conns <- Queue.synchronous[F, Duplex[F, ArrayBuffer]]
+      conns <- Queue.synchronous[F, Connection[F]]
       peer  <- F.delay(new Peer(id, jsp, conns))
     } yield peer
 }

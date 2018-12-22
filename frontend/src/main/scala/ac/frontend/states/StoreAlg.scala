@@ -1,9 +1,7 @@
 package ac.frontend.states
 
-import scala.scalajs.js.typedarray.ArrayBuffer
-
 import ac.frontend.peering.Peer
-import ac.frontend.states.AppState.{NameEntry, User}
+import ac.frontend.states.AppState.{Defeat => _, Victory => _, _}
 import ac.game.cards.Card
 import ac.game.flow._
 import Notification._
@@ -16,18 +14,21 @@ import cats.implicits._
 import monocle.macros.GenLens
 import scala.concurrent.duration._
 
+import cats.data.OptionT
+import cats.effect.concurrent.Ref
+
 //noinspection TypeAnnotation
 trait StoreAlg[F[_]] { this: StoreBase[F] =>
   import implicits._
   val error = Cell(none[String])
   val app   = Cell[AppState](NameEntry)
   val game  = Cell[Progress](Progress.NotStarted)
-  val sendF = Cell(none[Peer.Sink1[F, ArrayBuffer]])
   val cards = Cell(Vector.empty[Card])
   val me    = Cell(none[User])
   val enemy = Cell(none[User])
   val locale = Cell[Lang](Lang.En)
   val myTurn  = Cell(false)
+  val peerConnection = Cell(none[Peer.Connection[F]])
 
   val peer: F[Peer[F]] = preload(Peer[F]).onError { case e: Exception =>
     // TODO better error types
@@ -35,6 +36,13 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   }
 
   val gameEvents = Events.handled[GameMessage] {
+    case KeepAlive => unit
+    case ConnectionRecovery(progressV, cardsV, myTurnV) =>
+      app.set(Playing) *>
+      game.set(progressV) *> cards.set(cardsV) *> myTurn.set(myTurnV)
+    case ConnectionRejected =>
+      peerConnection.set(none) *>
+        fail("This player is already connected to somebody else")
     case OpponentReady(other) =>
       enemy.set(other.some)
     case ConditionsSet(conds) =>
@@ -85,13 +93,25 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       }.start.void
   }
 
+  val lastEnemyHand = Ref.unsafe[F, Vector[Card]](Vector.empty)
 
   def send(gm: GameMessage): F[Unit] = {
-    sendF.get.flatMap {
+    peerConnection.get.flatMap {
       case None => error.set("Attempted to send data without a connection".some)
-      case Some(f) => f(gm.asBytes)
+      case Some(conn) => conn.send(gm.asBytes)
     }
   }
+
+  def performRecovery: F[Unit] =
+    app.get.flatMap {
+      case Playing =>
+        (game.get.map(Progress.state.modify(_.reverse)), lastEnemyHand.get, myTurn.get.map(!_))
+          .mapN(ConnectionRecovery).flatMap(send) *>
+          me.get.flatMap(_.traverse_(usr => send(OpponentReady(usr))))
+      case AwaitingConditions =>
+        OptionT(me.get).map(OpponentReady).semiflatMap(send).getOrElseF(unit)
+      case _ => unit
+    }
 
   def fail[A](s: String): F[A] =
     error.set(s.some) *> F.raiseError(new Exception(s))
@@ -104,4 +124,5 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   val implicits: implicits
 
   val unit = F.unit
+
 }

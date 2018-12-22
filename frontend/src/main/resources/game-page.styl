@@ -262,6 +262,30 @@ colors()
   &.enemy .card
     animation-name: anim-enemy
 
+
+.error-overlay
+  top: 0
+  left: 0
+  position: absolute
+  width: 100vw
+  height: 100vh
+  background-color: hsla(0, 0%, 20%, 0.5)
+  color: whitesmoke
+  display: flex
+  flex-direction: column
+  align-items center
+  justify-content: center
+  animation dim 2s ease-out 0s 1 normal forwards
+
+  span
+    padding-top: 8px
+
+  @keyframes dim
+    from
+      background-color: hsla(0, 0%, 20%, 0)
+    to
+      background-color: hsla(0, 0%, 10%, 0.8)
+
 anim(topStart)
   0%
     transform: translateX(-100%)

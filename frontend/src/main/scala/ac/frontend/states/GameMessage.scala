@@ -28,6 +28,9 @@ case class EngineNotification(n: Notification) extends GameMessage
 case class ConditionsSet(conds: GameConditions) extends GameMessage
 case class RemoteTurnIntent(ti: TurnIntent) extends GameMessage
 case class RemoteTurnRequest(cards: Vector[Card], rsc: Resources[NonNegInt]) extends GameMessage
+case object ConnectionRejected extends GameMessage
+case object KeepAlive extends GameMessage
+case class ConnectionRecovery(progress: Progress, cards: Vector[Card], myTurn: Boolean) extends GameMessage
 
 object GameMessage {
   private object boopickleInstances {

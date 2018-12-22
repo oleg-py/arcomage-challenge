@@ -21,6 +21,7 @@ import com.github.ghik.silencer.silent
     def send(data: ArrayBuffer): Unit = js.native
     def on[A](event: String, fn: js.Function1[A, Unit]): Unit = js.native
     def on(event: String, fn: js.Function0[Unit]): Unit = js.native
+    def close(): Unit = js.native
   }
 }
 
