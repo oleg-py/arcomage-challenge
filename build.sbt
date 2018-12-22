@@ -63,6 +63,7 @@ lazy val frontend = crossProject(JSPlatform)
       "me.shadaj" %%% "slinky-hot" % "0.5.1",
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
       "io.suzaku" %%% "boopickle" % "1.3.0",
+      "com.lihaoyi" %%% "upickle" % "0.7.1",
       "com.olegpy" %%% "shironeko-slinky" % "0.0.7"
     ),
 

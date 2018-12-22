@@ -1,7 +1,7 @@
 package ac.frontend.pages
 
 import ac.frontend.{Store, utils}
-import ac.frontend.actions.connect
+import ac.frontend.actions.{connect, settings}
 import ac.frontend.states.AppState.User
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
 import slinky.core.Component
@@ -10,12 +10,15 @@ import slinky.core.facade.ReactElement
 import slinky.web.html._
 import scala.scalajs.js.Dynamic.literal
 
+import ac.frontend.states.PersistentSettings
+import cats.syntax.apply._
 import ac.frontend.utils.gravatarUrl
+import monix.eval.Coeval
 
 
 @react class NameEntryPage extends Component {
   type Props = Unit
-  case class State(name: String = "", email: String = "")
+  case class State(name: String, email: String)
 
   private val DefaultAvatarType = "monsterid"
   private val DummyName = utils.names.pick()
@@ -30,7 +33,11 @@ import ac.frontend.utils.gravatarUrl
     }
   }
 
-  def initialState = State()
+  def initialState: State = {
+    val s = PersistentSettings[Coeval].readAll.value()
+    State(s.name, s.email)
+  }
+
   def render(): ReactElement = {
     div(className := "box")(
       div(className := "avatar-display")(
@@ -60,7 +67,8 @@ import ac.frontend.utils.gravatarUrl
           button(
             className := "button",
             onClick := { _ => Store.execS { implicit alg =>
-            connect(User(avatarName, avatarUrl))
+              settings.persistUser(state.name, state.email) *>
+              connect(User(avatarName, avatarUrl))
           }
           })("Enter a game")
         )

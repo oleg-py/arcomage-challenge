@@ -66,11 +66,7 @@ object connect {
                   .compile.drain.start
       } yield ()
 
-    for {
-      url  <- query.currentUrl[F]
-      guest = query.parseQueryString(url.search) contains ConnectionKey
-      _    <- if (guest) connectToUser(me) else host(me)
-    } yield ()
+    isGuest[F].flatMap(if (_) connectToUser(me) else host(me))
   }
 
   def preinitIfGuest[F[_]](implicit Store: StoreAlg[F]): F[Unit] = {

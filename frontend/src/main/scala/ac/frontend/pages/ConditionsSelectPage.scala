@@ -4,8 +4,9 @@ import ac.frontend.Store
 import ac.frontend.actions.connect
 import ac.frontend.components.PlayerDisplay
 import ac.frontend.states.AppState.User
-import ac.frontend.states.Taverns
+import ac.frontend.states.{PersistentSettings, Taverns}
 import eu.timepit.refined.api.Refined
+import monix.eval.Coeval
 import org.scalajs.dom.raw.HTMLSelectElement
 import slinky.core.{AttrPair, Component, StatelessComponent}
 import slinky.core.annotations.react
@@ -28,7 +29,10 @@ import slinky.web.html._
   type Props = Unit
   case class State(locationName: String, cards: Int)
 
-  def initialState: State = State(Taverns().head._1, 6)
+  def initialState: State = {
+    val s = PersistentSettings[Coeval].readAll.value()
+    State(s.tavern, s.cards)
+  }
 
   def render(): ReactElement = {
     val conds = Taverns().apply(state.locationName)
