@@ -19,7 +19,7 @@ Flood Water,0,3,For player w/ lowest wall|-1 dungeon|-2 tower
 New Equipment,7,1,
 Dwarven Miners,5,0,
 Forced Labor,8,2,
-Tremors,2,1,
+Tremors,2,1,-5 all walls|Play again
 Reinforced Wall,9,1,
 Secret Room,3,1,
 Crystal Rocks,1,2,
@@ -68,7 +68,7 @@ Lava Jewel,6,6,
 Phase Jewel,3,7,
 Dragon's Eye,7,6,
 Full Moon,3,9,
-Mad Cow Disease,0,8,
+Mad Cow Disease,0,8,-6 all recruits
 Faerie,1,8,
 Moody Goblins,2,8,
 Elven Scout,4,8,
