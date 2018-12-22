@@ -15,7 +15,7 @@ Collapse!,6,1,
 Mother Lode,4,0,"If quarry < enemy quarry|+2 quarry|else + 1 quarry"
 Big Wall,5,1,
 Copping the Tech,7,0,
-Flood Water,0,3,
+Flood Water,0,3,For player w/ lowest wall|-1 dungeon|-2 tower
 New Equipment,7,1,
 Dwarven Miners,5,0,
 Forced Labor,8,2,
@@ -33,7 +33,7 @@ Great Wall,5,2,
 Shift,3,3,Switch your wall|with enemy wall
 Rock Launcher,6,2,
 Dragon's Heart,7,2,
-Bag of Baubles,9,6,
+Bag of Baubles,9,6,if tower < enemy tower|+2 tower|else +1 tower
 Rainbow,0,7,
 Quartz,0,4,
 Amethyst,2,4,
