@@ -71,6 +71,9 @@ object connect {
           case other => other
         }
         _    <- Store.me.set(me.some)
+        // Wait for connection to arrive
+        _    <- Store.peerConnection.listen.unNone
+                  .take(1).compile.drain
         _    <- Store.send(OpponentReady(me))
         _    <- Store.myTurnIntents.listen
                   .map(RemoteTurnIntent)
