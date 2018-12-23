@@ -13,4 +13,5 @@ object AppState {
   case object Playing extends AppState
   case object Victory extends AppState
   case object Defeat extends AppState
+  case object Draw extends AppState
 }

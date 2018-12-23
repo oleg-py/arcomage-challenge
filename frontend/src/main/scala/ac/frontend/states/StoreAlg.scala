@@ -4,7 +4,7 @@ import ac.frontend.peering.Peer
 import ac.frontend.states.AppState.{Defeat => _, Victory => _, _}
 import ac.game.cards.Card
 import ac.game.flow._
-import Notification._
+import Notification.{Draw, _}
 import ac.frontend.i18n.Lang
 import ac.game.player.CardScope
 import cats.effect._
@@ -75,6 +75,8 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       app.set(AppState.Victory)
     case EngineNotification(Defeat) =>
       app.set(AppState.Defeat)
+    case EngineNotification(Draw) =>
+      app.set(AppState.Draw)
     case EngineNotification(TurnStart) =>
       myTurn.set(true)
     case EngineNotification(TurnEnd) =>
@@ -85,9 +87,7 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       )
     case msg => F.delay(println(msg))
   }
-  val myTurnIntents = Events.handled[TurnIntent] {
-    case ti => F.delay(println(ti))
-  }
+  val myTurnIntents = Events[TurnIntent]
 
   object animate {
     private[this] val cell = Cell(none[AnimatedCard])

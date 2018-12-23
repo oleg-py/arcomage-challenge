@@ -41,10 +41,11 @@ class Session[F[_]: Sync] private (
     state.get.map(s => conds.isVictory(s) || conds.isVictory(s.reverse))
 
   private def notifyEndgame: F[Unit] =
-    state.get.map(conds.isVictory).ifM(
-      p1.notify(Victory) *> p2.notify(Defeat),
-      p1.notify(Defeat) *> p2.notify(Victory)
-    )
+    state.get.map(conds.status).flatMap {
+      case Some(value) => p1.notify(value.asNotification) *>
+        p2.notify(value.inverse.asNotification)
+      case None => ().pure[F]
+    }
 
   private def turn(noIncome: Boolean = false) =
     state.update(CardScope.stats.modify(_.receiveIncome)).whenA(!noIncome) *>

@@ -35,7 +35,7 @@ object App extends Store.Container(
               div("Waiting for opponent to supply conditions")
             )
           )
-        case (v @ (Playing | Defeat | Victory), _, _) =>
+        case (Playing | Defeat | Victory | Draw, _, _) =>
             GameScreen()
         case _ =>
           div(className := "spinner-container")(
