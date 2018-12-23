@@ -44,6 +44,8 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
         case _        => Accepted
       }
     case KeepAlive => unit
+    case EngineNotification(Income) =>
+      timer.sleep(2.seconds)
     case ConnectionRecovery(progressV, cardsV, myTurnV) =>
       app.set(Playing) *>
       game.set(progressV) *> cards.set(cardsV) *> myTurn.set(myTurnV)
@@ -132,6 +134,6 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
   }
   val implicits: implicits
 
-  val unit = F.unit
+  def unit = F.unit
 
 }

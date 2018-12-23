@@ -27,6 +27,7 @@ object EndStatus {
 object Notification {
   case object TurnStart                                       extends Notification
   case object TurnEnd                                         extends Notification
+  case object Income                                          extends Notification
   case object GameStart                                       extends Notification
   case object Victory                                         extends Notification
   case object Defeat                                          extends Notification
