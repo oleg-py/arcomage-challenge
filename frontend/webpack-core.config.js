@@ -49,5 +49,8 @@ module.exports = {
     new CopyWebpackPlugin([
       { from: path.resolve(__dirname, "../../../../public") }
     ])
-  ]
+  ],
+  devServer: {
+    host: "0.0.0.0"
+  }
 }
