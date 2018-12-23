@@ -198,6 +198,7 @@ colors()
 .castles
   height: 450px
   display: flex
+  z-index: 50
   flex-direction: row
   align-items: flex-end
   .block
@@ -252,11 +253,12 @@ colors()
   text-shadow: 0 0 14px darkred, 0 0 8px darkred, 0 0 3px darkred
 
 .animation-overlay
-  margin-top: -660px
+  width: 1064px
+  height: 710px
   position: absolute
+  z-index: 75
   .card
     margin: 0 auto
-    top: 144px
     animation: anim-player 2.5s ease-in-out 0s 1 forwards
 
   &.enemy .card
@@ -264,6 +266,7 @@ colors()
 
 
 .error-overlay
+  z-index: 100
   top: 0
   left: 0
   position: absolute
@@ -288,7 +291,7 @@ colors()
 
 anim(topStart)
   0%
-    transform: translateX(-100%)
+    transform: translateX(-150%)
     top: topStart
     opacity: 1
   20%
@@ -300,12 +303,12 @@ anim(topStart)
     top: 300px
     opacity: 1
   100%
-    transform: translateX(100%)
-    top: 100px
+    transform: translateX(120%)
+    top: 20px
     opacity: 0.25
 
 @keyframes anim-player
   anim(420px)
 
 @keyframes anim-enemy
-  anim(100px)
+  anim(20px)
