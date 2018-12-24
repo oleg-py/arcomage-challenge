@@ -41,6 +41,7 @@ lazy val frontend = crossProject(JSPlatform)
       "gravatar-url"       -> "2.0.0",
       "clipboard"          -> "2.0.4",
       "react-spinners"     -> "0.4.7",
+      "rc-tabs"            -> "9.5.7",
     ),
 
     npmDevDependencies in Compile ++= Seq(
