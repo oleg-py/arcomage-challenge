@@ -4,7 +4,7 @@ import ac.frontend.Store
 import ac.frontend.actions.{connect, settings}
 import ac.frontend.components.PlayerDisplay
 import ac.frontend.states.AppState.User
-import ac.frontend.states.{PersistentSettings, Taverns}
+import ac.frontend.states.{PersistentSettings, GameConditionOptions}
 import eu.timepit.refined.api.Refined
 import monix.eval.Coeval
 import cats.syntax.apply._
@@ -36,7 +36,7 @@ import slinky.web.html._
   }
 
   def render(): ReactElement = {
-    val conds = Taverns().apply(state.locationName)
+    val conds = GameConditionOptions.taverns(state.locationName)
       .copy(handSize = Refined.unsafeApply(state.cards))
 
     div(
@@ -62,7 +62,7 @@ import slinky.web.html._
           setState(_.copy(locationName = value))
         }
       )(
-        Taverns().map { case (tavernName, _) =>
+        GameConditionOptions.taverns.map { case (tavernName, _) =>
           option(
             key := tavernName,
             value := tavernName

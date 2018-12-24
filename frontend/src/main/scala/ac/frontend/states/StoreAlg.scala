@@ -1,6 +1,5 @@
 package ac.frontend.states
 
-import ac.frontend.peering.Peer
 import ac.frontend.states.AppState.{Defeat => _, Victory => _, _}
 import ac.game.cards.Card
 import ac.game.flow._
@@ -14,6 +13,7 @@ import cats.implicits._
 import monocle.macros.GenLens
 import scala.concurrent.duration._
 
+import ac.frontend.facades.Peer
 import ac.frontend.states.RematchState._
 import cats.data.OptionT
 import cats.effect.concurrent.Ref

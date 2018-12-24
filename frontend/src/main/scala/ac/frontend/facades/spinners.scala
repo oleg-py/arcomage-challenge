@@ -1,4 +1,4 @@
-package ac.frontend.utils
+package ac.frontend.facades
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
@@ -8,22 +8,14 @@ import slinky.core.ExternalComponent
 import slinky.core.annotations.react
 
 
-@JSImport("react-spinners", JSImport.Default)
-@js.native
-@silent
-private[utils] object spinnersJS extends js.Object {
-  val CircleLoader: js.Object = js.native
-  val ScaleLoader: js.Object = js.native
-}
-
 object spinners {
   @react object CircleLoader extends ExternalComponent {
     case class Props(size: Int, color: js.UndefOr[String] = js.undefined)
-    val component = spinnersJS.CircleLoader
+    val component = internal.spinnersJS.CircleLoader
   }
 
   @react object ScaleLoader extends ExternalComponent {
     case class Props(height: Int, width: Int, margin: String, radius: Int)
-    val component = spinnersJS.ScaleLoader
+    val component = internal.spinnersJS.ScaleLoader
   }
 }

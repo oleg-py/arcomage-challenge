@@ -1,9 +1,9 @@
 package ac.frontend.pages
 
 import ac.frontend.components.PlayerDisplay
+import ac.frontend.facades.ClipboardJS
 import ac.frontend.states.AppState.User
 import ac.frontend.utils
-import ac.frontend.utils.ClipboardJS
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement

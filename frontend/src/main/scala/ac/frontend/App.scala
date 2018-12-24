@@ -8,7 +8,7 @@ import Store.implicits._
 import ac.frontend.components.EndgameNotice
 import ac.frontend.states.AppState._
 import ac.frontend.utils.StreamOps
-import ac.frontend.utils.spinners._
+import ac.frontend.facades.spinners._
 
 object App extends Store.Container(
   Store.app.listen

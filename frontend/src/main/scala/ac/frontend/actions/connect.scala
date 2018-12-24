@@ -1,6 +1,5 @@
 package ac.frontend.actions
 
-import ac.frontend.peering.Peer
 import ac.frontend.states.AppState._
 import ac.frontend.states._
 import cats.syntax.all._
@@ -10,6 +9,8 @@ import ac.game.GameConditions
 import cats.effect.Sync
 import fs2._
 import scala.concurrent.duration._
+
+import ac.frontend.facades.Peer
 
 object connect {
   private val ConnectionKey = "ac_game"

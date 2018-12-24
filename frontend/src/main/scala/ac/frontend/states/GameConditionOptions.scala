@@ -15,10 +15,29 @@ import eu.timepit.refined.cats.syntax._
 import eu.timepit.refined.auto._
 
 
-object Taverns {
-  def apply(): ListMap[String, GameConditions] = map
+object GameConditionOptions {
 
-  private val map = {
+  object presets {
+    val tutorial = GameConditions(6, Player(
+      Buildings(20, 10),
+      Resources.all(12),
+      Resources.all(2),
+    ), VictoryConditions(60, 100))
+
+    val fastGame = GameConditions(7, Player(
+      Buildings(25, 15),
+      Resources.all(16),
+      Resources.all(3),
+    ), VictoryConditions(120, 250))
+
+    val hardcore = GameConditions(6, Player(
+      Buildings(20, 50),
+      Resources.all(10),
+      Resources.all(1)
+    ), VictoryConditions(150, 500))
+  }
+
+  val taverns: ListMap[String, GameConditions] = {
     val std = GameConditions.testing
     val (valids, errors) = RawData.map(validate).partition(_.isValid)
 

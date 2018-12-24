@@ -3,7 +3,7 @@ package ac.frontend.components
 import ac.frontend.Store
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import ac.frontend.utils.spinners.CircleLoader
+import ac.frontend.facades.spinners.CircleLoader
 
 
 object ReconnectingOverlay extends Store.Container(

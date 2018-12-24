@@ -2,7 +2,7 @@ package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.states.AppState
-import ac.frontend.utils.spinners.ScaleLoader
+import ac.frontend.facades.spinners.ScaleLoader
 import ac.frontend.utils.StreamOps
 import ac.game.player.TurnMod
 import ac.game.player.TurnMod.ForceDiscard

@@ -1,4 +1,4 @@
-package ac.frontend.utils
+package ac.frontend.facades
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport

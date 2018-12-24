@@ -10,9 +10,9 @@ import slinky.core.facade.ReactElement
 import slinky.web.html._
 import scala.scalajs.js.Dynamic.literal
 
+import ac.frontend.facades.gravatarUrl
 import ac.frontend.states.PersistentSettings
 import cats.syntax.apply._
-import ac.frontend.utils.gravatarUrl
 import monix.eval.Coeval
 
 

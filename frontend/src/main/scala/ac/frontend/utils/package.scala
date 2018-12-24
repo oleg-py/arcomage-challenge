@@ -9,6 +9,8 @@ import fs2.Stream
 import org.scalajs.dom.window
 import scala.concurrent.duration._
 
+import monix.execution.annotations.UnsafeBecauseImpure
+
 
 
 package object utils {
@@ -24,8 +26,10 @@ package object utils {
       self.debounce(16.millis) // ~ 1 frame, skips intermediate spinner
   }
 
-  def isDevelopment: Boolean = LinkingInfo.developmentMode
+  @UnsafeBecauseImpure
+  def isDevelopment(): Boolean = LinkingInfo.developmentMode
 
+  @UnsafeBecauseImpure
   def pageIsReloading(): Boolean =
     window.performance.navigation.`type` != 0
 
@@ -43,6 +47,7 @@ package object utils {
   }
 
   implicit class EffectOps[F[_], A](private val self: F[A]) extends AnyVal {
+    @UnsafeBecauseImpure
     def unsafeRunLater()(implicit F: Effect[F]): Unit =
       F.runAsync(self) {
         case Right(_) => IO.unit

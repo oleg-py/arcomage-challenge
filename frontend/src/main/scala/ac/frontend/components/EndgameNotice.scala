@@ -7,7 +7,7 @@ import ac.frontend.states.AppState.{Defeat, Draw, Victory}
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import ac.frontend.utils.StreamOps
-import ac.frontend.utils.spinners.ScaleLoader
+import ac.frontend.facades.spinners.ScaleLoader
 
 object EndgameNotice extends Store.Container(
   Store.app.listen withLatestFrom

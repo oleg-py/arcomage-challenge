@@ -1,16 +1,17 @@
-package ac.frontend.peering
+package ac.frontend.facades
 
-import cats.effect._
-import cats.implicits._
 import scala.scalajs.js
 import scala.scalajs.js.typedarray.ArrayBuffer
 
+import ac.frontend.facades.internal.PeerJS
 import ac.frontend.utils
-import ac.frontend.utils.JSException
+import ac.frontend.utils.{EffectOps, JSException}
+import cats.effect._
 import cats.effect.concurrent.Deferred
+import cats.implicits._
 import fs2.Stream
 import fs2.concurrent.Queue
-import utils.EffectOps
+
 import java.util.concurrent.atomic.AtomicBoolean
 
 
