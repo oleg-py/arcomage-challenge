@@ -26,11 +26,11 @@ object App extends Store.Container(
           AwaitingGuestPeerPage(me, link)
         case (SupplyingConditions, Some(me), Some(enemy)) =>
           MatchmakingPage(me, enemy)(
-            ConditionsSelectPage()
+            ConditionsSelectPage().withKey("csp")
           )
         case (AwaitingConditions, Some(me), Some(enemy)) =>
           MatchmakingPage(me, enemy)(
-            div(className := "conditions-waiting-notice")(
+            div(key := "waiting-notice", className := "conditions-waiting-notice")(
               div(className := "spinner")(CircleLoader(64)),
               div("Waiting for opponent to supply conditions")
             )
