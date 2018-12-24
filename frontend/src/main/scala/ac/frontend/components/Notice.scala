@@ -16,12 +16,12 @@ object Notice extends Store.Container(
     .withLatestFrom(Store.app.listen)
     .withLatestFrom(Store.game.listen.map(_.state.turnMods.headOption))
     .frameDebounced
-    .cons1((false, false, AppState.Playing, None))
+    .cons1((false, true, AppState.Playing, None))
 ) {
   def render(a: (Boolean, Boolean, AppState, Option[TurnMod])): ReactElement = {
     val (myTurn, isAnimating, appState, turnMod) = a
     val isEndgame = appState match {
-      case AppState.Victory | AppState.Defeat => true
+      case AppState.Victory | AppState.Defeat | AppState.Draw => true
       case _ => false
     }
     div(className := "turn-status") {

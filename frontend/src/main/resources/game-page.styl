@@ -28,7 +28,6 @@ maxCards  = 7
   flex-grow: 10
   display: flex
   flex-direction: column
-  pointer-events: none
 
 .card-history
   position: absolute
@@ -133,9 +132,13 @@ colors()
   background-image: url("./card-fill4.png")
   font-size: 10pt
   colors()
+  cursor: pointer
+  & > *
+    cursor: inherit
 
   &.disabled
     opacity: 0.5
+    cursor: not-allowed;
 
   label
     text-align: center

@@ -55,7 +55,7 @@ lazy val frontend = crossProject(JSPlatform)
       "webpack-merge"       -> "4.1.2",
       "stylus"              -> "0.54.5",
       "papaparse"           -> "4.6.0"
-),
+    ),
 
     resolvers += Resolver.sonatypeRepo("snapshots"),
 
@@ -79,6 +79,19 @@ lazy val frontend = crossProject(JSPlatform)
 
     webpackDevServerExtraArgs in fastOptJS := Seq("--inline", "--hot"),
     webpackBundlingMode in fastOptJS := BundlingMode.LibraryOnly(),
+
+    cleanFiles := {
+      def recExclude(names: List[String], file: File): Seq[File] = names match {
+        case Nil => Seq()
+        case n :: ns => file.glob("*").flatMap {
+          case f if f.name startsWith n =>
+            recExclude(ns, f)
+          case f => Seq(f)
+        }.get
+      }
+      recExclude(List("scala-", "scalajs-bundler", "main", "node_modules"), target.value)
+    },
+
   )
 
 lazy val console = crossProject(JVMPlatform)

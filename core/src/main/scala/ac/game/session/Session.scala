@@ -48,8 +48,8 @@ class Session[F[_]: Sync] private (
     }
 
   private def turn(noIncome: Boolean = false) =
-    state.update(CardScope.stats.modify(_.receiveIncome)).whenA(!noIncome) *>
-    List(p1, p2).traverse_(_ notify Income) *>
+    state.update(CardScope.stats.modify(_.receiveIncome)).unlessA(noIncome) *>
+    List(p1, p2).traverse_(_ notify Income).unlessA(noIncome) *>
     notifyResources *> isEndgame.ifM(
       notifyEndgame,
       p1.notify(TurnStart) *>

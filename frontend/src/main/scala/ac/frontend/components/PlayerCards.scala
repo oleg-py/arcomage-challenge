@@ -8,7 +8,6 @@ import ac.game.cards.Card
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.NonNegInt
 import org.scalajs.dom.MouseEvent
-
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
@@ -40,7 +39,6 @@ import slinky.web.html._
 
   def render(): ReactElement = div(
     className := "hand",
-    onContextMenu := { _.preventDefault() }
   )(
     props.cards.zipWithIndex.map { case (card, i) =>
       CardDisplay(

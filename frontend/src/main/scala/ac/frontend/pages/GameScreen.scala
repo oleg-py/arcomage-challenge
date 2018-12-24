@@ -2,7 +2,7 @@ package ac.frontend.pages
 
 import ac.frontend.Store
 import slinky.core.facade.ReactElement
-import slinky.web.html.{className, div}
+import slinky.web.html.{className, div, onContextMenu}
 import ac.frontend.utils.StreamOps
 import Store.implicits._
 import ac.frontend.components._
@@ -28,7 +28,7 @@ object GameScreen extends Store.Container(
   def render(a: (Progress, User, User, Vector[Card], Lang, Boolean)): ReactElement = {
     val (Progress(state, conds), me, enemy, cards, lang, canMove) = a
     val maxRes = conds.resources
-    div(className := "field")(
+    div(className := "field", onContextMenu := { _.preventDefault() })(
       div(className := "game-screen")(
         div(className := "battlefield")(
           div(className := "stats mine")(
