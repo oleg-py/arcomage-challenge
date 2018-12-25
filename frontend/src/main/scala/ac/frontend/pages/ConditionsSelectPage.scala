@@ -2,92 +2,115 @@ package ac.frontend.pages
 
 import ac.frontend.Store
 import ac.frontend.actions.{connect, settings}
-import ac.frontend.components.PlayerDisplay
-import ac.frontend.states.AppState.User
-import ac.frontend.states.{PersistentSettings, GameConditionOptions}
-import eu.timepit.refined.api.Refined
+import ac.frontend.facades.tabs._
+import ac.frontend.states.ConditionsChoice.{FastGame, Hardcore, Preset, PresetMode, Tavern, Tutorial}
+import ac.frontend.states.{ConditionsChoice, GameConditionOptions, PersistentSettings}
 import monix.eval.Coeval
-import cats.syntax.apply._
+import cats.implicits._
 import org.scalajs.dom.raw.HTMLSelectElement
-import slinky.core.{AttrPair, Component, StatelessComponent}
+import slinky.core.Component
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
+import monocle.macros.syntax.lens._
 
-@react class MatchmakingPage extends StatelessComponent {
-  case class Props(me: User, enemy: User, children: ReactElement*)
-
-  def render(): ReactElement = {
-    div(className := "box wide")(
-      PlayerDisplay(props.me),
-      props.children,
-      PlayerDisplay(props.enemy)
-    )
-  }
-}
-
+/*_*/
 @react class ConditionsSelectPage extends Component {
   type Props = Unit
-  case class State(locationName: String, cards: Int, buttonDisabled: Boolean = false)
+  case class State(cc: ConditionsChoice, buttonDisabled: Boolean = false)
 
   def initialState: State = {
-    val s = PersistentSettings[Coeval].readAll.value()
-    State(s.tavern, s.cards)
+    State(PersistentSettings[Coeval].readAll.value().conditionsChoice)
   }
 
-  def render(): ReactElement = {
-    val conds = GameConditionOptions.taverns(state.locationName)
-      .copy(handSize = Refined.unsafeApply(state.cards))
-
-    div(
-      div(
-        s"Cards: ",
-        select(
-          (value := state.cards.toString).asInstanceOf[AttrPair[select.tag.type]],
-          onChange := { e =>
-            val value = e.target.asInstanceOf[HTMLSelectElement].value.toInt
-            setState(_.copy(cards = value))
-          }
-        )(
-          option(value := "5")("5"),
-          option(value := "6")("6"),
-          option(value := "7")("7")
-        )
-      ),
-
-      select(
-        (value := state.locationName).asInstanceOf[AttrPair[select.tag.type]],
-        onChange := { e =>
-          val value = e.target.asInstanceOf[HTMLSelectElement].value
-          setState(_.copy(locationName = value))
-        }
-      )(
-        GameConditionOptions.taverns.map { case (tavernName, _) =>
-          option(
-            key := tavernName,
-            value := tavernName
-          )(tavernName)
-        }
-      ),
-      div(s"Tower to win: ${conds.victoryConditions.tower}"),
-      div(s"Resources to win: ${conds.victoryConditions.resources}"),
-      hr(),
-      div(s"Tower: ${conds.initialStats.buildings.tower.value}"),
-      div(s"Wall: ${conds.initialStats.buildings.wall.value}"),
-      div(s"Income: ${conds.initialStats.income.bricks.value}"),
-      div(s"Resources: ${conds.initialStats.resources.bricks.value}"),
-      div(className := "button-container-right")(
-        button(
-          className := "button",
-          disabled := state.buttonDisabled,
-          onClick := {() =>
-            this.setState(_.copy(buttonDisabled = true))
-            Store.execS { implicit alg =>
-            settings.persistConditions(state.locationName, state.cards) *>
-            connect.supplyConditions(conds)
-          }}
-        )(s"Confirm")
-      ),
+  private def presetInput(p: Preset) = {
+    input(
+      `type` := "radio",
+      name := "quick-preset",
+      value := p.toString,
+      checked := state.cc.preset == p,
+      onChange := { () => setState(_.lens(_.cc.preset).set(p)) }
     )
   }
+
+  def render(): ReactElement = div(
+    Tabs(
+      activeKey = state.cc.mode match {
+        case ConditionsChoice.PresetMode => "qp"
+        case ConditionsChoice.Tavern => "mm7p"
+      },
+      renderTabBar = () => InkTabBar(
+        onTabClick = { (key, _) =>
+          setState(_.lens(_.cc.mode).set(key match {
+            case "qp" => PresetMode
+            case "mm7p" => Tavern
+          }))
+        }
+      ),
+      renderTabContent = () => TabContent(),
+    )(
+      TabPane(tab = "Quick Presets").withKey("qp")(
+        div(className := "quick-presets-select")(
+          label(
+            presetInput(FastGame),
+            dl(
+              dt("Fast game"),
+              dd("Increased resource income and maximum cards for quick start"),
+            )
+          ),
+          label(
+            presetInput(Tutorial),
+            dl(
+              dt("Tutorial"),
+              dd("Easy and short game mode for teaching newcomers")
+            )
+          ),
+          label(
+            presetInput(Hardcore),
+            dl(
+              dt("Hardcore"),
+              dd("Slow-paced game, perfect for tie breakers")
+            )
+          ),
+        )
+      ),
+      TabPane(tab = "MM7 Presets").withKey("mm7p")(
+        div(className := "taverns")(
+          p("Select a city to play a game, classic style:"),
+          select(
+            className := "tavern-select",
+            value := state.cc.tavern,
+            onChange := { e =>
+              val value = e.target.asInstanceOf[HTMLSelectElement].value
+              setState(_.lens(_.cc.tavern).set(value))
+            }
+          )(
+            GameConditionOptions.taverns.map { case (tavernName, _) =>
+              option(
+                key := tavernName,
+                value := tavernName
+              )(tavernName)
+            }
+          ),
+        )
+      ),
+      TabPane(tab = "Custom").withKey("cp")(
+        div(className := "custom-conditions")(
+          "This section is in development"
+        )
+      ),
+    ),
+    div(className := "button-container-right")(
+      button(
+        className := "button",
+        disabled := state.buttonDisabled || state.cc.pick().isEmpty,
+        onClick := {() =>
+          this.setState(_.copy(buttonDisabled = true))
+          Store.execS { implicit alg =>
+            settings.persistConditions(_ => state.cc) *>
+            state.cc.pick().traverse_(connect.supplyConditions(_))
+          }}
+      )(s"Confirm")
+    ),
+  )
 }

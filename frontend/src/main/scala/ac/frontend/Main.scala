@@ -6,6 +6,7 @@ import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
 import ac.frontend.actions.{connect, matches}
+import ac.frontend.facades.internal.tabsJS
 import cats.syntax.all._
 import cats.effect._
 import monix.eval.{Task, TaskApp}
@@ -39,6 +40,7 @@ object Main extends TaskApp {
 
   def run(args: List[String]): Task[ExitCode] = Task.defer {
     locally(IndexCSS)
+    locally(tabsJS.Stylesheet)
     if (LinkingInfo.developmentMode) hot.initialize()
     val root = document.getElementById("root")
     ReactDOM.render(ErrorDisplay(App()), root)

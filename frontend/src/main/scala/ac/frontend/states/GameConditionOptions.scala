@@ -4,7 +4,6 @@ import scala.collection.immutable.ListMap
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
-import ac.frontend.utils
 import ac.game.{GameConditions, Resources, VictoryConditions}
 import ac.game.player.{Buildings, Player}
 import cats.data.Validated.{Invalid, Valid}
@@ -31,13 +30,13 @@ object GameConditionOptions {
     ), VictoryConditions(120, 250))
 
     val hardcore = GameConditions(6, Player(
-      Buildings(20, 50),
-      Resources.all(10),
+      Buildings(30, 50),
+      Resources.all(20),
       Resources.all(1)
     ), VictoryConditions(150, 500))
   }
 
-  val taverns: ListMap[String, GameConditions] = {
+  def taverns: ListMap[String, GameConditions] = {
     val std = GameConditions.testing
     val (valids, errors) = RawData.map(validate).partition(_.isValid)
 
@@ -58,14 +57,6 @@ object GameConditionOptions {
           VictoryConditions(win_tower, win_resource)
         )
     }
-    if (utils.isDevelopment) {
-      entries.push(
-        "DEV: QuickDeath" -> GameConditions.initialStats.modify(
-          Player.buildings.set(Buildings(1, 0)) andThen
-          Player.resources.set(Resources.all(99))
-        )(std)
-      )
-    }
     ListMap(entries: _*)
   }
 
@@ -82,6 +73,7 @@ object GameConditionOptions {
     def win_tower: Int
     def win_resource: Int
   }
+
   @JSImport("resources/taverns.csv", JSImport.Namespace)
   @js.native
   private object RawData extends js.Array[Entry]

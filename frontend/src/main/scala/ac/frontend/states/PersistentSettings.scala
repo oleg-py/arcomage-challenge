@@ -21,8 +21,7 @@ object PersistentSettings {
   @Lenses case class Repr(
     name: String = "",
     email: String = "",
-    tavern: String = "Harmondale",
-    cards: Int = 6
+    conditionsChoice: ConditionsChoice = ConditionsChoice(),
   )
 
   object Repr {
@@ -44,7 +43,7 @@ object PersistentSettings {
   }
 
   def apply[F[_]](implicit F: Sync[F]): PersistentSettings[F] = {
-    if (utils.isDevelopment) {
+    if (utils.isDevelopment()) {
       connect.isGuest[Coeval].value().fold(
         forLocalStorage[F]("arcomage-guest-dev"),
         forLocalStorage[F]("arcomage-host-dev")
