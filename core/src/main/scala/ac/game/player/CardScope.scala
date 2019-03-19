@@ -2,6 +2,7 @@ package ac.game.player
 
 import ac.game.Resources
 import ac.game.cards.Card
+import cats.Endo
 import monocle.macros.Lenses
 import eu.timepit.refined.auto._
 
@@ -30,4 +31,6 @@ object CardScope {
 
     CardScope(dummyPlayer, dummyPlayer, Vector())
   }
+
+  def payCost(c: Card): Endo[CardScope] = stats.modify(_ addResources -c.cost)
 }

@@ -8,6 +8,12 @@ import eu.timepit.refined.types.numeric.NonNegInt
 sealed trait TurnIntent extends Product with Serializable {
   import TurnIntent._
 
+  def idx: NonNegInt
+  def isDiscard: Boolean = this match {
+    case Discard(_) => true
+    case Play(_) => false
+  }
+
   def canPlay(hand: Vector[Card], rsc: Resources[NonNegInt]): Boolean = this match {
     case Discard(idx) =>
       idx.value < hand.length && (hand.forall(!_.discardable) || hand(idx.value).discardable)

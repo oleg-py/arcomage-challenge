@@ -1,9 +1,12 @@
 package ac.game.session
 
 import ac.game.cards.Cards
-import ac.game.flow._, TurnIntent._, Notification._
+import ac.game.flow._
+import TurnIntent._
+import Notification._
 import ac.game.player.CardScope
 import ac.game.{GameConditions, VictoryConditions}
+import cats.data.OptionT
 import cats.effect.Sync
 import cats.effect.concurrent.Ref
 import cats.implicits._
@@ -30,63 +33,46 @@ class Session[F[_]: Sync] private (
       }
     } yield checked
 
-  private def notifyResources: F[Unit] =
+  private val notifyResources: F[Unit] =
     for {
       gs <- state.get
       _ <- p1.notify(ResourceUpdate(gs))
       _ <- p2.notify(ResourceUpdate(gs.reverse))
     } yield ()
 
-  private def isEndgame: F[Boolean] =
-    state.get.map(s => conds.isVictory(s) || conds.isVictory(s.reverse))
-
-  private def notifyEndgame: F[Unit] =
-    state.get.map(conds.status).flatMap {
-      case Some(value) => p1.notify(value.asNotification) *>
-        p2.notify(value.inverse.asNotification)
-      case None => ().pure[F]
+  private val endGameOr =
+    OptionT(state.get.map(conds.status))
+    .semiflatMap { evt =>
+      p1.notify(evt) *> p2.notify(evt.inverse)
     }
+    .getOrElseF _
 
-  private def turn(noIncome: Boolean = false) =
+  private val performTurn: F[Unit] =
+    for {
+      ti   <- getIntent()
+      card <- cards1.modify(_.pull(ti.idx.value).swap)
+      _    <- state.update(CardScope.payCost(card)) unlessA ti.isDiscard
+      _    <- p2.notify(EnemyPlayed(card, ti.isDiscard))
+      _    <- p1.notify(CardPlayed(ti.idx, ti.isDiscard))
+      _    <- state.update(card) unlessA ti.isDiscard
+      _    <- cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify)
+    } yield ()
+
+  private def step(noIncome: Boolean = false): F[Unit] =
     state.update(CardScope.stats.modify(_.receiveIncome)).unlessA(noIncome) *>
     List(p1, p2).traverse_(_ notify Income).unlessA(noIncome) *>
-    notifyResources *> isEndgame.ifM(
-      notifyEndgame,
-      p1.notify(TurnStart) *>
-      getIntent().flatMap {
-        case Discard(idx) =>
-          cards1.modify(_.pull(idx.value).swap)
-            .flatMap { card =>
-              p2.notify(EnemyPlayed(card, discarded = true)) *>
-              p1.notify(CardPlayed(idx, discarded = true)) *>
-              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify)
-            }
-        case Play(idx) =>
-          cards1.modify(_.pull(idx.value).swap)
-            .flatMap { card =>
-              state.update(CardScope.stats.modify(_.addResources(-card.cost))) *>
-              p2.notify(EnemyPlayed(card, discarded = false)) *>
-              p1.notify(CardPlayed(idx, discarded = false)) *>
-              state.update(card) *>
-              cards1.get.map(_.hand).map(HandUpdated).flatMap(p1.notify)
-            }
-      } *> notifyResources
+    notifyResources *>
+    endGameOr(p1.notify(TurnStart) *> performTurn *> notifyResources)
+
+  private def continuation: F[Unit] = endGameOr(
+    state.get.map(_.passTurn).ifM(
+      p1.notify(TurnEnd) *> swap.flatMap(s => s.step() *> s.continuation),
+      state.update(CardScope.turnMods.modify(_.drop(1))) *> step(true) *> continuation
     )
-
-  private def continuation: F[Unit] =
-    isEndgame
-      .ifM(
-        turn(),
-        state.get
-          .map(!_.passTurn)
-          .ifM(
-            state.update(CardScope.turnMods.modify(_.drop(1))) *> turn(true) *> continuation,
-            p1.notify(TurnEnd) *> swap.flatMap(s => s.turn() *> s.continuation)
-          )
-      )
+  )
 
 
-  private def loop = turn(noIncome = true) *> continuation
+  private def loop = step(noIncome = true) *> continuation
 
   private def swap = state.update(_.reverse)
     .as(new Session(p2, p1, cards2, cards1, state, conds))

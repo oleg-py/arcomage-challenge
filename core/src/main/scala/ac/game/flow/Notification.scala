@@ -1,5 +1,7 @@
 package ac.game.flow
 
+import scala.language.implicitConversions
+
 import ac.game.cards.Card
 import ac.game.flow.Notification._
 import ac.game.player.CardScope
@@ -16,11 +18,10 @@ case class EndStatus(data: EndStatus.C) {
     case Inr(Inr(Inl(Draw))) => this
     case Inr(Inr(Inr(cnil))) => cnil.impossible
   }
-
-  def asNotification: Notification = data.unify
 }
 
 object EndStatus {
+  implicit def asNotification(es: EndStatus): Notification = es.data.unify
   type C = Victory.type :+: Defeat.type :+: Draw.type :+: CNil
 }
 
