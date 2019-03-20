@@ -3,14 +3,12 @@ package ac.frontend.pages
 import ac.frontend.{Store, utils}
 import ac.frontend.actions.{connect, settings}
 import ac.frontend.states.AppState.User
+import ac.frontend.states.PersistentSettings
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
 import slinky.core.Component
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import scala.scalajs.js.Dynamic.literal
-
-import ac.frontend.states.PersistentSettings
 import cats.syntax.apply._
 import monix.eval.Coeval
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.{^ => gravatarUrl}

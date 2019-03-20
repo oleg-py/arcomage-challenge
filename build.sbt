@@ -64,6 +64,7 @@ lazy val frontend = crossProject(JSPlatform)
     libraryDependencies ++= Seq(
       ScalablyTyped.A.antd,
       ScalablyTyped.G.`gravatar-url`,
+      ScalablyTyped.C.`clipboard`,
       "me.shadaj" %%% "slinky-web" % "0.5.1",
       "me.shadaj" %%% "slinky-hot" % "0.5.1",
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
