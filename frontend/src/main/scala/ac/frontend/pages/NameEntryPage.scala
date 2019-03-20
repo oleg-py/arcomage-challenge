@@ -13,7 +13,9 @@ import cats.syntax.apply._
 import monix.eval.Coeval
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.{^ => gravatarUrl}
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.GravatarUrlNs.Options
-import ac.frontend.facades.AntDesign.{Icon, Input, Button}
+import ac.frontend.facades.AntDesign.{Avatar, Button, Icon, Input}
+import typings.antdLib.antdLibStrings
+import typings.antdLib.libAvatarMod.AvatarProps
 
 @react class NameEntryPage extends Component {
   type Props = Unit
@@ -39,9 +41,7 @@ import ac.frontend.facades.AntDesign.{Icon, Input, Button}
 
   def render(): ReactElement = {
     div(className := "box")(
-      div(className := "avatar-display")(
-        img(src := avatarUrl)
-      ),
+      Avatar(AvatarProps(size = 128, src = avatarUrl, shape = antdLibStrings.square)),
       div(className := "input-container")(
         Input(
           prefix = Icon("user"),

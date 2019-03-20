@@ -5,12 +5,12 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
 import org.scalajs.dom.Event
-import slinky.core.{BuildingComponent, ExternalComponent}
+import slinky.core.ExternalComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import typings.antdLib.{antdLibComponents => antd}
 
-//xnoinspection TypeAnnotation
+//noinspection TypeAnnotation
 object AntDesign {
 
   @JSImport("antd/dist/antd.css", JSImport.Default)
@@ -53,5 +53,15 @@ object AntDesign {
       className: js.UndefOr[String] = js.undefined
     )
     override val component = antd.Button
+  }
+
+  @react object Avatar extends ExternalComponent {
+    type Props = antd.AvatarProps
+    override val component = antd.Avatar
+  }
+
+  @react object Tag extends ExternalComponent {
+    type Props = antd.TagProps
+    override val component = antd.Tag
   }
 }
