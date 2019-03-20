@@ -13,7 +13,7 @@ import cats.syntax.apply._
 import monix.eval.Coeval
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.{^ => gravatarUrl}
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.GravatarUrlNs.Options
-
+import ac.frontend.facades.AntDesign.{Icon, Input, Button}
 
 @react class NameEntryPage extends Component {
   type Props = Unit
@@ -43,32 +43,27 @@ import typings.gravatarDashUrlLib.gravatarDashUrlMod.GravatarUrlNs.Options
         img(src := avatarUrl)
       ),
       div(className := "input-container")(
-        label(
-          div("Nickname"),
-          input(
-            placeholder := DummyName,
-            value := state.name,
-            onChange := { e: Event =>
-              val target = e.target.asInstanceOf[HTMLInputElement]
-              setState(_.copy(name = target.value))
-            })
-        ),
-        label(
-          div("Email (optional - for avatar only)"),
-          input(
-            value := state.email,
-            onChange := { e: Event =>
-              val target = e.target.asInstanceOf[HTMLInputElement]
-              setState(_.copy(email = target.value))
-            })
-        ),
+        Input(
+          prefix = Icon("user"),
+          placeholder = DummyName,
+          value = state.name,
+          onChange = { e: Event =>
+            val target = e.target.asInstanceOf[HTMLInputElement]
+            setState(_.copy(name = target.value))
+          }),
+        Input(
+          prefix = Icon("mail"),
+          placeholder = "Email (for gravatar only)",
+          value = state.email,
+          onChange = { e: Event =>
+            val target = e.target.asInstanceOf[HTMLInputElement]
+            setState(_.copy(email = target.value))
+          }),
         div(className := "button-container-right")(
-          button(
-            className := "button",
-            onClick := { _ => Store.execS { implicit alg =>
+          Button(
+            onClick = () => Store.execS { implicit alg =>
               settings.persistUser(state.name, state.email) *>
               connect(User(avatarName, avatarUrl))
-          }
           })("Enter a game")
         )
       ),

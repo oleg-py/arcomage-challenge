@@ -6,7 +6,9 @@ import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
 import ac.frontend.actions.{connect, matches}
+import ac.frontend.facades.AntDesign
 import ac.frontend.facades.internal.tabsJS
+import ac.frontend.utils.bundle
 import cats.syntax.all._
 import cats.effect._
 import monix.eval.{Task, TaskApp}
@@ -17,8 +19,7 @@ import slinky.hot
 import org.scalajs.dom.document
 
 @JSImport("resources/index.styl", JSImport.Default)
-@js.native
-object IndexCSS extends js.Object
+@js.native object IndexCSS extends js.Any
 
 
 @JSExportTopLevel("entrypoint")
@@ -39,8 +40,8 @@ object Main extends TaskApp {
   }
 
   def run(args: List[String]): Task[ExitCode] = Task.defer {
-    locally(IndexCSS)
-    locally(tabsJS.Stylesheet)
+    bundle(IndexCSS, AntDesign.CSS, tabsJS.Stylesheet)
+
     if (LinkingInfo.developmentMode) hot.initialize()
     val root = document.getElementById("root")
     ReactDOM.render(ErrorDisplay(App()), root)

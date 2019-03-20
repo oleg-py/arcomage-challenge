@@ -3,6 +3,8 @@ import sbtcrossproject.Platform
 import java.lang.Runtime.getRuntime
 
 name := "arcomage-challenge"
+onLoad in Global := (onLoad in Global).value
+  .andThen(Command.process("project frontend", _))
 
 inThisBuild(Seq(
   version := "0.0.1",
