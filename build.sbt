@@ -34,14 +34,15 @@ lazy val frontend = crossProject(JSPlatform)
     addCommandAlias("wp", ";compile;fastOptJS::startWebpackDevServer;~fastOptJS"),
     addCommandAlias("nowp", "fastOptJS::stopWebpackDevServer"),
     npmDependencies in Compile ++= Seq(
+      "antd"               -> "3.15.1",
       "react"              -> "16.4.2",
       "react-dom"          -> "16.4.2",
       "react-proxy"        -> "1.1.8",
       "peerjs"             -> "0.3.16",
       "gravatar-url"       -> "2.0.0",
       "clipboard"          -> "2.0.4",
-      "react-spinners"     -> "0.4.7",
-      "rc-tabs"            -> "9.5.7",
+      "react-spinners"     -> "0.4.7", // TODO: replace with antd
+      "rc-tabs"            -> "9.5.7", // TODO: replace with antd
     ),
 
     npmDevDependencies in Compile ++= Seq(
@@ -58,8 +59,11 @@ lazy val frontend = crossProject(JSPlatform)
     ),
 
     resolvers += Resolver.sonatypeRepo("snapshots"),
+    resolvers += Resolver.bintrayRepo("oyvindberg", "ScalablyTyped"),
 
     libraryDependencies ++= Seq(
+      ScalablyTyped.A.antd,
+      ScalablyTyped.G.`gravatar-url`,
       "me.shadaj" %%% "slinky-web" % "0.5.1",
       "me.shadaj" %%% "slinky-hot" % "0.5.1",
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
@@ -134,5 +138,4 @@ def plugins = Seq(
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
-  addCompilerPlugin("org.scalameta" % "paradise" % "3.0.0-M11" cross CrossVersion.full),
 )

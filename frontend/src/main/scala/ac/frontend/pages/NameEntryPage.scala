@@ -10,10 +10,11 @@ import slinky.core.facade.ReactElement
 import slinky.web.html._
 import scala.scalajs.js.Dynamic.literal
 
-import ac.frontend.facades.gravatarUrl
 import ac.frontend.states.PersistentSettings
 import cats.syntax.apply._
 import monix.eval.Coeval
+import typings.gravatarDashUrlLib.gravatarDashUrlMod.{^ => gravatarUrl}
+import typings.gravatarDashUrlLib.gravatarDashUrlMod.GravatarUrlNs.Options
 
 
 @react class NameEntryPage extends Component {
@@ -27,7 +28,7 @@ import monix.eval.Coeval
 
   private def avatarUrl = {
     if (state.email contains "@") {
-      gravatarUrl(state.email, literal(size = 128, default = DefaultAvatarType))
+      gravatarUrl(state.email, Options(size = 128, default = DefaultAvatarType))
     } else {
       s"https://gravatar.com/avatar/${avatarName.hashCode.toHexString}?size=128&default=$DefaultAvatarType"
     }

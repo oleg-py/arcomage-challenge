@@ -1,6 +1,6 @@
 package ac.frontend
 
-import scala.scalajs.LinkingInfo
+import scala.scalajs.{LinkingInfo, js}
 
 import cats.data.Nested
 import cats.effect._
@@ -14,6 +14,11 @@ import monix.execution.annotations.UnsafeBecauseImpure
 
 
 package object utils {
+  implicit class JSCastOps(private val self: js.Any) extends AnyVal {
+    def jsCast[A <: js.Any]: A = self.asInstanceOf[A]
+  }
+
+
   implicit final class StreamOps[F[_], A](private val self: Stream[F, A]) {
     def withLatestFrom[B](other: Stream[F, B])(implicit c: Concat[A, B], F: Concurrent[F]): Stream[F, c.Out] =
       Nested(self.holdOption).product(Nested(other.holdOption)).value
