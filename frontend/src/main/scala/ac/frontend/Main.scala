@@ -7,7 +7,7 @@ import scala.scalajs.LinkingInfo
 
 import ac.frontend.actions.{connect, matches}
 import ac.frontend.facades.AntDesign
-import ac.frontend.facades.internal.tabsJS
+import ac.frontend.facades.AntDesign
 import ac.frontend.utils.bundle
 import cats.syntax.all._
 import cats.effect._
@@ -40,7 +40,7 @@ object Main extends TaskApp {
   }
 
   def run(args: List[String]): Task[ExitCode] = Task.defer {
-    bundle(IndexCSS, AntDesign.CSS, tabsJS.Stylesheet)
+    bundle(IndexCSS, AntDesign.CSS)
 
     if (LinkingInfo.developmentMode) hot.initialize()
     val root = document.getElementById("root")

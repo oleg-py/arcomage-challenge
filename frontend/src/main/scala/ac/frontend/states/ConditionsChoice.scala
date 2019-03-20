@@ -26,10 +26,18 @@ case class ConditionsChoice (
 object ConditionsChoice {
   implicit val pickler: ReadWriter[ConditionsChoice] = macroRW[ConditionsChoice]
 
-  sealed trait Mode
+  sealed trait Mode {
+    def key: String = this match {
+      case PresetMode => "quick-pattern"
+      case Tavern => "mm7-pattern"
+    }
+  }
   case object PresetMode extends Mode
   case object Tavern extends Mode
   object Mode {
+    def ofKey(k: String): Mode = List(PresetMode, Tavern)
+      .find(_.key == k)
+      .getOrElse(sys.error(s"Unexkected key: $k"))
     implicit val pickler: ReadWriter[Mode] = macroRW[Mode]
   }
 

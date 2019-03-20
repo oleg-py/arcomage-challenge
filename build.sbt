@@ -8,7 +8,7 @@ onLoad in Global := (onLoad in Global).value
 
 inThisBuild(Seq(
   version := "0.0.1",
-  scalaVersion := "2.12.7",
+  scalaVersion := "2.12.8",
 ))
 
 val SinglePlatform: CrossType = new CrossType {
@@ -44,7 +44,6 @@ lazy val frontend = crossProject(JSPlatform)
       "gravatar-url"       -> "2.0.0",
       "clipboard"          -> "2.0.4",
       "react-spinners"     -> "0.4.7", // TODO: replace with antd
-      "rc-tabs"            -> "9.5.7", // TODO: replace with antd
     ),
 
     npmDevDependencies in Compile ++= Seq(
@@ -128,8 +127,8 @@ def coreLibs = {
     "com.github.julien-truffaut" %%% "monocle-core" % "1.5.0-cats",
     "com.github.julien-truffaut" %%% "monocle-macro" % "1.5.0-cats",
     "com.github.mpilquist" %%% "simulacrum" % "0.13.0",
-    "eu.timepit" %%% "refined"            % "0.9.2",
-    "eu.timepit" %%% "refined-cats"       % "0.9.2",
+    "eu.timepit" %%% "refined"            % "0.9.4",
+    "eu.timepit" %%% "refined-cats"       % "0.9.4",
     "org.typelevel" %%% "mouse" % "0.19",
     "org.scalatest" %%% "scalatest" % "3.0.1" % Test
   )

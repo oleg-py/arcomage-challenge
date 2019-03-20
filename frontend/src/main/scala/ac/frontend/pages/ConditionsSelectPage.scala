@@ -2,8 +2,8 @@ package ac.frontend.pages
 
 import ac.frontend.Store
 import ac.frontend.actions.{connect, settings}
-import ac.frontend.facades.tabs._
-import ac.frontend.states.ConditionsChoice.{FastGame, Hardcore, Preset, PresetMode, Tavern, Tutorial}
+import ac.frontend.facades.AntDesign.{TabPane, Tabs}
+import ac.frontend.states.ConditionsChoice.{Mode, FastGame, Hardcore, Preset, PresetMode, Tavern, Tutorial}
 import ac.frontend.states.{ConditionsChoice, GameConditionOptions, PersistentSettings}
 import monix.eval.Coeval
 import cats.implicits._
@@ -13,6 +13,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import monocle.macros.syntax.lens._
+import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
 
 /*_*/
 @react class ConditionsSelectPage extends Component {
@@ -23,7 +24,7 @@ import monocle.macros.syntax.lens._
     State(PersistentSettings[Coeval].readAll.value().conditionsChoice)
   }
 
-  private def presetInput(p: Preset) = {
+  private def presetInput(p: Preset) = { // TODO port to ant-design?
     input(
       `type` := "radio",
       name := "quick-preset",
@@ -34,22 +35,11 @@ import monocle.macros.syntax.lens._
   }
 
   def render(): ReactElement = div(
-    Tabs(
-      activeKey = state.cc.mode match {
-        case ConditionsChoice.PresetMode => "qp"
-        case ConditionsChoice.Tavern => "mm7p"
-      },
-      renderTabBar = () => InkTabBar(
-        onTabClick = { (key, _) =>
-          setState(_.lens(_.cc.mode).set(key match {
-            case "qp" => PresetMode
-            case "mm7p" => Tavern
-          }))
-        }
-      ),
-      renderTabContent = () => TabContent(),
-    )(
-      TabPane(tab = "Quick Presets").withKey("qp")(
+    Tabs(TabsProps(
+      activeKey = state.cc.mode.key,
+      onChange = { key => setState(_.lens(_.cc.mode).set(Mode.ofKey(key)))}
+    ))(
+      TabPane(TabPaneProps(tab = "Quick Presets")).withKey(PresetMode.key)(
         div(className := "quick-presets-select")(
           label(
             presetInput(FastGame),
@@ -74,7 +64,7 @@ import monocle.macros.syntax.lens._
           ),
         )
       ),
-      TabPane(tab = "MM7 Presets").withKey("mm7p")(
+      TabPane(TabPaneProps(tab = "MM7 Presets")).withKey(Tavern.key)(
         div(className := "taverns")(
           p("Select a city to play a game, classic style:"),
           select(
@@ -94,7 +84,7 @@ import monocle.macros.syntax.lens._
           ),
         )
       ),
-      TabPane(tab = "Custom").withKey("cp")(
+      TabPane(TabPaneProps(tab = "Custom", disabled = true)).withKey("cp")(
         div(className := "custom-conditions")(
           "This section is in development"
         )
