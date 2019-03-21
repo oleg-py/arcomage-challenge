@@ -15,7 +15,7 @@ import monix.execution.annotations.UnsafeBecauseImpure
 
 package object utils {
   implicit class JSCastOps(private val self: js.Any) extends AnyVal {
-    def jsCast[A <: js.Any]: A = self.asInstanceOf[A]
+    def jsCast[A]: A = self.asInstanceOf[A]
   }
 
 

@@ -12,7 +12,6 @@ import typings.antdLib.{antdLibComponents => antd}
 
 //noinspection TypeAnnotation
 object AntDesign {
-
   @JSImport("antd/dist/antd.css", JSImport.Default)
   @js.native object CSS extends js.Any
 
@@ -77,5 +76,18 @@ object AntDesign {
     override val component = antd.Spin
     def apply(text: String): ReactElement =
       this(antd.SpinProps(size = "large", tip = text))
+  }
+
+  @react object Select extends ExternalComponent {
+    type Props = antd.SelectProps[String]
+    override val component = antd.Select[String]
+  }
+
+  @react object Option extends ExternalComponent {
+    type Props = antd.OptionProps
+    override val component = antd.Option
+
+    def apply(key: String, text: String): ReactElement =
+      this(antd.OptionProps()).withKey(key)(text)
   }
 }

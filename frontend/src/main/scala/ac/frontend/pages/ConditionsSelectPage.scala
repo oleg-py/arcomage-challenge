@@ -2,8 +2,8 @@ package ac.frontend.pages
 
 import ac.frontend.Store
 import ac.frontend.actions.{connect, settings}
-import ac.frontend.facades.AntDesign.{TabPane, Tabs}
-import ac.frontend.states.ConditionsChoice.{Mode, FastGame, Hardcore, Preset, PresetMode, Tavern, Tutorial}
+import ac.frontend.facades.AntDesign.{Button, Option, Select, TabPane, Tabs, Text}
+import ac.frontend.states.ConditionsChoice.{FastGame, Hardcore, Mode, Preset, PresetMode, Tavern, Tutorial}
 import ac.frontend.states.{ConditionsChoice, GameConditionOptions, PersistentSettings}
 import monix.eval.Coeval
 import cats.implicits._
@@ -13,6 +13,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import monocle.macros.syntax.lens._
+import typings.antdLib.libSelectMod.SelectProps
 import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
 
 /*_*/
@@ -65,24 +66,16 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
         )
       ),
       TabPane(TabPaneProps(tab = "MM7 Presets")).withKey(Tavern.key)(
-        div(className := "taverns")(
-          p("Select a city to play a game, classic style:"),
-          select(
-            className := "tavern-select",
-            value := state.cc.tavern,
-            onChange := { e =>
-              val value = e.target.asInstanceOf[HTMLSelectElement].value
-              setState(_.lens(_.cc.tavern).set(value))
-            }
-          )(
-            GameConditionOptions.taverns.map { case (tavernName, _) =>
-              option(
-                key := tavernName,
-                value := tavernName
-              )(tavernName)
-            }
-          ),
-        )
+        Select(SelectProps[String](
+          value = state.cc.tavern,
+          onChange = { (value: String, _) =>
+            setState(_.lens(_.cc.tavern).set(value))
+          }
+        ))(
+          GameConditionOptions.taverns.map { case (tavernName, _) =>
+            Option(tavernName, tavernName)
+          }
+        ),
       ),
       TabPane(TabPaneProps(tab = "Custom", disabled = true)).withKey("cp")(
         div(className := "custom-conditions")(
@@ -91,10 +84,9 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
       ),
     ),
     div(className := "button-container-right")(
-      button(
-        className := "button",
-        disabled := state.buttonDisabled || state.cc.pick().isEmpty,
-        onClick := {() =>
+      Button(
+        disabled = state.buttonDisabled || state.cc.pick().isEmpty,
+        onClick = () => {
           this.setState(_.copy(buttonDisabled = true))
           Store.execS { implicit alg =>
             settings.persistConditions(_ => state.cc) *>
