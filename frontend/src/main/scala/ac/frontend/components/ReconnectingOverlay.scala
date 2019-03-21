@@ -1,9 +1,9 @@
 package ac.frontend.components
 
 import ac.frontend.Store
+import ac.frontend.facades.AntDesign.Spin
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import ac.frontend.facades.spinners.CircleLoader
 
 
 object ReconnectingOverlay extends Store.Container(
@@ -12,7 +12,6 @@ object ReconnectingOverlay extends Store.Container(
   def render(connected: Boolean): ReactElement =
     if (connected) None
     else div(className := "error-overlay")(
-      CircleLoader(128, "white"),
-      span("Waiting for the opponent to reconnect...")
+      Spin("Waiting for the opponent to reconnect...")
     )
 }

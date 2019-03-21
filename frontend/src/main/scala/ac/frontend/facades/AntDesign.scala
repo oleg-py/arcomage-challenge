@@ -64,4 +64,18 @@ object AntDesign {
     type Props = antd.TagProps
     override val component = antd.Tag
   }
+
+  @react object Text extends ExternalComponent {
+    type Props = antd.TextProps
+    override val component = antd.Text
+    def apply(text: String): ReactElement =
+      this(antd.TextProps())(text)
+  }
+
+  @react object Spin extends ExternalComponent {
+    type Props = antd.SpinProps
+    override val component = antd.Spin
+    def apply(text: String): ReactElement =
+      this(antd.SpinProps(size = "large", tip = text))
+  }
 }

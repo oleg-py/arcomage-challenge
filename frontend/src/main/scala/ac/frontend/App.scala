@@ -8,7 +8,7 @@ import Store.implicits._
 import ac.frontend.components.EndgameNotice
 import ac.frontend.states.AppState._
 import ac.frontend.utils.StreamOps
-import ac.frontend.facades.spinners._
+import ac.frontend.facades.AntDesign.Spin
 
 object App extends Store.Container(
   Store.app.listen
@@ -31,15 +31,14 @@ object App extends Store.Container(
         case (AwaitingConditions, Some(me), Some(enemy)) =>
           MatchmakingPage(me, enemy)(
             div(key := "waiting-notice", className := "conditions-waiting-notice")(
-              div(className := "spinner")(CircleLoader(64)),
-              div("Waiting for opponent to supply conditions")
+              Spin("Opponent is supplying conditions...")
             )
           )
         case (Playing | Defeat | Victory | Draw, _, _) =>
-            GameScreen()
+          GameScreen()
         case _ =>
           div(className := "spinner-container")(
-            CircleLoader(64)
+            Spin("Loading...")
           )
       },
       EndgameNotice()
