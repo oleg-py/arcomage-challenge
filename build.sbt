@@ -43,7 +43,6 @@ lazy val frontend = crossProject(JSPlatform)
       "peerjs"             -> "0.3.16",
       "gravatar-url"       -> "2.0.0",
       "clipboard"          -> "2.0.4",
-      "react-spinners"     -> "0.4.7", // TODO: replace with antd
     ),
 
     npmDevDependencies in Compile ++= Seq(
@@ -66,8 +65,8 @@ lazy val frontend = crossProject(JSPlatform)
       ScalablyTyped.A.antd,
       ScalablyTyped.G.`gravatar-url`,
       ScalablyTyped.C.`clipboard`,
-      "me.shadaj" %%% "slinky-web" % "0.5.1",
-      "me.shadaj" %%% "slinky-hot" % "0.5.1",
+      "me.shadaj" %%% "slinky-web" % "0.5.2",
+      "me.shadaj" %%% "slinky-hot" % "0.5.2",
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
       "io.suzaku" %%% "boopickle" % "1.3.0",
       "com.lihaoyi" %%% "upickle" % "0.7.1",

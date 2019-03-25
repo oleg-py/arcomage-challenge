@@ -2,12 +2,13 @@ package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.actions.matches
+import ac.frontend.facades.AntDesign.{Spin, Button}
 import ac.frontend.states.{AppState, RematchState}
 import ac.frontend.states.AppState.{Defeat, Draw, Victory}
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import ac.frontend.utils.StreamOps
-import ac.frontend.facades.spinners.ScaleLoader
+import typings.antdLib.libSpinMod.SpinProps
 
 object EndgameNotice extends Store.Container(
   Store.app.listen withLatestFrom
@@ -31,11 +32,11 @@ object EndgameNotice extends Store.Container(
             }),
             rs match {
               case RematchState.NotAsked =>
-                button(onClick := runRematch, className := "button")("Rematch")
+                Button(onClick = runRematch)("Rematch")
               case RematchState.Asked =>
-                button(onClick := runRematch, className := "button")("Agree to rematch")
+                Button(onClick = runRematch)("Agree to rematch")
               case _ =>
-                ScaleLoader(10, 3, "2px", 3)
+                Spin(SpinProps())
             }
           )
         )

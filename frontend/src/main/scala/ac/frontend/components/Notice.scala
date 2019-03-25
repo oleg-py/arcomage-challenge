@@ -2,12 +2,13 @@ package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.states.AppState
-import ac.frontend.facades.spinners.ScaleLoader
+import ac.frontend.facades.AntDesign.Spin
 import ac.frontend.utils.StreamOps
 import ac.game.player.TurnMod
 import ac.game.player.TurnMod.ForceDiscard
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
+import typings.antdLib.libSpinMod.SpinProps
 
 
 object Notice extends Store.Container(
@@ -29,7 +30,7 @@ object Notice extends Store.Container(
       else if (myTurn && turnMod.contains(ForceDiscard)) span(className := "my-turn discard")("Discard a card now...")
       else if (myTurn) span(className := "my-turn")(".:: Make your choice ::.")
       else Fragment(
-        ScaleLoader(10, 3, "2px", 3),
+        Spin(SpinProps(size = "small")),
         span(className := "enemy-turn")("Your opponent is thinking hard...")
       )
     }
