@@ -21,6 +21,8 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
   type Props = Unit
   case class State(cc: ConditionsChoice, buttonDisabled: Boolean = false)
 
+  private def tavern = GameConditionOptions.taverns(state.cc.tavern)
+
   def initialState: State = {
     State(PersistentSettings[Coeval].readAll.value().conditionsChoice)
   }
@@ -70,12 +72,23 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
           value = state.cc.tavern,
           onChange = { (value: String, _) =>
             setState(_.lens(_.cc.tavern).set(value))
-          }
+          },
+          className = "tavern-select"
         ))(
           GameConditionOptions.taverns.map { case (tavernName, _) =>
             Option(tavernName, tavernName)
           }
         ),
+        div(className := "tavern-description")(
+          Text(s"Resources at start: ${tavern.initialStats.resources.bricks}, " +
+            s"income: ${tavern.initialStats.income.bricks}"),
+          Text(s"Starting tower: ${tavern.initialStats.buildings.tower}, " +
+            s"wall: ${tavern.initialStats.buildings.wall}"),
+          Text(s"Tower to win: ${tavern.victoryConditions.tower}, " +
+            s"resources to win: ${tavern.victoryConditions.resources}"),
+          Text(s"Cards: ${tavern.handSize}"),
+        ),
+
       ),
       TabPane(TabPaneProps(tab = "Custom", disabled = true)).withKey("cp")(
         div(className := "custom-conditions")(
