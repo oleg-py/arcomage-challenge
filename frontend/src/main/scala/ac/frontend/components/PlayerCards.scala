@@ -7,10 +7,10 @@ import ac.game.Resources
 import ac.game.cards.Card
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.NonNegInt
-import org.scalajs.dom.MouseEvent
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
+import slinky.web.SyntheticMouseEvent
 import slinky.web.html._
 
 
@@ -22,7 +22,7 @@ import slinky.web.html._
     disableAll: Boolean
   )
 
-  private def handleClick(i: Int)(e: MouseEvent): Unit = Store.execS { implicit alg =>
+  private def handleClick(i: Int)(e: SyntheticMouseEvent[div.tag.RefType]): Unit = Store.execS { implicit alg =>
     e.preventDefault()
     e.stopPropagation()
     e.button match {

@@ -65,12 +65,12 @@ lazy val frontend = crossProject(JSPlatform)
       ScalablyTyped.A.antd,
       ScalablyTyped.G.`gravatar-url`,
       ScalablyTyped.C.`clipboard`,
-      "me.shadaj" %%% "slinky-web" % "0.5.2",
-      "me.shadaj" %%% "slinky-hot" % "0.5.2",
+      "me.shadaj" %%% "slinky-web" % "0.6.0",
+      "me.shadaj" %%% "slinky-hot" % "0.6.0",
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
       "io.suzaku" %%% "boopickle" % "1.3.0",
       "com.lihaoyi" %%% "upickle" % "0.7.1",
-      "com.olegpy" %%% "shironeko-slinky" % "0.0.8"
+      "com.olegpy" %%% "shironeko-slinky" % "0.0.9"
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

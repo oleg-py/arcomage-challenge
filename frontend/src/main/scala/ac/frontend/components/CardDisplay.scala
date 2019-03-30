@@ -5,10 +5,10 @@ import scala.scalajs.js.Dynamic.literal
 import ac.frontend.CardData
 import ac.frontend.i18n.Lang
 import ac.game.cards.Card
-import org.scalajs.dom.raw.MouseEvent
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
+import slinky.web.SyntheticMouseEvent
 import slinky.web.html._
 
 
@@ -17,7 +17,7 @@ import slinky.web.html._
     card: Card,
     lang: Lang,
     className: Option[String] = None,
-    onClick: MouseEvent => Unit = _ => {},
+    onClick: SyntheticMouseEvent[div.tag.RefType] => Unit = _ => {},
     overlay: ReactElement = None,
   )
 
@@ -59,5 +59,3 @@ import slinky.web.html._
     )
   }
 }
-
-object CardDisplay

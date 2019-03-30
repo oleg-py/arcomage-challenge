@@ -43,7 +43,7 @@ import java.util.UUID
         label("Share this link with your friend to start a game:"),
         Input(
           value = props.connectionLink,
-          addonAfter = { Button(className = btnClass)(Icon("copy")) }
+          addonAfter = { Button(className = btnClass)(Icon("copy")): ReactElement }
         ),
         if (utils.isDevelopment) div(
           a(href := props.connectionLink, target := "_blank")("[Dev] in new tab")
