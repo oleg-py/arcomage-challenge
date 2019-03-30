@@ -3,7 +3,7 @@ var core = require('./webpack-core.config.js')
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = merge(core, {
+module.exports = merge(core, require('./scalajs.webpack.config'), {
   entry: {
     "dependencies": ["./frontend-fastopt-entrypoint.js"],
     "frontend-fastopt": ["./hot-launcher.js"]
