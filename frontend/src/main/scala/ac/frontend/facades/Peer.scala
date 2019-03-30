@@ -80,7 +80,28 @@ object Peer {
 
   def apply[F[_]](implicit F: ConcurrentEffect[F]): F[Peer[F]] =
     for {
-      jsp <- F.delay(new PeerJS(js.Dynamic.literal(port = 443, secure = true)))
+      jsp <- F.delay(new PeerJS(js.Dynamic.literal(
+        port = 443,
+        secure = true,
+        config = js.Dynamic.literal(
+          iceServers = js.Array(
+            js.Dynamic.literal(
+              urls = js.Array("turn:turn.bistri.com:80"),
+              username = "homeo",
+              credential = "homeo",
+            ),
+            js.Dynamic.literal(
+              urls = js.Array(
+                "stun.l.google.com:19302",
+                "stun1.l.google.com:19302",
+                "stun2.l.google.com:19302",
+                "stun3.l.google.com:19302",
+                "stun4.l.google.com:19302",
+              )
+            )
+          )
+        )
+      )))
       id  <- F.async[String] { cb =>
         jsp.on("open", (id: String) => cb(Right(id)))
         jsp.on("error", (err: js.Error) => {
