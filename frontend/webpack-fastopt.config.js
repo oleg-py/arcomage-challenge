@@ -3,7 +3,7 @@ var core = require('./webpack-core.config.js')
 var path = require("path");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 
-module.exports = merge(core, require('./scalajs.webpack.config'), {
+module.exports = merge(core, /*require('./scalajs.webpack.config'),*/ {
   entry: {
     "dependencies": ["./frontend-fastopt-entrypoint.js"],
     "frontend-fastopt": ["./hot-launcher.js"]
@@ -14,7 +14,8 @@ module.exports = merge(core, require('./scalajs.webpack.config'), {
     library: "appLibrary",
     libraryTarget: "var"
   },
-  devtool: "source-map",
+  devtool: "none",
+  // devtool: "source-map",
   module: {
     noParse: (content) => {
       return content.endsWith("-fastopt.js");
