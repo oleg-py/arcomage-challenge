@@ -70,7 +70,7 @@ lazy val frontend = crossProject(JSPlatform)
       "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
       "io.suzaku" %%% "boopickle" % "1.3.0",
       "com.lihaoyi" %%% "upickle" % "0.7.1",
-      "com.olegpy" %%% "shironeko-slinky" % "0.0.9"
+      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-SNAPSHOT"
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
@@ -137,6 +137,6 @@ def plugins = Seq(
   libraryDependencies += "com.github.ghik" %% "silencer-lib" % "1.2" % Provided,
   addCompilerPlugin("com.github.ghik" %% "silencer-plugin" % "1.2"),
   addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
-  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
+  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4"),
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
 )

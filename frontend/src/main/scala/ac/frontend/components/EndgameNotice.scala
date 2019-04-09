@@ -2,24 +2,26 @@ package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.actions.matches
-import ac.frontend.facades.AntDesign.{Spin, Button}
-import ac.frontend.states.{AppState, RematchState}
+import ac.frontend.facades.AntDesign.{Button, Spin}
+import ac.frontend.states.{AppState, RematchState, StoreAlg}
 import ac.frontend.states.AppState.{Defeat, Draw, Victory}
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import ac.frontend.utils.StreamOps
+import ac.frontend.utils.combine
+import monix.eval.Task
 import typings.antdLib.libSpinMod.SpinProps
 
-object EndgameNotice extends Store.Container(
-  Store.app.listen withLatestFrom
-  Store.rematchState.listen
-) {
-  def render(a: (AppState, RematchState)): ReactElement = {
-    val (as, rs) = a
+object EndgameNotice extends Store.ContainerNoProps {
+  case class State(app: AppState, rs: RematchState)
 
-    val runRematch = () => Store.execS { implicit alg =>
-      matches.proposeRematch
-    }
+
+  def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] =
+    combine[State].from(F.app.listen, F.rematchState.listen)
+
+  def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
+    val State(as, rs) = state
+
+    val runRematch = () => exec { matches.proposeRematch[Task] }
 
     as match {
       case Victory | Defeat | Draw =>

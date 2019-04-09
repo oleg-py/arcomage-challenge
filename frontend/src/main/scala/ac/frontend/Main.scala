@@ -6,8 +6,8 @@ import scala.scalajs.js.annotation.{JSExport, _}
 import scala.scalajs.LinkingInfo
 
 import ac.frontend.actions.{connect, matches}
-import ac.frontend.facades.AntDesign
-import ac.frontend.facades.AntDesign
+import ac.frontend.facades.{AntDesign, Peer}
+import ac.frontend.states.StoreAlg
 import ac.frontend.utils.bundle
 import cats.syntax.all._
 import cats.effect._
@@ -24,14 +24,36 @@ import org.scalajs.dom.document
 
 @JSExportTopLevel("entrypoint")
 object Main extends TaskApp {
-  lazy val Instance: ConcurrentEffect[Task] = ConcurrentEffect[Task]
+  def run(args: List[String]): Task[ExitCode] = Task.defer {
+    bundle(IndexCSS, AntDesign.CSS)
+
+    if (LinkingInfo.developmentMode) hot.initialize()
+
+    for {
+      peer <- Peer[Task].start
+      root <- Task { document.getElementById("root") }
+      implicit0(alg: StoreAlg[Task]) = new StoreAlg(peer.join)
+      _    <- matches.bootstrapRematching
+      _    <- connect.preinitIfGuest.start
+      _    <- Task {
+        ReactDOM.render(Store(alg)(
+          ErrorDisplay(App())
+        ), root)
+      }
+    } yield ExitCode.Success
+  }
+
+  @JSExport
+  def exec(): Unit = main(Array())
 
   override def scheduler: Scheduler = new ReferenceScheduler {
     private[this] val global = Main.super.scheduler
     def execute(command: Runnable): Unit = global.execute(command)
     def reportFailure(t: Throwable): Unit = {
       global.reportFailure(t)
-      Store.error.set(Some(t.getMessage)).runAsyncAndForget(this)
+      algebra.foreach {
+        _.error.set(Some(t.getMessage)).runAsyncAndForget(this)
+      }
     }
     def scheduleOnce(initialDelay: Long, unit: TimeUnit, r: Runnable): Cancelable =
       global.scheduleOnce(initialDelay, unit, r)
@@ -39,17 +61,5 @@ object Main extends TaskApp {
     def executionModel: ExecutionModel = global.executionModel
   }
 
-  def run(args: List[String]): Task[ExitCode] = Task.defer {
-    bundle(IndexCSS, AntDesign.CSS)
-
-    if (LinkingInfo.developmentMode) hot.initialize()
-    val root = document.getElementById("root")
-    ReactDOM.render(ErrorDisplay(App()), root)
-
-    matches.bootstrapRematching(Store) *>
-    connect.preinitIfGuest(Store).start.as(ExitCode.Success)
-  }
-
-  @JSExport
-  def exec(): Unit = main(Array())
+  private[this] var algebra: Option[StoreAlg[Task]] = None
 }

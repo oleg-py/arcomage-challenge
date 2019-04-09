@@ -8,44 +8,45 @@ import ac.frontend.i18n.Lang
 import ac.game.player.CardScope
 import cats.effect._
 import cats.effect.implicits._
-import com.olegpy.shironeko.StoreBase
+import com.olegpy.shironeko.StoreSyntax
 import cats.implicits._
 import monocle.macros.GenLens
 import scala.concurrent.duration._
 
 import ac.frontend.facades.Peer
 import ac.frontend.states.RematchState._
-import cats.data.OptionT
+import cats.data.{Chain, OptionT}
 import cats.effect.concurrent.Ref
+import fs2.Stream
+import monix.eval.Task
 
 //noinspection TypeAnnotation
-trait StoreAlg[F[_]] { this: StoreBase[F] =>
-  import implicits._
-  val error = Cell(none[String])
-  val app   = Cell[AppState](NameEntry)
-  val game  = Cell[Progress](Progress.NotStarted)
-  val cards = Cell(Vector.empty[Card])
-  val me    = Cell(none[User])
-  val enemy = Cell(none[User])
-  val locale = Cell[Lang](Lang.En)
-  val myTurn  = Cell(false)
-  val peerConnection = Cell(none[Peer.Connection[F]])
-  val rematchState   = Cell[RematchState](NotAsked)
+class StoreAlg[F[_]](peer: F[Peer[F]])(
+  implicit F: Concurrent[F], timer: Timer[F], cs: ContextShift[F]
+) {
+  private[this] val syntax = new StoreSyntax[F]
+  import syntax._
 
-  val peer: F[Peer[F]] = preload(Peer[F]).onError { case e: Exception =>
-    // TODO better error types
-    error.set(e.getMessage.some)
-  }
+  val error = cell(none[String])
+  val app   = cell[AppState](NameEntry)
+  val game  = cell[Progress](Progress.NotStarted)
+  val cards = cell(Vector.empty[Card])
+  val me    = cell(none[User])
+  val enemy = cell(none[User])
+  val locale = cell[Lang](Lang.En)
+  val myTurn  = cell(false)
+  val peerConnection = cell(none[Peer.Connection[F]])
+  val rematchState   = cell[RematchState](NotAsked)
 
-  val gameEvents = Events.handled[GameMessage] {
+  val gameEvents = events.handled[GameMessage] {
     case RematchRequest =>
       rematchState.update {
         case NotAsked => Asked
         case _        => Accepted
       }
-    case KeepAlive => unit
+    case KeepAlive => ().pure[F]
     case EngineNotification(Income) =>
-      timer.sleep(2.seconds)
+      Timer[F].sleep(2.seconds)
     case ConnectionRecovery(progressV, cardsV, myTurnV) =>
       app.set(Playing) *>
       game.set(progressV) *> cards.set(cardsV) *> myTurn.set(myTurnV)
@@ -87,12 +88,12 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
       cards.set(hand) *> game.update(
         GenLens[Progress](_.state.stats.resources).set(rsc)
       )
-    case msg => F.delay(println(msg))
+    case msg => Sync[F].delay(println(msg))
   }
-  val myTurnIntents = Events[TurnIntent]
+  val myTurnIntents = events[TurnIntent]
 
   object animate {
-    private[this] val cell = Cell(none[AnimatedCard])
+    private[this] val cell = syntax.cell(none[AnimatedCard])
     val state = cell.listen
     val animDuration = 2500.millis
     val sleepDelay = 500.millis
@@ -120,20 +121,24 @@ trait StoreAlg[F[_]] { this: StoreBase[F] =>
           .mapN(ConnectionRecovery).flatMap(send) *>
           me.get.flatMap(_.traverse_(usr => send(OpponentReady(usr))))
       case AwaitingConditions =>
-        OptionT(me.get).map(OpponentReady).semiflatMap(send).getOrElseF(unit)
-      case _ => unit
+        OptionT(me.get).map(OpponentReady).semiflatMap(send).getOrElse(())
+      case _ => ().pure[F]
     }
 
   def fail[A](s: String): F[A] =
     error.set(s.some) *> F.raiseError(new Exception(s))
 
-  trait implicits {
-    implicit def timer: Timer[F]
-    implicit def contextShift: ContextShift[F]
-    implicit def concurrent: Concurrent[F] = F
+  case class History(nPlayed: Int, current: Chain[(Card, Boolean)], mine: Boolean) {
+    def >->(anim: AnimatedCard) =
+      if (mine == anim.isEnemy) {
+        History(nPlayed, current :+ (anim.card -> anim.isDiscarded), mine)
+      } else {
+        History(nPlayed + current.length.toInt, Chain.one(anim.card -> anim.isDiscarded), !mine)
+      }
   }
-  val implicits: implicits
 
-  def unit = F.unit
-
+  def cardHistory: Stream[F, History] =
+    animate.state.unNone
+      .debounce(animate.animDuration)
+      .scan(History(0, Chain.empty, mine = true))(_ >-> _)
 }

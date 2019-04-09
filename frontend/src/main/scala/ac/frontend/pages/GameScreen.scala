@@ -4,29 +4,42 @@ import ac.frontend.Store
 import slinky.core.facade.ReactElement
 import slinky.web.html.{className, div, onContextMenu}
 import ac.frontend.utils.StreamOps
-import Store.implicits._
 import ac.frontend.components._
 import ac.frontend.i18n.Lang
 import ac.frontend.states.AppState.User
-import ac.frontend.states.Progress
+import ac.frontend.states.{Progress, StoreAlg}
 import ac.game.cards.Card
+import monix.eval.Task
 
 /*_*/
-object GameScreen extends Store.Container(
-  Store.game.listen
-    .withLatestFrom(Store.me.listen.unNone)
-    .withLatestFrom(Store.enemy.listen.unNone)
-    .withLatestFrom(Store.cards.listen)
-    .withLatestFrom(Store.locale.listen)
-    .withLatestFrom {
-      Store.myTurn.listen
-        .withLatestFrom(Store.animate.state.map(_.isEmpty))
+object GameScreen extends Store.ContainerNoProps {
+  case class State(
+    p: Progress,
+    me: User,
+    enemy: User,
+    hand: Vector[Card],
+    lang: Lang,
+    canMove: Boolean
+  )
+
+
+  def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] =
+    combine[State].from(
+      F.game.listen,
+      F.me.listen.unNone,
+      F.enemy.listen.unNone,
+      F.cards.listen,
+      F.locale.listen,
+      F.myTurn.listen
+        .withLatestFrom(F.animate.state.map(_.isEmpty))
         .map { case (a, b) => a && b }
-    }
-    .frameDebounced
-) {
-  def render(a: (Progress, User, User, Vector[Card], Lang, Boolean)): ReactElement = {
-    val (Progress(state, conds), me, enemy, cards, lang, canMove) = a
+    )
+
+
+  def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
+    val State(Progress(state, conds), me, enemy, cards, lang, canMove) =
+      state
+
     val maxRes = conds.resources
     div(className := "field", onContextMenu := { _.preventDefault() })(
       div(className := "game-screen")(
