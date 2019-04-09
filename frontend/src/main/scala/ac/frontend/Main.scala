@@ -9,7 +9,6 @@ import ac.frontend.actions.{connect, matches}
 import ac.frontend.facades.{AntDesign, Peer}
 import ac.frontend.states.StoreAlg
 import ac.frontend.utils.bundle
-import cats.syntax.all._
 import cats.effect._
 import monix.eval.{Task, TaskApp}
 import monix.execution.{Cancelable, ExecutionModel, Scheduler}

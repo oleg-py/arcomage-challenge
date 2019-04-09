@@ -1,13 +1,9 @@
 package ac.frontend.pages
 
-import ac.frontend.Store
-import ac.frontend.actions.{connect, settings}
 import ac.frontend.facades.AntDesign.{Button, Option, Select, TabPane, Tabs, Text}
 import ac.frontend.states.ConditionsChoice.{FastGame, Hardcore, Mode, Preset, PresetMode, Tavern, Tutorial}
 import ac.frontend.states.{ConditionsChoice, GameConditionOptions, PersistentSettings}
 import monix.eval.Coeval
-import cats.implicits._
-import org.scalajs.dom.raw.HTMLSelectElement
 import slinky.core.Component
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
@@ -18,7 +14,7 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
 
 /*_*/
 @react class ConditionsSelectPage extends Component {
-  type Props = Unit
+  type Props = ConditionsChoice => Unit
   case class State(cc: ConditionsChoice, buttonDisabled: Boolean = false)
 
   private def tavern = GameConditionOptions.taverns(state.cc.tavern)
@@ -88,7 +84,6 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
             s"resources to win: ${tavern.victoryConditions.resources}"),
           Text(s"Cards: ${tavern.handSize}"),
         ),
-
       ),
       TabPane(TabPaneProps(tab = "Custom", disabled = true)).withKey("cp")(
         div(className := "custom-conditions")(
@@ -100,12 +95,9 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
       Button(
         disabled = state.buttonDisabled || state.cc.pick().isEmpty,
         onClick = () => {
-          this.setState(_.copy(buttonDisabled = true))
-          Store.execS { implicit alg =>
-            settings.persistConditions(_ => state.cc) *>
-            state.cc.pick().traverse_(connect.supplyConditions(_))
-          }}
-      )(s"Confirm")
+          setState(_.copy(buttonDisabled = true))
+          props(state.cc)
+      })(s"Confirm")
     ),
   )
 }

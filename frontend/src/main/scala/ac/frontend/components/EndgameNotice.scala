@@ -10,6 +10,7 @@ import slinky.web.html._
 import ac.frontend.utils.combine
 import monix.eval.Task
 import typings.antdLib.libSpinMod.SpinProps
+import cats.implicits._
 
 object EndgameNotice extends Store.ContainerNoProps {
   case class State(app: AppState, rs: RematchState)

@@ -6,11 +6,12 @@ import cats.syntax.all._
 import cats.effect.syntax.all._
 import ac.frontend.utils.{JSException, query}
 import ac.game.GameConditions
-import cats.effect.Sync
+import cats.effect.{Concurrent, Sync, Timer}
 import fs2._
 import scala.concurrent.duration._
 
 import ac.frontend.facades.Peer
+import cats.Apply
 
 object connect {
   private val ConnectionKey = "ac_game"
@@ -20,20 +21,17 @@ object connect {
     .map(query.parseQueryString)
     .map(_ contains ConnectionKey)
 
-  private def establishConnection[F[_]](
+  private def establishConnection[F[_]: Concurrent](
     conn: Peer.Connection[F]
   )(implicit Store: StoreAlg[F]): F[Unit] = {
-    import Store.implicits._
-    conn.messages.map(GameMessage.fromBytes).to(Store.gameEvents.emit).compile.drain
+    conn.messages.map(GameMessage.fromBytes).through(Store.gameEvents.emit).compile.drain
       .onError {
         case ex: JSException => Store.error.set(ex.toString.some)
       }.start *> Store.peerConnection.set(conn.some) <*
       conn.waitForClose.flatMap(_ => Store.peerConnection.set(none)).start
   }
 
-  def apply[F[_]](me: User)(implicit Store: StoreAlg[F]): F[Unit] = {
-    import Store.implicits._
-
+  def apply[F[_]: Concurrent: Timer](me: User)(implicit Store: StoreAlg[F]): F[Unit] = {
     def host(me: User): F[Unit] =
       for {
         peer <- Store.peer
@@ -85,8 +83,7 @@ object connect {
     isGuest[F].flatMap(if (_) connectToUser(me) else host(me))
   }
 
-  def preinitIfGuest[F[_]](implicit Store: StoreAlg[F]): F[Unit] = {
-    import Store.implicits._
+  def preinitIfGuest[F[_]: Concurrent](implicit Store: StoreAlg[F]): F[Unit] = {
     query.currentUrl[F]
       .map(url => query.parseQueryString(url.search).get(ConnectionKey))
       .flatMap {
@@ -98,8 +95,7 @@ object connect {
       }
   }
 
-  def supplyConditions[F[_]](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
-    import F.implicits._
+  def supplyConditions[F[_]: Apply](gc: GameConditions)(implicit F: StoreAlg[F]): F[Unit] = {
     val cs = ConditionsSet(gc)
     F.gameEvents.emit1(cs) *> F.send(cs)
   }

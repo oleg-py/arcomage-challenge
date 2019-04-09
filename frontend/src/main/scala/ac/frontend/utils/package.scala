@@ -9,9 +9,7 @@ import fs2.Stream
 import org.scalajs.dom.window
 import scala.concurrent.duration._
 
-import cats.sequence.Sequencer
 import monix.execution.annotations.UnsafeBecauseImpure
-import shapeless.{Generic, HList, ProductArgs}
 
 
 
@@ -31,15 +29,6 @@ package object utils {
 
     def frameDebounced(implicit F: Concurrent[F], timer: Timer[F]): Stream[F, A] =
       self.debounce(16.millis) // ~ 1 frame, skips intermediate spinner
-  }
-
-  def combine[A] = new CombinerCurriedArgs[A]
-
-  class CombinerCurriedArgs[A] extends ProductArgs {
-    def fromProduct[F[_], L <: HList, B <: HList](l: L)(implicit
-      seq: Sequencer.Aux[L, Stream[F, ?], B],
-      gen: Generic.Aux[A, B]
-    ): Stream[F, A] = seq(l).map(gen.from)
   }
 
   @UnsafeBecauseImpure

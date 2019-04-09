@@ -4,12 +4,13 @@ import ac.frontend.pages._
 import ac.frontend.states.{AppState, StoreAlg}
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import ac.frontend
+import ac.frontend.actions.{connect, settings}
 import ac.frontend.components.EndgameNotice
 import ac.frontend.states.AppState._
-import ac.frontend.utils.{StreamOps, combine}
+import ac.frontend.utils.{combine, StreamOps}
 import ac.frontend.facades.AntDesign.Spin
 import monix.eval.Task
+import cats.implicits._
 
 object App extends Store.ContainerNoProps {
   case class State(app: AppState, me: Option[User], enemy: Option[User])
@@ -22,12 +23,18 @@ object App extends Store.ContainerNoProps {
     div(className := "App")(
       state match {
         case State(_, None, _) =>
-          NameEntryPage()
+          NameEntryPage { (name, email, avatar) => exec {
+            settings.persistUser[Task](name, email) *>
+            connect[Task](User(name, avatar))
+          }}
         case State(AwaitingGuest(link), Some(me), _) =>
           AwaitingGuestPeerPage(me, link)
         case State(SupplyingConditions, Some(me), Some(enemy)) =>
           MatchmakingPage(me, enemy)(
-            ConditionsSelectPage().withKey("csp")
+            ConditionsSelectPage(cc => exec {
+              settings.persistConditions[Task](_ => cc) *>
+              cc.pick().traverse_(connect.supplyConditions[Task])
+            }).withKey("csp")
           )
         case State(AwaitingConditions, Some(me), Some(enemy)) =>
           MatchmakingPage(me, enemy)(

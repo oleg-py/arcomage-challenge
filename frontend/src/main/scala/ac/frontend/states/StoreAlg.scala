@@ -18,11 +18,10 @@ import ac.frontend.states.RematchState._
 import cats.data.{Chain, OptionT}
 import cats.effect.concurrent.Ref
 import fs2.Stream
-import monix.eval.Task
 
 //noinspection TypeAnnotation
-class StoreAlg[F[_]](peer: F[Peer[F]])(
-  implicit F: Concurrent[F], timer: Timer[F], cs: ContextShift[F]
+class StoreAlg[F[_]](val peer: F[Peer[F]])(
+  implicit F: Concurrent[F], timer: Timer[F]
 ) {
   private[this] val syntax = new StoreSyntax[F]
   import syntax._

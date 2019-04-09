@@ -3,13 +3,14 @@ package ac.frontend.pages
 import ac.frontend.Store
 import slinky.core.facade.ReactElement
 import slinky.web.html.{className, div, onContextMenu}
-import ac.frontend.utils.StreamOps
+import ac.frontend.utils.{StreamOps, combine}
 import ac.frontend.components._
 import ac.frontend.i18n.Lang
 import ac.frontend.states.AppState.User
 import ac.frontend.states.{Progress, StoreAlg}
 import ac.game.cards.Card
 import monix.eval.Task
+import cats.implicits._
 
 /*_*/
 object GameScreen extends Store.ContainerNoProps {
@@ -26,8 +27,8 @@ object GameScreen extends Store.ContainerNoProps {
   def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] =
     combine[State].from(
       F.game.listen,
-      F.me.listen.unNone,
-      F.enemy.listen.unNone,
+      F.me.listen.unNone[User],
+      F.enemy.listen.unNone[User],
       F.cards.listen,
       F.locale.listen,
       F.myTurn.listen
@@ -37,7 +38,7 @@ object GameScreen extends Store.ContainerNoProps {
 
 
   def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
-    val State(Progress(state, conds), me, enemy, cards, lang, canMove) =
+    val State(Progress(st, conds), me, enemy, cards, lang, canMove) =
       state
 
     val maxRes = conds.resources
@@ -46,19 +47,19 @@ object GameScreen extends Store.ContainerNoProps {
         div(className := "battlefield")(
           div(className := "stats mine")(
             PlayerDisplay(me),
-            ResourceDisplay(state.stats, maxRes)
+            ResourceDisplay(st.stats, maxRes)
           ),
           div(className := "history-overlayed")(
             HistoryDisplay(),
-            Castles(state, conds.tower)
+            Castles(st, conds.tower)
           ),
           div(className := "stats enemy")(
             PlayerDisplay(enemy),
-            ResourceDisplay(state.enemy, maxRes)
+            ResourceDisplay(st.enemy, maxRes)
           )
         ),
         Notice(),
-        PlayerCards(lang, cards, state.stats.resources, !canMove)
+        PlayerCards(PlayerCards.Props(lang, cards, st.stats.resources, !canMove))
       ),
       CardAnimation(),
       ReconnectingOverlay(),

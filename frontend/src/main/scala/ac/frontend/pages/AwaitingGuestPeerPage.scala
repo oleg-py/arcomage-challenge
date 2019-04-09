@@ -11,9 +11,7 @@ import slinky.web.html._
 import typings.clipboardLib.clipboardMod.{namespaced => ClipboardJS}
 import typings.clipboardLib.clipboardMod.ClipboardJSNs.Options
 import typings.antdLib.libMessageMod.^.{default => message}
-
-import java.util.UUID
-
+import mouse.ignore
 
 @react class AwaitingGuestPeerPage extends StatelessComponent {
   case class Props(me: User, connectionLink: String)
@@ -27,7 +25,7 @@ import java.util.UUID
       text = _ => props.connectionLink
     ))
 
-    c.on("success", _ => message.success("Link copied!", 3.0))
+    c.on("success", _ => ignore(message.success("Link copied!", 3.0)))
     clipboard = Some(c)
   }
 

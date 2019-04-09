@@ -2,13 +2,19 @@ package ac.frontend.components
 
 import ac.frontend.i18n.Lang
 import ac.frontend.Store
+import ac.frontend.states.StoreAlg
+import monix.eval.Task
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 
 
-object HistoryDisplay extends Store.Container(Store.cardHistory) {
-  def render(a: Store.History): ReactElement = {
-    val Store.History(nPlayed, cards, _) = a
+object HistoryDisplay extends Store.ContainerNoProps {
+  type State = StoreAlg[Task]#History // TODO move history out
+
+  def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] = F.cardHistory
+
+  def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
+    val F.History(nPlayed, cards, _) = state
 
     val cc = Vector.fill(nPlayed min 3)(None) ++ cards.toVector.map(Some(_))
 

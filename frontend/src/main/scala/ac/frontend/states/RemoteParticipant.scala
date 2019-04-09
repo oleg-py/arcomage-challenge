@@ -5,12 +5,11 @@ import ac.game.cards.Card
 import ac.game.flow.Notification.HandUpdated
 import ac.game.{GameConditions, Resources}
 import ac.game.flow.{Notification, Participant, TurnIntent}
+import cats.effect.Concurrent
 import eu.timepit.refined.types.numeric.NonNegInt
 
 /*_*/
-class RemoteParticipant[F[_]](implicit store: StoreAlg[F]) extends Participant[F] {
-  import store.implicits._
-
+class RemoteParticipant[F[_]: Concurrent](implicit store: StoreAlg[F]) extends Participant[F] {
   def proposeConditions: F[GameConditions] = store.gameEvents.await1 {
     case ConditionsSet(conds) => conds
   }
@@ -23,7 +22,7 @@ class RemoteParticipant[F[_]](implicit store: StoreAlg[F]) extends Participant[F
   def notify(notification: Notification): F[Unit] = {
     notification match {
       case HandUpdated(hand) => store.lastEnemyHand.set(hand)
-      case _ => store.unit
+      case _ => ().pure[F]
     }
   } >> store.send(EngineNotification(notification))
 }

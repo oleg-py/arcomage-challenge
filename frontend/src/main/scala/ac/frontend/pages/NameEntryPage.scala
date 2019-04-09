@@ -1,15 +1,12 @@
 package ac.frontend.pages
 
-import ac.frontend.{Store, utils}
-import ac.frontend.actions.{connect, settings}
-import ac.frontend.states.AppState.User
+import ac.frontend.utils
 import ac.frontend.states.PersistentSettings
 import org.scalajs.dom.raw.{Event, HTMLInputElement}
 import slinky.core.Component
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import cats.syntax.apply._
 import monix.eval.Coeval
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.{^ => gravatarUrl}
 import typings.gravatarDashUrlLib.gravatarDashUrlMod.GravatarUrlNs.Options
@@ -18,7 +15,7 @@ import typings.antdLib.antdLibStrings
 import typings.antdLib.libAvatarMod.AvatarProps
 
 @react class NameEntryPage extends Component {
-  type Props = Unit
+  type Props = (String, String, String) => Unit
   case class State(name: String, email: String)
 
   private val DefaultAvatarType = "monsterid"
@@ -61,10 +58,8 @@ import typings.antdLib.libAvatarMod.AvatarProps
           }),
         div(className := "button-container-right")(
           Button(
-            onClick = () => Store.execS { implicit alg =>
-              settings.persistUser(state.name, state.email) *>
-              connect(User(avatarName, avatarUrl))
-          })("Enter a game")
+            onClick = () => props(state.name, state.email, avatarUrl)
+          )("Enter a game")
         )
       ),
     )

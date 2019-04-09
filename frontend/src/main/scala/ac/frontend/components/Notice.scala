@@ -1,26 +1,41 @@
 package ac.frontend.components
 
 import ac.frontend.Store
-import ac.frontend.states.AppState
+import ac.frontend.states.{AppState, StoreAlg}
 import ac.frontend.facades.AntDesign.Spin
-import ac.frontend.utils.StreamOps
+import ac.frontend.utils.{StreamOps, combine}
 import ac.game.player.TurnMod
 import ac.game.player.TurnMod.ForceDiscard
+import monix.eval.Task
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
 import typings.antdLib.libSpinMod.SpinProps
+import cats.implicits._
+
+object Notice extends Store.ContainerNoProps {
+
+  case class State(
+    myTurn: Boolean,
+    isAnimating: Boolean,
+    appState: AppState,
+    turnMod: Option[TurnMod]
+  )
+
+  def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] =
+    combine[State].from(
+      F.myTurn.listen,
+      F.animate.state.map(_.nonEmpty),
+      F.app.listen,
+      F.game.listen.map(_.state.turnMods.headOption)
+    ).frameDebounced.cons1(State(
+      myTurn = false,
+      isAnimating = true,
+      AppState.Playing, None
+    ))
 
 
-object Notice extends Store.Container(
-  Store.myTurn.listen
-    .withLatestFrom(Store.animate.state.map(_.nonEmpty))
-    .withLatestFrom(Store.app.listen)
-    .withLatestFrom(Store.game.listen.map(_.state.turnMods.headOption))
-    .frameDebounced
-    .cons1((false, true, AppState.Playing, None))
-) {
-  def render(a: (Boolean, Boolean, AppState, Option[TurnMod])): ReactElement = {
-    val (myTurn, isAnimating, appState, turnMod) = a
+  def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
+    import state._
     val isEndgame = appState match {
       case AppState.Victory | AppState.Defeat | AppState.Draw => true
       case _ => false
