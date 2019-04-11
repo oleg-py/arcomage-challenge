@@ -37,8 +37,8 @@ lazy val frontend = crossProject(JSPlatform)
     addCommandAlias("nowp", "fastOptJS::stopWebpackDevServer"),
     npmDependencies in Compile ++= Seq(
       "antd"               -> "3.15.1",
-      "react"              -> "16.4.2",
-      "react-dom"          -> "16.4.2",
+      "react"              -> "16.8.6",
+      "react-dom"          -> "16.8.6",
       "react-proxy"        -> "1.1.8",
       "peerjs"             -> "0.3.16",
       "gravatar-url"       -> "2.0.0",

@@ -58,7 +58,7 @@ import typings.antdLib.libAvatarMod.AvatarProps
           }),
         div(className := "button-container-right")(
           Button(
-            onClick = () => props(state.name, state.email, avatarUrl)
+            onClick = () => props(avatarName, state.email, avatarUrl)
           )("Enter a game")
         )
       ),
