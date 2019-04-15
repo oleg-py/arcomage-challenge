@@ -8,7 +8,7 @@ import ac.frontend.i18n.Lang
 import ac.game.player.CardScope
 import cats.effect._
 import cats.effect.implicits._
-import com.olegpy.shironeko.StoreSyntax
+import com.olegpy.shironeko.StoreDSL
 import cats.implicits._
 import monocle.macros.GenLens
 import scala.concurrent.duration._
@@ -21,10 +21,9 @@ import fs2.Stream
 
 //noinspection TypeAnnotation
 class StoreAlg[F[_]](val peer: F[Peer[F]])(
-  implicit F: Concurrent[F], timer: Timer[F]
+  implicit F: Concurrent[F], timer: Timer[F], dsl: StoreDSL[F]
 ) {
-  private[this] val syntax = new StoreSyntax[F]
-  import syntax._
+  import dsl._
 
   val error = cell(none[String])
   val app   = cell[AppState](NameEntry)
@@ -37,7 +36,24 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
   val peerConnection = cell(none[Peer.Connection[F]])
   val rematchState   = cell[RematchState](NotAsked)
 
-  val gameEvents = events.handled[GameMessage] {
+  val gameEvents = events[GameMessage]
+  val myTurnIntents = events[TurnIntent]
+
+  object animate {
+    private[this] val cell = dsl.cell(none[AnimatedCard])
+    val state = cell.discrete
+    val animDuration = 2500.millis
+    val sleepDelay = 500.millis
+
+    def apply(card: Card, isEnemy: Boolean, isDiscarded: Boolean): F[Unit] =
+      cell.set(AnimatedCard(card, isEnemy, isDiscarded).some) *>
+      timer.sleep(sleepDelay) *> {
+        timer.sleep(animDuration - sleepDelay) *> cell.set(None)
+      }.start.void
+  }
+
+  // TODO factor out
+  def installHandler: F[Unit] = events.onNextDo {
     case RematchRequest =>
       rematchState.update {
         case NotAsked => Asked
@@ -48,7 +64,7 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
       Timer[F].sleep(2.seconds)
     case ConnectionRecovery(progressV, cardsV, myTurnV) =>
       app.set(Playing) *>
-      game.set(progressV) *> cards.set(cardsV) *> myTurn.set(myTurnV)
+        game.set(progressV) *> cards.set(cardsV) *> myTurn.set(myTurnV)
     case ConnectionRejected =>
       peerConnection.set(none) *>
         fail("This player is already connected to somebody else")
@@ -88,20 +104,6 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
         GenLens[Progress](_.state.stats.resources).set(rsc)
       )
     case msg => Sync[F].delay(println(msg))
-  }
-  val myTurnIntents = events[TurnIntent]
-
-  object animate {
-    private[this] val cell = syntax.cell(none[AnimatedCard])
-    val state = cell.listen
-    val animDuration = 2500.millis
-    val sleepDelay = 500.millis
-
-    def apply(card: Card, isEnemy: Boolean, isDiscarded: Boolean): F[Unit] =
-      cell.set(AnimatedCard(card, isEnemy, isDiscarded).some) *>
-      timer.sleep(sleepDelay) *> {
-        timer.sleep(animDuration - sleepDelay) *> cell.set(None)
-      }.start.void
   }
 
   val lastEnemyHand = Ref.unsafe[F, Vector[Card]](Vector.empty)

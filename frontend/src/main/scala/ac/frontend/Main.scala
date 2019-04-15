@@ -10,6 +10,7 @@ import ac.frontend.facades.{AntDesign, Peer}
 import ac.frontend.states.StoreAlg
 import ac.frontend.utils.bundle
 import cats.effect._
+import com.olegpy.shironeko.StoreDSL
 import monix.eval.{Task, TaskApp}
 import monix.execution.{Cancelable, ExecutionModel, Scheduler}
 import monix.execution.schedulers.ReferenceScheduler
@@ -31,13 +32,14 @@ object Main extends TaskApp {
     for {
       peer <- Peer[Task].start
       root <- Task { document.getElementById("root") }
-      implicit0(alg: StoreAlg[Task]) = new StoreAlg(peer.join)
+      implicit0(alg: StoreAlg[Task]) <- StoreDSL[Task].use { implicit dsl =>
+        Task.pure(new StoreAlg(peer.join))
+      }
+      _    <- alg.installHandler
       _    <- matches.bootstrapRematching
       _    <- connect.preinitIfGuest.start
       _    <- Task {
-        ReactDOM.render(Store(alg)(
-          ErrorDisplay(App())
-        ), root)
+        ReactDOM.render(Store[Task](ErrorDisplay(App())), root)
       }
     } yield ExitCode.Success
   }

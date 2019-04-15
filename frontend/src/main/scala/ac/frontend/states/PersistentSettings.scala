@@ -43,7 +43,7 @@ object PersistentSettings {
   }
 
   def apply[F[_]](implicit F: Sync[F]): PersistentSettings[F] = {
-    if (utils.isDevelopment()) {
+    if (utils.inDevelopment()) {
       connect.isGuest[Coeval].value().fold(
         forLocalStorage[F]("arcomage-guest-dev"),
         forLocalStorage[F]("arcomage-host-dev")

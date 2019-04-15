@@ -67,10 +67,12 @@ lazy val frontend = crossProject(JSPlatform)
       ScalablyTyped.C.`clipboard`,
       "me.shadaj" %%% "slinky-web" % "0.6.0",
       "me.shadaj" %%% "slinky-hot" % "0.6.0",
-      "co.fs2" %%% "fs2-core" % "1.0.0-RC1",
+      "co.fs2" %%% "fs2-core" % "1.0.5-SNAPSHOT",
       "io.suzaku" %%% "boopickle" % "1.3.0",
       "com.lihaoyi" %%% "upickle" % "0.7.1",
-      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-SNAPSHOT"
+      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-SNAPSHOT",
+      "com.olegpy" %%% "shironeko-core" % "0.1.0-SNAPSHOT",
+      "com.olegpy" %%% "shironeko-util" % "0.1.0-SNAPSHOT",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

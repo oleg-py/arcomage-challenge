@@ -43,7 +43,7 @@ import mouse.ignore
           value = props.connectionLink,
           addonAfter = { Button(className = btnClass)(Icon("copy")): ReactElement }
         ),
-        if (utils.isDevelopment) div(
+        if (utils.inDevelopment) div(
           a(href := props.connectionLink, target := "_blank")("[Dev] in new tab")
         ) else None
       )
