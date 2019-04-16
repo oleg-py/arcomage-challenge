@@ -53,7 +53,7 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
   }
 
   // TODO factor out
-  def installHandler: F[Unit] = events.onNextDo {
+  def installHandler: F[Unit] = gameEvents.onNextDo {
     case RematchRequest =>
       rematchState.update {
         case NotAsked => Asked
@@ -142,4 +142,8 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
     animate.state.unNone
       .debounce(animate.animDuration)
       .scan(History(0, Chain.empty, mine = true))(_ >-> _)
+}
+
+object StoreAlg {
+  def apply[F[_]](implicit ev: StoreAlg[F]): StoreAlg[F] = ev
 }
