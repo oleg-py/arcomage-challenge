@@ -7,22 +7,24 @@ import ac.frontend.states.{AppState, RematchState, StoreAlg}
 import ac.frontend.states.AppState.{Defeat, Draw, Victory}
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import ac.frontend.utils.combine
-import monix.eval.Task
+import com.olegpy.shironeko.util.combine
+import cats.effect.Concurrent
 import typings.antdLib.libSpinMod.SpinProps
-import cats.implicits._
+import com.olegpy.shironeko.interop.Exec
 
 object EndgameNotice extends Store.ContainerNoProps {
   case class State(app: AppState, rs: RematchState)
 
+  def subscribe[F[_]: Concurrent](implicit F: StoreAlg[F]): fs2.Stream[F, State] =
+    combine[State].from(
+      F.app.discrete,
+      F.rematchState.discrete
+    )
 
-  def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] =
-    combine[State].from(F.app.listen, F.rematchState.listen)
-
-  def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
+  def render[F[_]: Concurrent: StoreAlg: Exec](state: State): ReactElement = {
     val State(as, rs) = state
 
-    val runRematch = () => exec { matches.proposeRematch[Task] }
+    val runRematch = () => exec { matches.proposeRematch[F] }
 
     as match {
       case Victory | Defeat | Draw =>

@@ -72,7 +72,6 @@ lazy val frontend = crossProject(JSPlatform)
       "com.lihaoyi" %%% "upickle" % "0.7.1",
       "com.olegpy" %%% "shironeko-slinky" % "0.1.0-SNAPSHOT",
       "com.olegpy" %%% "shironeko-core" % "0.1.0-SNAPSHOT",
-      "com.olegpy" %%% "shironeko-util" % "0.1.0-SNAPSHOT",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

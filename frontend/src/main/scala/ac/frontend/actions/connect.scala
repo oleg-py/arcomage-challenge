@@ -40,6 +40,7 @@ object connect {
         _    <- Store.app.set(AwaitingGuest(
           s"${url.toString}?$ConnectionKey=${peer.id}"))
         _    <- peer.incoming.pull.uncons1.flatMap {
+          // TODO must be a better way to do that
           case Some((hd, tl)) =>
             val handleOtherPeers = tl.evalMap { conn =>
               Store.peerConnection.get.flatMap {
@@ -71,7 +72,7 @@ object connect {
         }
         _    <- Store.me.set(me.some)
         // Wait for connection to arrive
-        _    <- Store.peerConnection.listen.unNone
+        _    <- Store.peerConnection.discrete.unNone
                   .take(1).compile.drain
         _    <- Store.send(OpponentReady(me))
         _    <- Store.myTurnIntents.listen

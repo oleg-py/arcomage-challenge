@@ -3,14 +3,15 @@ package ac.frontend.components
 import ac.frontend.Store
 import ac.frontend.states.{AppState, StoreAlg}
 import ac.frontend.facades.AntDesign.Spin
-import ac.frontend.utils.{StreamOps, combine}
+import ac.frontend.utils.StreamOps
 import ac.game.player.TurnMod
 import ac.game.player.TurnMod.ForceDiscard
-import monix.eval.Task
+import cats.effect.{Concurrent, Timer}
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
 import typings.antdLib.libSpinMod.SpinProps
-import cats.implicits._
+import com.olegpy.shironeko.interop.Exec
+import com.olegpy.shironeko.util.combine
 
 object Notice extends Store.ContainerNoProps {
 
@@ -21,20 +22,23 @@ object Notice extends Store.ContainerNoProps {
     turnMod: Option[TurnMod]
   )
 
-  def subscribe(implicit F: StoreAlg[Task]): fs2.Stream[Task, State] =
+
+  def subscribe[F[_]: Concurrent: StoreAlg]: fs2.Stream[F, State] = {
+    val F = StoreAlg[F]
+    implicit val timer: Timer[F] = F.currentTimer
     combine[State].from(
-      F.myTurn.listen,
+      F.myTurn.discrete,
       F.animate.state.map(_.nonEmpty),
-      F.app.listen,
-      F.game.listen.map(_.state.turnMods.headOption)
+      F.app.discrete,
+      F.game.discrete.map(_.state.turnMods.headOption)
     ).frameDebounced.cons1(State(
       myTurn = false,
       isAnimating = true,
       AppState.Playing, None
     ))
+  }
 
-
-  def render(state: State)(implicit F: StoreAlg[Task]): ReactElement = {
+  def render[F[_]: Concurrent: StoreAlg: Exec](state: State): ReactElement = {
     import state._
     val isEndgame = appState match {
       case AppState.Victory | AppState.Defeat | AppState.Draw => true

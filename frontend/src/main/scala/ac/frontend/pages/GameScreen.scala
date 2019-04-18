@@ -9,11 +9,8 @@ import ac.frontend.states.AppState.User
 import ac.frontend.states.{Progress, StoreAlg}
 import ac.game.cards.Card
 import cats.effect.Concurrent
-import monix.eval.Task
-import cats.implicits._
 import com.olegpy.shironeko.interop.Exec
 import com.olegpy.shironeko.util._
-import slinky.web.SyntheticMouseEvent
 
 /*_*/
 object GameScreen extends Store.ContainerNoProps {
@@ -57,15 +54,17 @@ object GameScreen extends Store.ContainerNoProps {
   }
 
   def subscribe[F[_]: Concurrent](implicit F: StoreAlg[F]): fs2.Stream[F, State] =
-    combine[State].fromStreams(
+    combine[State].from(
       F.game.discrete,
-      F.me.discrete.unNone[User],
-      F.enemy.discrete.unNone[User],
+      F.me.discrete.unNone,
+      F.enemy.discrete.unNone,
       F.cards.discrete,
       F.locale.discrete,
-      combine[(Boolean, Boolean)].fromStreams(
+      combine[(Boolean, Boolean)].from(
         F.myTurn.discrete,
         F.animate.state.map(_.isEmpty)
-      ).map { case (a, b) => a && b }
+      ).map[Boolean] { case (a, b) => a && b }
     )
+
+    // TODO - macro prob. expands type too eagerly, that's why there's type ascriptions
 }

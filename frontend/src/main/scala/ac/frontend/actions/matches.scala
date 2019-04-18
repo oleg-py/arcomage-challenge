@@ -36,7 +36,7 @@ object matches {
       }
 
     Stream.eval(doRematch).flatMap { action =>
-      Store.rematchState.listen
+      Store.rematchState.discrete
         .filter(_ == RematchState.Accepted)
         .evalMap(_ => action)
     }.compile.drain.start.void

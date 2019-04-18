@@ -14,7 +14,7 @@ object CardAnimation extends Store.ContainerNoProps {
   case class State(maybeCard: Option[AnimatedCard], lang: Lang)
 
   def subscribe[F[_]: Concurrent: StoreAlg]: fs2.Stream[F, State] =
-    combine[State].fromStreams(
+    combine[State].from(
       StoreAlg[F].animate.state,
       StoreAlg[F].locale.discrete
     )

@@ -25,6 +25,8 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
 ) {
   import dsl._
 
+  val currentTimer = timer
+
   val error = cell(none[String])
   val app   = cell[AppState](NameEntry)
   val game  = cell[Progress](Progress.NotStarted)
@@ -51,6 +53,8 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
         timer.sleep(animDuration - sleepDelay) *> cell.set(None)
       }.start.void
   }
+
+  locally { animate; () } // TODO - objects are lazily initialized, and DSL is dead by its end
 
   // TODO factor out
   def installHandler: F[Unit] = gameEvents.onNextDo {
@@ -128,15 +132,6 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
 
   def fail[A](s: String): F[A] =
     error.set(s.some) *> F.raiseError(new Exception(s))
-
-  case class History(nPlayed: Int, current: Chain[(Card, Boolean)], mine: Boolean) {
-    def >->(anim: AnimatedCard) =
-      if (mine == anim.isEnemy) {
-        History(nPlayed, current :+ (anim.card -> anim.isDiscarded), mine)
-      } else {
-        History(nPlayed + current.length.toInt, Chain.one(anim.card -> anim.isDiscarded), !mine)
-      }
-  }
 
   def cardHistory: Stream[F, History] =
     animate.state.unNone
