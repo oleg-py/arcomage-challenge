@@ -30,8 +30,8 @@ object App extends Store.ContainerNoProps with Store.HasTimer {
       state match {
         case State(_, None, _) =>
           // TODO - this causes random name to be persisted
-          NameEntryPage { (name, email, avatar) => exec {
-            settings.persistUser[F](name, email) *>
+          NameEntryPage { (name, email, avatar, hasName) => exec {
+            settings.persistUser[F](name, email).whenA(hasName) *>
               connect[F](User(name, avatar))
           }}
         case State(AwaitingGuest(link), Some(me), _) =>

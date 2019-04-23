@@ -15,13 +15,15 @@ import typings.antdLib.antdLibStrings
 import typings.antdLib.libAvatarMod.AvatarProps
 
 @react class NameEntryPage extends Component {
-  type Props = (String, String, String) => Unit
+  type Props = (String, String, String, Boolean) => Unit
   case class State(name: String, email: String)
 
   private val DefaultAvatarType = "monsterid"
   private val DummyName = utils.names.pick()
 
-  private def avatarName = if (state.name.nonEmpty) state.name else DummyName
+  private def hasName = state.name.nonEmpty
+
+  private def avatarName = if (hasName) state.name else DummyName
 
   private def avatarUrl = {
     if (state.email contains "@") {
@@ -58,7 +60,7 @@ import typings.antdLib.libAvatarMod.AvatarProps
           }),
         div(className := "button-container-right")(
           Button(
-            onClick = () => props(avatarName, state.email, avatarUrl)
+            onClick = () => props(avatarName, state.email, avatarUrl, hasName)
           )("Enter a game")
         )
       ),
