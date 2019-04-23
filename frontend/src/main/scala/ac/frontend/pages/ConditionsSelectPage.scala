@@ -1,7 +1,7 @@
 package ac.frontend.pages
 
 import ac.frontend.facades.AntDesign.{Button, Option, Select, TabPane, Tabs, Text}
-import ac.frontend.states.ConditionsChoice.{FastGame, Hardcore, Mode, Preset, PresetMode, Tavern, Tutorial}
+import ac.frontend.states.ConditionsChoice.{FastGame, FullyCustom, Hardcore, Mode, Preset, PresetMode, Tavern, Tutorial}
 import ac.frontend.states.{ConditionsChoice, GameConditionOptions, PersistentSettings}
 import monix.eval.Coeval
 import slinky.core.Component
@@ -85,7 +85,7 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
           Text(s"Cards: ${tavern.handSize}"),
         ),
       ),
-      TabPane(TabPaneProps(tab = "Custom", disabled = true)).withKey("cp")(
+      TabPane(TabPaneProps(tab = "Custom")).withKey(FullyCustom.key)(
         div(className := "custom-conditions")(
           "This section is in development"
         )
