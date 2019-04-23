@@ -63,8 +63,6 @@ object GameScreen extends Store.ContainerNoProps {
       combine[(Boolean, Boolean)].from(
         F.myTurn.discrete,
         F.animate.state.map(_.isEmpty)
-      ).map[Boolean] { case (a, b) => a && b }
+      ).map { case (a, b) => a && b }
     )
-
-    // TODO - macro prob. expands type too eagerly, that's why there's type ascriptions
 }
