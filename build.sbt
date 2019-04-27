@@ -69,9 +69,12 @@ lazy val frontend = crossProject(JSPlatform)
       "me.shadaj" %%% "slinky-hot" % "0.6.0",
       "co.fs2" %%% "fs2-core" % "1.0.5-SNAPSHOT",
       "io.suzaku" %%% "boopickle" % "1.3.0",
-      "com.lihaoyi" %%% "upickle" % "0.7.1",
       "com.olegpy" %%% "shironeko-slinky" % "0.1.0-SNAPSHOT",
       "com.olegpy" %%% "shironeko-core" % "0.1.0-SNAPSHOT",
+      "io.circe" %%% "circe-core" % "0.10.0",
+      "io.circe" %%% "circe-generic" % "0.10.0",
+      "io.circe" %%% "circe-parser" % "0.10.0",
+      "io.circe" %%% "circe-refined" % "0.10.0",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",

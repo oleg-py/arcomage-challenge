@@ -2,15 +2,14 @@ package ac.frontend.states
 
 import ac.frontend.states.ConditionsChoice._
 import ac.frontend.states.GameConditionOptions.{presets, taverns}
-import ac.game.player.Player
-import ac.game.{GameConditions, VictoryConditions}
-import upickle.default._
+import ac.game.GameConditions
+import slinky.readwrite.{Reader, Writer}
 
 case class ConditionsChoice (
   mode: Mode = PresetMode,
   preset: Preset = FastGame,
   tavern: String = "Harmondale",
-  //customPattern: GameConditions = presets.fastGame
+  customPattern: GameConditions = presets.fastGame
 ) {
   def pick(m: Mode = this.mode): Option[GameConditions] =
     m match {
@@ -22,12 +21,13 @@ case class ConditionsChoice (
         }
       }
       case Tavern => taverns.get(tavern)
-      case FullyCustom => None//Some(customPattern)
+      case FullyCustom => Some(customPattern)
     }
 }
 
 object ConditionsChoice {
-  implicit val pickler: ReadWriter[ConditionsChoice] = macroRW[ConditionsChoice]
+  implicit def sr: Reader[ConditionsChoice] = Reader.fallback[ConditionsChoice]
+  implicit def sw: Writer[ConditionsChoice] = Writer.fallback[ConditionsChoice]
 
   sealed trait Mode {
     def key: String = this match {
@@ -43,13 +43,8 @@ object ConditionsChoice {
     def ofKey(k: String): Mode = List(PresetMode, Tavern, FullyCustom)
       .find(_.key == k)
       .getOrElse(sys.error(s"Unexpected key: $k"))
-    implicit val pickler: ReadWriter[Mode] = macroRW[Mode]
   }
-
   sealed trait Preset
-  object Preset {
-    implicit val pickler: ReadWriter[Preset] = macroRW[Preset]
-  }
   case object FastGame extends Preset
   case object Tutorial extends Preset
   case object Hardcore extends Preset

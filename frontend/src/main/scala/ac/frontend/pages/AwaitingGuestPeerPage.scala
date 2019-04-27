@@ -8,8 +8,8 @@ import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import typings.clipboardLib.clipboardMod.{namespaced => ClipboardJS}
-import typings.clipboardLib.clipboardMod.ClipboardJSNs.Options
+import typings.clipboardLib.clipboardMod.{^ => ClipboardJS}
+import typings.clipboardLib.clipboardMod.Options
 import typings.antdLib.libMessageMod.^.{default => message}
 import mouse.ignore
 
@@ -43,7 +43,7 @@ import mouse.ignore
           value = props.connectionLink,
           addonAfter = { Button(className = btnClass)(Icon("copy")): ReactElement }
         ),
-        if (utils.inDevelopment) div(
+        if (utils.inDevelopment()) div(
           a(href := props.connectionLink, target := "_blank")("[Dev] in new tab")
         ) else None
       )

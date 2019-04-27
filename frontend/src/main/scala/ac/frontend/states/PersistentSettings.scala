@@ -4,12 +4,15 @@ import ac.frontend.actions.connect
 import ac.frontend.utils
 import cats.effect.Sync
 import cats.implicits._
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.auto._
+import io.circe.parser.decode
+import io.circe.syntax._
 import monix.eval.Coeval
 import monocle.macros.Lenses
-import upickle.default._
 import org.scalajs.dom.window.localStorage
 import mouse.boolean._
-import upickle.core.AbortException
+import io.circe.refined._
 
 trait PersistentSettings[F[_]] {
   def readAll: F[PersistentSettings.Repr]
@@ -24,19 +27,15 @@ object PersistentSettings {
     conditionsChoice: ConditionsChoice = ConditionsChoice(),
   )
 
-  object Repr {
-    implicit def codec: ReadWriter[Repr] = macroRW
-  }
-
   def forLocalStorage[F[_]](key: String)(implicit F: Sync[F]): PersistentSettings[F] = new PersistentSettings[F] {
     def readAll: F[Repr] = F.delay {
-      Option(localStorage.getItem(key)).fold(Repr())(read[Repr](_))
-    } recover {
-      case _: AbortException => Repr()
+      Option(localStorage.getItem(key))
+        .flatMap(decode[Repr](_).toOption)
+        .getOrElse(Repr())
     }
 
     def writeAll(s: Repr): F[Unit] = F.delay {
-      localStorage.setItem(key, write(s))
+      localStorage.setItem(key, s.asJson.noSpaces)
     }
 
     def modify(f: Repr => Repr): F[Unit] = readAll.map(f).flatMap(writeAll)
