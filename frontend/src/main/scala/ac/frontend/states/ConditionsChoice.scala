@@ -3,9 +3,10 @@ package ac.frontend.states
 import ac.frontend.states.ConditionsChoice._
 import ac.frontend.states.GameConditionOptions.{presets, taverns}
 import ac.game.GameConditions
+import monocle.macros.Lenses
 import slinky.readwrite.{Reader, Writer}
 
-case class ConditionsChoice (
+@Lenses case class ConditionsChoice (
   mode: Mode = PresetMode,
   preset: Preset = FastGame,
   tavern: String = "Harmondale",

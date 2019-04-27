@@ -1,5 +1,6 @@
 package ac.frontend.pages
 
+import ac.frontend.components.CustomConditionsForm
 import ac.frontend.facades.AntDesign.{Button, Option, Select, TabPane, Tabs, Text}
 import ac.frontend.states.ConditionsChoice.{FastGame, FullyCustom, Hardcore, Mode, Preset, PresetMode, Tavern, Tutorial}
 import ac.frontend.states.{ConditionsChoice, GameConditionOptions, PersistentSettings}
@@ -11,6 +12,7 @@ import slinky.web.html._
 import monocle.macros.syntax.lens._
 import typings.antdLib.libSelectMod.SelectProps
 import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
+import cats.implicits._
 
 /*_*/
 @react class ConditionsSelectPage extends Component {
@@ -87,7 +89,10 @@ import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
       ),
       TabPane(TabPaneProps(tab = "Custom")).withKey(FullyCustom.key)(
         div(className := "custom-conditions")(
-          "This section is in development"
+          CustomConditionsForm(
+            state.cc.customPattern,
+            gc => setState(_.lens(_.cc.customPattern).set(gc))
+          )
         )
       ),
     ),
