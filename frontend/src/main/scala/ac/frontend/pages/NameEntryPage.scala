@@ -8,8 +8,8 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import monix.eval.Coeval
-import typings.gravatarDashUrlLib.gravatarDashUrlMod.{^ => gravatarUrl}
-import typings.gravatarDashUrlLib.gravatarDashUrlMod.GravatarUrlNs.Options
+import typings.gravatarLib.gravatarMod.^.{url => gravatarUrl}
+import typings.gravatarLib.gravatarMod.Options
 import ac.frontend.facades.AntDesign.{Avatar, Button, Icon, Input}
 import typings.antdLib.antdLibStrings
 import typings.antdLib.libAvatarMod.AvatarProps
@@ -27,7 +27,7 @@ import typings.antdLib.libAvatarMod.AvatarProps
 
   private def avatarUrl = {
     if (state.email contains "@") {
-      gravatarUrl(state.email, Options(size = 128, default = DefaultAvatarType))
+      gravatarUrl(state.email, Options(size = "128", default = DefaultAvatarType))
     } else {
       s"https://gravatar.com/avatar/${avatarName.hashCode.toHexString}?size=128&default=$DefaultAvatarType"
     }

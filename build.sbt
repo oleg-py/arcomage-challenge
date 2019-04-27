@@ -41,7 +41,7 @@ lazy val frontend = crossProject(JSPlatform)
       "react-dom"          -> "16.8.6",
       "react-proxy"        -> "1.1.8",
       "peerjs"             -> "0.3.16",
-      "gravatar-url"       -> "2.0.0",
+      "gravatar"           -> "1.8.0",
       "clipboard"          -> "2.0.4",
     ),
 
@@ -63,7 +63,7 @@ lazy val frontend = crossProject(JSPlatform)
 
     libraryDependencies ++= Seq(
       ScalablyTyped.A.antd,
-      ScalablyTyped.G.`gravatar-url`,
+      ScalablyTyped.G.`gravatar`,
       ScalablyTyped.C.`clipboard`,
       "me.shadaj" %%% "slinky-web" % "0.6.0",
       "me.shadaj" %%% "slinky-hot" % "0.6.0",
