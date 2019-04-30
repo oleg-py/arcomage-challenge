@@ -3,7 +3,7 @@ package ac.frontend.components
 import scala.scalajs.js
 
 import ac.game.GameConditions
-import slinky.core.{Component, FunctionalComponent, StatelessComponent}
+import slinky.core.{Component, FunctionalComponent, ReactComponentClass, StatelessComponent}
 import slinky.core.annotations.react
 import slinky.core.facade.{React, ReactElement}
 import slinky.web.html.div
@@ -14,7 +14,7 @@ import typings.antdLib.libFormMod.default.create
   case class Props(initial: GameConditions, onSubmit: GameConditions => Unit)
 
   private[this] val form =
-    create().apply(js.constructorOf[Underlying]).asInstanceOf[ReactElement]
+    create().apply(Underlying: ReactComponentClass[_]).asInstanceOf[ReactElement]
 
   val component = FunctionalComponent[Unit] { _ =>
     React.createElement(form, null)
