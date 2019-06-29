@@ -6,10 +6,8 @@ import slinky.web.html.{className, div, onContextMenu}
 import ac.frontend.components._
 import ac.frontend.i18n.Lang
 import ac.frontend.states.AppState.User
-import ac.frontend.states.{Progress, StoreAlg}
+import ac.frontend.states.Progress
 import ac.game.cards.Card
-import cats.effect.Concurrent
-import com.olegpy.shironeko.interop.Exec
 import com.olegpy.shironeko.util._
 
 /*_*/
@@ -24,7 +22,7 @@ object GameScreen extends Store.ContainerNoProps {
   )
 
 
-  def render[F[_]: Concurrent: StoreAlg: Exec](state: State): ReactElement = {
+  def render[F[_]: Render](state: State): ReactElement = {
     val State(Progress(st, conds), me, enemy, cards, lang, canMove) =
       state
 
@@ -53,16 +51,23 @@ object GameScreen extends Store.ContainerNoProps {
     )
   }
 
-  def subscribe[F[_]: Concurrent](implicit F: StoreAlg[F]): fs2.Stream[F, State] =
+  def subscribe[F[_]: Subscribe]: fs2.Stream[F, State] = {
+    val F = getAlgebra
+    val canMove =
+      combine[(Boolean, Boolean)]
+        .from(
+          F.myTurn.discrete,
+          F.animate.state.map(_.isEmpty)
+        )
+        .map { case (a, b) => a && b }
+
     combine[State].from(
       F.game.discrete,
       F.me.discrete.unNone,
       F.enemy.discrete.unNone,
       F.cards.discrete,
       F.locale.discrete,
-      combine[(Boolean, Boolean)].from(
-        F.myTurn.discrete,
-        F.animate.state.map(_.isEmpty)
-      ).map { case (a, b) => a && b }
+      canMove
     )
+  }
 }

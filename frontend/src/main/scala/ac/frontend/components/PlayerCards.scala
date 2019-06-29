@@ -6,10 +6,11 @@ import ac.frontend.i18n.Lang
 import ac.frontend.states.StoreAlg
 import ac.game.Resources
 import ac.game.cards.Card
-import cats.effect.{Concurrent, Sync}
+import cats.effect.Sync
 import com.olegpy.shironeko.interop.Exec
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.NonNegInt
+import slinky.core.facade.ReactElement
 import slinky.web.SyntheticMouseEvent
 import slinky.web.html._
 
@@ -22,7 +23,7 @@ object PlayerCards extends Store.ContainerNoState {
     disableAll: Boolean
   )
 
-  // TODO - factor out cards?
+  // TODO - factor out cards? refactor ton of constraints?
   private def handleClick[F[_]](
     props: Props, i: Int)(
     e: SyntheticMouseEvent[div.tag.RefType])(
@@ -44,7 +45,7 @@ object PlayerCards extends Store.ContainerNoState {
     }
   })
 
-  def render[F[_]: Concurrent: StoreAlg: Exec](props: Props) =
+  def render[F[_]: Render](props: Props): ReactElement =
     div(className := "hand")(
       props.cards.zipWithIndex.map { case (card, i) =>
         CardDisplay(

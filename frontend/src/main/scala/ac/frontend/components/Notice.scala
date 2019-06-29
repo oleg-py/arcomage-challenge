@@ -3,15 +3,15 @@ package ac.frontend.components
 import ac.frontend.Store
 import ac.frontend.states.{AppState, StoreAlg}
 import ac.frontend.facades.AntDesign.Spin
+import ac.frontend.i18n._
 import ac.frontend.utils.StreamOps
 import ac.game.player.TurnMod
 import ac.game.player.TurnMod.ForceDiscard
-import cats.effect.{Concurrent, Timer}
+import cats.effect.Timer
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
 import typings.antdLib.antdLibComponents.SpinProps
 import typings.antdLib.antdLibStrings.small
-import com.olegpy.shironeko.interop.Exec
 import com.olegpy.shironeko.util.combine
 
 object Notice extends Store.ContainerNoProps {
@@ -24,7 +24,7 @@ object Notice extends Store.ContainerNoProps {
   )
 
 
-  def subscribe[F[_]: Concurrent: StoreAlg]: fs2.Stream[F, State] = {
+  def subscribe[F[_]: Subscribe]: fs2.Stream[F, State] = {
     val F = StoreAlg[F]
     implicit val timer: Timer[F] = F.currentTimer
     combine[State].from(
@@ -39,7 +39,7 @@ object Notice extends Store.ContainerNoProps {
     ))
   }
 
-  def render[F[_]: Concurrent: StoreAlg: Exec](state: State): ReactElement = {
+  def render[F[_]: Render](state: State): ReactElement = withLang { implicit lang =>
     import state._
     val isEndgame = appState match {
       case AppState.Victory | AppState.Defeat | AppState.Draw => true
@@ -47,11 +47,22 @@ object Notice extends Store.ContainerNoProps {
     }
     div(className := "turn-status") {
       if (isAnimating || isEndgame) span(className := "empty")("\u00a0")
-      else if (myTurn && turnMod.contains(ForceDiscard)) span(className := "my-turn discard")("Discard a card now...")
-      else if (myTurn) span(className := "my-turn")(".:: Make your choice ::.")
+      else if (myTurn && turnMod.contains(ForceDiscard)) span(className := "my-turn discard")(Tr(
+        "Discard a card now...",
+        "Сбросьте карту"
+      ))
+      else if (myTurn) span(className := "my-turn")(
+        Tr(
+          ".:: Make your choice ::.",
+          ".:: Ваш ход ::."
+        )
+      )
       else Fragment(
         Spin(SpinProps(size = small)),
-        span(className := "enemy-turn")("Your opponent is thinking hard...")
+        span(className := "enemy-turn")(Tr(
+          "Your opponent is thinking hard...",
+          "Ваш оппонент размышляет над ходом..."
+        ))
       )
     }
   }

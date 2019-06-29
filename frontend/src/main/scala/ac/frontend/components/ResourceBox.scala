@@ -1,5 +1,6 @@
 package ac.frontend.components
 
+import ac.frontend.i18n._
 import ac.game.cards.Card
 import ac.game.cards.Card.Color
 import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
@@ -12,12 +13,8 @@ import slinky.web.html.{className, div, span, title}
 @react class ResourceBox extends StatelessComponent {
   case class Props(tpe: Card.Color, res: NonNegInt, income: PosInt, max: PosInt)
 
-  def render(): ReactElement = {
-    val (incomeName, amountName) = props.tpe match {
-      case Color.Red => ("Quarry","Bricks")
-      case Color.Blue => ("Magic", "Gems")
-      case Color.Green => ("Dungeon", "Recruits")
-    }
+  def render(): ReactElement = withLang { lang =>
+    val (incomeName, amountName) = names(props.tpe) in lang
     val colorClass = props.tpe.lowerName
 
     div(className := s"resource-box $colorClass")(
@@ -28,4 +25,20 @@ import slinky.web.html.{className, div, span, title}
       )
     )
   }
+
+  private val names =
+    (_: Color) match {
+      case Color.Red => Tr(
+        "Quarry"  -> "Bricks",
+        "Рудники" -> "Кирпичи"
+      )
+      case Color.Blue => Tr(
+        "Magic" -> "Gems",
+        "Магия" -> "Драгоценности"
+      )
+      case Color.Green => Tr(
+        "Dungeon" -> "Recruits",
+        "Темницы" -> "Рекруты"
+      )
+    }
 }

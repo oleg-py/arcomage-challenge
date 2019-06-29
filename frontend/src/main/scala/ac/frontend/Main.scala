@@ -7,6 +7,7 @@ import scala.scalajs.LinkingInfo
 
 import ac.frontend.actions.{connect, matches}
 import ac.frontend.facades.{AntDesign, Peer}
+import ac.frontend.i18n.LangSupport
 import ac.frontend.states.StoreAlg
 import ac.frontend.utils.bundle
 import cats.effect._
@@ -39,7 +40,11 @@ object Main extends TaskApp {
       _    <- matches.bootstrapRematching
       _    <- connect.preinitIfGuest.start
       _    <- Task {
-        ReactDOM.render(Store[Task](ErrorDisplay(App())), root)
+        ReactDOM.render(Store[Task] {
+          LangSupport(
+            ErrorDisplay(App())
+          )
+        }, root)
       }
     } yield ExitCode.Success
   }

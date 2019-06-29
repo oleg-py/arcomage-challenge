@@ -11,6 +11,7 @@ import monix.eval.Coeval
 import typings.gravatarLib.gravatarMod.^.{url => gravatarUrl}
 import typings.gravatarLib.gravatarMod.Options
 import ac.frontend.facades.AntDesign.{Avatar, Button, Icon, Input}
+import ac.frontend.i18n._
 import typings.antdLib.antdLibStrings
 import typings.antdLib.antdLibComponents.AvatarProps
 
@@ -38,7 +39,7 @@ import typings.antdLib.antdLibComponents.AvatarProps
     State(s.name, s.email)
   }
 
-  def render(): ReactElement = {
+  def render(): ReactElement = withLang { implicit lang =>
     div(className := "box")(
       Avatar(AvatarProps(size = 128, src = avatarUrl, shape = antdLibStrings.square)),
       div(className := "input-container")(
@@ -52,7 +53,10 @@ import typings.antdLib.antdLibComponents.AvatarProps
           }),
         Input(
           prefix = Icon("mail"),
-          placeholder = "Email (for gravatar only)",
+          placeholder = Tr(
+            en = "Email (for gravatar only)",
+            ru = "Email (только для аватарки)",
+          ) in lang,
           value = state.email,
           onChange = { e: Event =>
             val target = e.target.asInstanceOf[HTMLInputElement]
@@ -61,7 +65,10 @@ import typings.antdLib.antdLibComponents.AvatarProps
         div(className := "button-container-right")(
           Button(
             onClick = () => props(avatarName, state.email, avatarUrl, hasName)
-          )("Enter a game")
+          )(Tr(
+            en = "Enter a game",
+            ru = "Войти в игру"
+          ))
         )
       ),
     )

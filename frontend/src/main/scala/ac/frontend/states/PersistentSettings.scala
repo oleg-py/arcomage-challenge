@@ -6,6 +6,7 @@ import cats.effect.Sync
 import cats.implicits._
 import io.circe.generic.auto._
 import io.circe.parser.decode
+import io.circe.refined._
 import io.circe.syntax._
 import monix.eval.Coeval
 import monocle.macros.Lenses

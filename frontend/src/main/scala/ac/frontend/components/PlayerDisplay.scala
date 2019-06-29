@@ -19,5 +19,3 @@ import typings.antdLib.antdLibComponents.{AvatarProps, TagProps}
       Tag(TagProps())(props.name)
     )
 }
-
-object PlayerDisplay

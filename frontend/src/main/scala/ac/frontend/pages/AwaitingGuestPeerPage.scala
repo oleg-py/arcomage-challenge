@@ -4,6 +4,7 @@ import ac.frontend.components.PlayerDisplay
 import ac.frontend.states.AppState.User
 import ac.frontend.utils
 import ac.frontend.facades.AntDesign.{Button, Icon, Input}
+import ac.frontend.i18n._
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
@@ -34,18 +35,27 @@ import mouse.ignore
     clipboard = None
   }
 
-  def render(): ReactElement =
+  def render(): ReactElement = withLang { implicit lang =>
     div(className := "box")(
       PlayerDisplay(props.me),
       div(className := "input-container")(
-        label("Share this link with your friend to start a game:"),
+        label(Tr(
+          en = "Share this link with your friend to start a game:",
+          ru = "Поделитесь ссылкой с другом для входа в игру"
+        )),
         Input(
           value = props.connectionLink,
           addonAfter = { Button(className = btnClass)(Icon("copy")): ReactElement }
         ),
         if (utils.inDevelopment()) div(
-          a(href := props.connectionLink, target := "_blank")("[Dev] in new tab")
+          a(href := props.connectionLink, target := "_blank")(
+            Tr(
+              en = "[Test] Open in new tab",
+              ru = "[Тест] Открыть в новой вкладке"
+            )
+          )
         ) else None
       )
     )
+  }
 }

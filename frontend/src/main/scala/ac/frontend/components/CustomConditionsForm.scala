@@ -1,9 +1,8 @@
 package ac.frontend.components
 
-import scala.scalajs.js
 
 import ac.game.GameConditions
-import slinky.core.{Component, FunctionalComponent, ReactComponentClass, StatelessComponent}
+import slinky.core.{FunctionalComponent, ReactComponentClass, StatelessComponent}
 import slinky.core.annotations.react
 import slinky.core.facade.{React, ReactElement}
 import slinky.web.html.div

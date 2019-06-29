@@ -12,5 +12,5 @@ trait CardDataElement extends js.Object {
   def name_en: String
   def offset_x: Int
   def offset_y: Int
-  def description_en: String
+  def description_en: String // TODO UndefOr
 }

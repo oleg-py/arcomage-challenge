@@ -3,8 +3,6 @@ package ac.frontend.components
 import ac.frontend.i18n.Lang
 import ac.frontend.Store
 import ac.frontend.states.{History, StoreAlg}
-import cats.effect.Concurrent
-import com.olegpy.shironeko.interop.Exec
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 
@@ -12,10 +10,10 @@ import slinky.web.html._
 object HistoryDisplay extends Store.ContainerNoProps {
   type State = History // TODO - consider inlining
 
-  def subscribe[F[_]: Concurrent: StoreAlg]: fs2.Stream[F, History] =
+  def subscribe[F[_]: Subscribe]: fs2.Stream[F, History] =
     StoreAlg[F].cardHistory // TODO - consider inlining
 
-  def render[F[_]: Concurrent: StoreAlg: Exec](state: History): ReactElement = {
+  def render[F[_]: Render](state: History): ReactElement = {
     val History(nPlayed, cards, _) = state
 
     val cc = Vector.fill(nPlayed min 3)(None) ++ cards.toVector.map(Some(_))
