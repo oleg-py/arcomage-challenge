@@ -8,7 +8,6 @@ import cats.data.Chain
 
 
 sealed trait Lang {
-  def cardName(str: String): String = str
   def cardDescription(dslEntry: DSLEntry): Chain[String] =
     DescribeInterpreter.en(dslEntry)
 

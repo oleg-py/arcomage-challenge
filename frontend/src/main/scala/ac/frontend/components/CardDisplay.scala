@@ -23,7 +23,7 @@ import slinky.web.html._
   private def describe(card: Card)(implicit lang: Lang): List[String] =
     CardData
       .find(_.name_en == card.name)
-      .flatMap(card => Option(card.description_en)) // Nullable field in CSV
+      .flatMap(card => card.customDescription.in(lang).toOption)
       .filter(_.nonEmpty)
       .map(_.split('|').toList)
       .getOrElse {
@@ -32,17 +32,18 @@ import slinky.web.html._
 
   def render(): ReactElement = withLang { implicit lang =>
     val Props(card, customClass, onClick, overlay) = props
-    val Some(offsets) = CardData.find(_.name_en == card.name)
+    val Some(data) = CardData.find(_.name_en == card.name)
+    val (x, y) = data.spriteOffsets
 
     div(
       className := (s"card ${card.color.toString.toLowerCase}" ++ customClass.fold("")(" " ++ _)),
       onMouseDown := onClick
     )(
-      label(className := "card-name")(lang.cardName(card.name)),
+      label(className := "card-name")(data.localizedName),
       div(
         className := "image",
         style := literal(backgroundPosition =
-          s"${offsets.offset_x * -128}px ${offsets.offset_y * -76}px"),
+          s"${x * -128}px ${y * -76}px"),
       ),
       overlay,
       div(className := "description")(
