@@ -9,7 +9,7 @@ import slinky.core.facade.ReactElement
 import slinky.web.html._
 import com.olegpy.shironeko.util.combine
 import cats.effect.Concurrent
-import typings.antdLib.libSpinMod.SpinProps
+import typings.antdLib.antdLibComponents.SpinProps
 import com.olegpy.shironeko.interop.Exec
 
 object EndgameNotice extends Store.ContainerNoProps {

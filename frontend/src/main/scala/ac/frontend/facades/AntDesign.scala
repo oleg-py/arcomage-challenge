@@ -9,6 +9,7 @@ import slinky.core.ExternalComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import typings.antdLib.{antdLibComponents => antd}
+import typings.antdLib.antdLibStrings._
 
 //noinspection TypeAnnotation
 object AntDesign {
@@ -75,7 +76,7 @@ object AntDesign {
     type Props = antd.SpinProps
     override val component = antd.Spin
     def apply(text: String): ReactElement =
-      this(antd.SpinProps(size = "large", tip = text))
+      this(antd.SpinProps(size = large, tip = text))
   }
 
   @react object Select extends ExternalComponent {

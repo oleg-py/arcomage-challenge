@@ -4,7 +4,6 @@ import ac.frontend.actions.connect
 import ac.frontend.utils
 import cats.effect.Sync
 import cats.implicits._
-import io.circe.{Decoder, Encoder}
 import io.circe.generic.auto._
 import io.circe.parser.decode
 import io.circe.syntax._
@@ -12,7 +11,6 @@ import monix.eval.Coeval
 import monocle.macros.Lenses
 import org.scalajs.dom.window.localStorage
 import mouse.boolean._
-import io.circe.refined._
 
 trait PersistentSettings[F[_]] {
   def readAll: F[PersistentSettings.Repr]

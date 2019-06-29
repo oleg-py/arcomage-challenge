@@ -12,7 +12,7 @@ import typings.gravatarLib.gravatarMod.^.{url => gravatarUrl}
 import typings.gravatarLib.gravatarMod.Options
 import ac.frontend.facades.AntDesign.{Avatar, Button, Icon, Input}
 import typings.antdLib.antdLibStrings
-import typings.antdLib.libAvatarMod.AvatarProps
+import typings.antdLib.antdLibComponents.AvatarProps
 
 @react class NameEntryPage extends Component {
   type Props = (String, String, String, Boolean) => Unit

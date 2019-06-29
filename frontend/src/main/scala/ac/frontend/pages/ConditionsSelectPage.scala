@@ -10,9 +10,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import monocle.macros.syntax.lens._
-import typings.antdLib.libSelectMod.SelectProps
-import typings.antdLib.libTabsMod.{TabPaneProps, TabsProps}
-import cats.implicits._
+import typings.antdLib.antdLibComponents.{SelectProps, TabPaneProps, TabsProps}
 
 /*_*/
 @react class ConditionsSelectPage extends Component {

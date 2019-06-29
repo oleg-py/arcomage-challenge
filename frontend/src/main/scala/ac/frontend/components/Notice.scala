@@ -9,7 +9,8 @@ import ac.game.player.TurnMod.ForceDiscard
 import cats.effect.{Concurrent, Timer}
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
-import typings.antdLib.libSpinMod.SpinProps
+import typings.antdLib.antdLibComponents.SpinProps
+import typings.antdLib.antdLibStrings.small
 import com.olegpy.shironeko.interop.Exec
 import com.olegpy.shironeko.util.combine
 
@@ -49,7 +50,7 @@ object Notice extends Store.ContainerNoProps {
       else if (myTurn && turnMod.contains(ForceDiscard)) span(className := "my-turn discard")("Discard a card now...")
       else if (myTurn) span(className := "my-turn")(".:: Make your choice ::.")
       else Fragment(
-        Spin(SpinProps(size = "small")),
+        Spin(SpinProps(size = small)),
         span(className := "enemy-turn")("Your opponent is thinking hard...")
       )
     }

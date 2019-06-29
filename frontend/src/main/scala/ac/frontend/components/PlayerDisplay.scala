@@ -7,8 +7,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import typings.antdLib.antdLibStrings
-import typings.antdLib.libAvatarMod.AvatarProps
-import typings.antdLib.libTagMod.TagProps
+import typings.antdLib.antdLibComponents.{AvatarProps, TagProps}
 
 
 @react class PlayerDisplay extends StatelessComponent {
