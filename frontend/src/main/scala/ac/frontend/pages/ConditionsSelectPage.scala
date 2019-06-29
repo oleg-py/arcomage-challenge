@@ -21,7 +21,7 @@ import typings.antdLib.antdLibComponents.{SelectProps, TabPaneProps, TabsProps}
   type Props = ConditionsChoice => Unit
   case class State(cc: ConditionsChoice, buttonDisabled: Boolean = false)
 
-  private def tavern = GameConditionOptions.taverns(state.cc.tavern)
+  private def tavern = GameConditionOptions.taverns(state.cc.tavern)._2
 
   def initialState: State = {
     State(PersistentSettings[Coeval].readAll.value().conditionsChoice)
@@ -85,8 +85,8 @@ import typings.antdLib.antdLibComponents.{SelectProps, TabPaneProps, TabsProps}
             },
             className = "tavern-select"
           ))(
-            GameConditionOptions.taverns.map { case (tavernName, _) =>
-              Option(tavernName, tavernName)
+            GameConditionOptions.taverns.map { case (tavernKey, (name, _)) =>
+              Option(tavernKey, name in lang)
             }
           ),
           div(className := "tavern-description") {

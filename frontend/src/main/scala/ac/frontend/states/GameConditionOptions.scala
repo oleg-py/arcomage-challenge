@@ -4,6 +4,7 @@ import scala.collection.immutable.ListMap
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 
+import ac.frontend.i18n.Tr
 import ac.game.{GameConditions, Resources, VictoryConditions}
 import ac.game.player.{Buildings, Player}
 import cats.data.Validated.{Invalid, Valid}
@@ -36,7 +37,7 @@ object GameConditionOptions {
     ), VictoryConditions(150, 500))
   }
 
-  def taverns: ListMap[String, GameConditions] = {
+  def taverns: ListMap[String, (Tr[String], GameConditions)] = {
     val std = GameConditions.testing
     val (valids, errors) = RawData.map(validate).partition(_.isValid)
 
@@ -47,27 +48,30 @@ object GameConditionOptions {
       }
     val entries = valids.collect {
       case Valid((name, tower, wall, win_tower, win_resource)) =>
-        name -> GameConditions(
-          std.handSize,
-          Player(
-            Buildings(tower, wall),
-            std.initialStats.resources,
-            std.initialStats.income
-          ),
-          VictoryConditions(win_tower, win_resource)
+        name.en -> (name ->
+          GameConditions(
+            std.handSize,
+            Player(
+              Buildings(tower, wall),
+              std.initialStats.resources,
+              std.initialStats.income
+            ),
+            VictoryConditions(win_tower, win_resource)
+          )
         )
     }
     ListMap(entries: _*)
   }
 
-  private def validate(raw: Entry): ValidatedNel[String, (String, NonNegInt, NonNegInt, PosInt, PosInt)] =
+  private def validate(raw: Entry): ValidatedNel[String, (Tr[String], NonNegInt, NonNegInt, PosInt, PosInt)] =
     ( NonNegInt.validate(raw.tower)
     , NonNegInt.validate(raw.wall)
     , PosInt.validate(raw.win_tower)
-    , PosInt.validate(raw.win_resource)).mapN((raw.name, _, _, _, _))
+    , PosInt.validate(raw.win_resource)).mapN((Tr(raw.name, raw.name_ru), _, _, _, _))
 
   private trait Entry extends js.Object {
     def name: String
+    def name_ru: String
     def tower: Int
     def wall: Int
     def win_tower: Int

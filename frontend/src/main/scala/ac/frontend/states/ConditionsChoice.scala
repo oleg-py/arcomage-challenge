@@ -21,7 +21,7 @@ import slinky.readwrite.{Reader, Writer}
           case Hardcore => presets.hardcore
         }
       }
-      case Tavern => taverns.get(tavern)
+      case Tavern => taverns.get(tavern).map(_._2)
       case FullyCustom => Some(customPattern)
     }
 }
