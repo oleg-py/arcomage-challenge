@@ -15,14 +15,17 @@ trait CardDataElement extends js.Object {
   def name_ru: String
   def offset_x: Int
   def offset_y: Int
-  def description_en: js.UndefOr[String]
-  def description_ru: js.UndefOr[String]
+  def description_en: String // | Null, not UndefOr
+  def description_ru: String // same as above
 }
 
 object CardDataElement {
   implicit class RichDataElement(private val self: CardDataElement) extends AnyVal {
     def localizedName: Tr[String] = Tr(self.name_en, self.name_ru)
-    def customDescription: Tr[js.UndefOr[String]] = Tr(self.description_en, self.description_ru)
+    def customDescription: Tr[Option[String]] = Tr(
+      Option(self.description_en),
+      Option(self.description_ru)
+    )
     def spriteOffsets: (Int, Int) = (self.offset_x, self.offset_y)
   }
 }

@@ -27,6 +27,7 @@ object App extends Store.ContainerNoProps with Store.HasTimer {
 
   def render[F[_]: Render](state: State): ReactElement = withLang { lang =>
     div(className := "App")(
+      LocaleSelector(),
       state match {
         case State(_, None, _) =>
           // TODO - this causes random name to be persisted

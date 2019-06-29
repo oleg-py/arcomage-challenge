@@ -23,17 +23,18 @@ import slinky.web.html._
   private def describe(card: Card)(implicit lang: Lang): List[String] =
     CardData
       .find(_.name_en == card.name)
-      .flatMap(card => card.customDescription.in(lang).toOption)
+      .flatMap(card => card.customDescription.in(lang))
       .filter(_.nonEmpty)
       .map(_.split('|').toList)
       .getOrElse {
-        lang.cardDescription(card.effect).toList
+        genericCardDescription.in(lang)(card.effect).toList
       }
 
   def render(): ReactElement = withLang { implicit lang =>
     val Props(card, customClass, onClick, overlay) = props
     val Some(data) = CardData.find(_.name_en == card.name)
     val (x, y) = data.spriteOffsets
+    println((card, lang))
 
     div(
       className := (s"card ${card.color.toString.toLowerCase}" ++ customClass.fold("")(" " ++ _)),

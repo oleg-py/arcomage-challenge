@@ -118,3 +118,19 @@ button, input
 .error-dialog
   border: 1px solid indianred
   background-color: lighten(indianred, 75%)
+
+.language-selector
+  position: fixed
+  top: 0
+  right: 0
+  background: hsla(0, 0%, 100%, 0.75)
+  padding: 4px 16px
+  border-bottom-left-radius: 8px
+  .language
+    display: inline-block
+    &.active
+      font-weight: bold
+    &:not(:last-child):after
+      content: "/"
+      font-weight: normal;
+      padding: .5ex

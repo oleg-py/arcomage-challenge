@@ -1,103 +1,103 @@
-name_en,offset_x,offset_y,description_en,name_ru
-Brick Shortage,0,0,,Дефицит кирпича
-Earthquake,4,1,-1 all quarries,Землетрясение
-Lucky Cache,1,0,,Счастливая монетка
-Strip Mine,8,1,,Открытая добыча
-Friendly Terrain,2,0,,Благодатная почва
-Rock Garden,9,2,,Сад камней
-Basic Wall,8,0,,Обычная стена
-Innovations,0,1,,Новшества
-Work Overtime,6,0,,Сверхурочные
-Foundations,1,1,,Фундамент
-Miners,3,0,,Шахтеры
-Sturdy Wall,9,0,,Усиленная стена
-Collapse!,6,1,,Обвал
-Mother Lode,4,0,"If quarry < enemy quarry|+2 quarry|else + 1 quarry",Большая жила
-Big Wall,5,1,,Большая стена
-Copping the Tech,7,0,,Кража технологий
-Flood Water,0,3,For player w/ lowest wall|-1 dungeon|-2 tower,Грунтовые воды
-New Equipment,7,1,,Новые инструменты
-Dwarven Miners,5,0,,Гномы-шахтеры
-Forced Labor,8,2,,Рабский труд
-Tremors,2,1,-5 all walls|Play again,Толчки
-Reinforced Wall,9,1,,Великая стена
-Secret Room,3,1,,Тайная комната
-Crystal Rocks,1,2,,Кристальная руда
-Porticulus,0,2,,Галереи
-Barracks,1,3,"+6 recruits, +6 wall|if dungeon < enemy dungeon|+1 your dungeon",Казармы
-Harmonic Ore,2,2,,Поющий уголь
-Mondo Wall,3,2,,Бастион
-Battlements,2,3,,Укрепления
-Focused Designs,4,2,,Новые успехи
-Great Wall,5,2,,Величайшая стена
-Shift,3,3,Switch your wall|with enemy wall,Сдвиг
-Rock Launcher,6,2,,Скаломет
-Dragon's Heart,7,2,,Сердце дракона
-Bag of Baubles,9,6,if tower < enemy tower|+2 tower|else +1 tower,Бижутерия
-Rainbow,0,7,,Радуга
-Quartz,0,4,,Кварц
-Amethyst,2,4,,Аметист
-Gemstone Flaw,8,4,,Трещина в камне
-Prism,4,4,,Призма
-Smoky Quartz,1,4,,Дымчатый кварц
-Power Burn,1,5,,Взрыв силы
-Ruby,9,4,,Рубин
-Spell Weavers,3,4,,Ткачи заклинаний
-Gem Spear,0,5,,Копье
-Quarry's Help,1,6,,Помощь в работе
-Solar Flare,6,4,,Вспышка на солнце
-Apprentice,1,7,,Ученик
-Discord,9,5,-7 all towers|-1 all magic,Раздоры
-Lodestone,5,4,+8 tower|Cannot be discarded,Магнетит
-Crystal Matrix,7,4,,Матрица
-Emerald,4,5,,Изумруд
-Crumblestone,7,5,,Мягкий камень
-Harmonic Vibe,2,5,,Гармония
-Parity,3,5,All player's magic|equals the highest|player's magic,Паритет
-Crystallize,8,6,,Кристаллизация
-Shatterer,6,5,,Дробление
-Pearl of Wisdom,5,5,,Жемчуг мудрости
-Sapphire,8,5,,Сапфир
-Lightning Shard,2,7,,Осколок молнии
-Crystal Shield,2,6,,Кристальный щит
-Fire Ruby,0,6,,Огненный рубин
-Empathy Gem,3,6,,Эмпатия
-Sanctuary,5,6,,Святилище
-Diamond,4,6,,Алмаз
-Lava Jewel,6,6,,Сияющий камень
-Phase Jewel,3,7,,Медитация
-Dragon's Eye,7,6,,Глаз дракона
-Full Moon,3,9,,Полнолуние
-Mad Cow Disease,0,8,-6 all recruits,Бешенство
-Faerie,1,8,,Фея
-Moody Goblins,2,8,,Гоблины
-Elven Scout,4,8,,Эльф-разведчик
-Gnome,0,11,,Карлик
-Spearman,9,10,,Копьеносец
-Goblin Mob,5,8,,Банда гоблинов
-Minotaur,3,8,,Минотавр
-Orc,8,8,,Орк
-Berserker,1,11,,Берсерк
-Goblin Archers,6,8,,Гоблины-лучники
-Dwarves,9,8,,Гномы
-Imp,7,9,"6 damage|All players lose 5|bricks, gems|and recruits",Черт
-Slasher,4,9,,Крушитель
-Little Snakes,0,9,,Маленькие змейки
-Ogre,5,9,,Огр
-Rabid Sheep,6,9,,Бешеная овца
-Shadow Faerie,7,8,,Призрачная фея
-Troll Trainer,1,9,,Тролль-наставник
-Spizzer,8,9,,Жучара
-Tower Gremlin,2,9,,Гремлин башни
-Unicorn,1,10,,Единорог
-Werewolf,9,9,,Оборотень
-Elven Archers,2,10,,Эльфы-лучники
-Corrosion Cloud,0,10,,Кислотное облако
-Rock Stompers,4,10,,Камнееды
-Thief,5,10,"Enemy loses 10 gems, 5 bricks|You gain 1/2 of that",Вор
-Warlord,2,11,,Воитель
-Succubus,3,10,,Суккуб
-Stone Giant,6,10,,Каменный гигант
-Vampire,7,10,,Вампир
-Pegasus Lancer,3,11,,Всадник на пегасе
-Dragon,8,10,,Дракон
+name_en,offset_x,offset_y,description_en,name_ru,description_ru
+Brick Shortage,0,0,,Дефицит кирпича,
+Earthquake,4,1,-1 all quarries,Землетрясение,
+Lucky Cache,1,0,,Счастливая монетка,
+Strip Mine,8,1,,Открытая добыча,
+Friendly Terrain,2,0,,Благодатная почва,
+Rock Garden,9,2,,Сад камней,
+Basic Wall,8,0,,Обычная стена,
+Innovations,0,1,,Новшества,
+Work Overtime,6,0,,Сверхурочные,
+Foundations,1,1,,Фундамент,
+Miners,3,0,,Шахтеры,
+Sturdy Wall,9,0,,Усиленная стена,
+Collapse!,6,1,,Обвал,
+Mother Lode,4,0,"If quarry < enemy quarry|+2 quarry|else + 1 quarry",Большая жила,
+Big Wall,5,1,,Большая стена,
+Copping the Tech,7,0,,Кража технологий,
+Flood Water,0,3,For player w/ lowest wall|-1 dungeon|-2 tower,Грунтовые воды,Игроку с меньшей стеной|-1 темница|-2 башня
+New Equipment,7,1,,Новые инструменты,
+Dwarven Miners,5,0,,Гномы-шахтеры,
+Forced Labor,8,2,,Рабский труд,
+Tremors,2,1,-5 all walls|Play again,Толчки,
+Reinforced Wall,9,1,,Великая стена,
+Secret Room,3,1,,Тайная комната,
+Crystal Rocks,1,2,,Кристальная руда,
+Porticulus,0,2,,Галереи,
+Barracks,1,3,"+6 recruits, +6 wall|if dungeon < enemy dungeon|+1 your dungeon",Казармы,
+Harmonic Ore,2,2,,Поющий уголь,
+Mondo Wall,3,2,,Бастион,
+Battlements,2,3,,Укрепления,
+Focused Designs,4,2,,Новые успехи,
+Great Wall,5,2,,Величайшая стена,
+Shift,3,3,Switch your wall|with enemy wall,Сдвиг,
+Rock Launcher,6,2,,Скаломет,
+Dragon's Heart,7,2,,Сердце дракона,
+Bag of Baubles,9,6,if tower < enemy tower|+2 tower|else +1 tower,Бижутерия,
+Rainbow,0,7,,Радуга,
+Quartz,0,4,,Кварц,
+Amethyst,2,4,,Аметист,
+Gemstone Flaw,8,4,,Трещина в камне,
+Prism,4,4,,Призма,
+Smoky Quartz,1,4,,Дымчатый кварц,
+Power Burn,1,5,,Взрыв силы,
+Ruby,9,4,,Рубин,
+Spell Weavers,3,4,,Ткачи заклинаний,
+Gem Spear,0,5,,Копье,
+Quarry's Help,1,6,,Помощь в работе,
+Solar Flare,6,4,,Вспышка на солнце,
+Apprentice,1,7,,Ученик,
+Discord,9,5,-7 all towers|-1 all magic,Раздоры,
+Lodestone,5,4,+8 tower|Cannot be discarded,Магнетит,
+Crystal Matrix,7,4,,Матрица,
+Emerald,4,5,,Изумруд,
+Crumblestone,7,5,,Мягкий камень,
+Harmonic Vibe,2,5,,Гармония,
+Parity,3,5,All player's magic|equals the highest|player's magic,Паритет,
+Crystallize,8,6,,Кристаллизация,
+Shatterer,6,5,,Дробление,
+Pearl of Wisdom,5,5,,Жемчуг мудрости,
+Sapphire,8,5,,Сапфир,
+Lightning Shard,2,7,,Осколок молнии,
+Crystal Shield,2,6,,Кристальный щит,
+Fire Ruby,0,6,,Огненный рубин,
+Empathy Gem,3,6,,Эмпатия,
+Sanctuary,5,6,,Святилище,
+Diamond,4,6,,Алмаз,
+Lava Jewel,6,6,,Сияющий камень,
+Phase Jewel,3,7,,Медитация,
+Dragon's Eye,7,6,,Глаз дракона,
+Full Moon,3,9,,Полнолуние,
+Mad Cow Disease,0,8,-6 all recruits,Бешенство,
+Faerie,1,8,,Фея,
+Moody Goblins,2,8,,Гоблины,
+Elven Scout,4,8,,Эльф-разведчик,
+Gnome,0,11,,Карлик,
+Spearman,9,10,,Копьеносец,
+Goblin Mob,5,8,,Банда гоблинов,
+Minotaur,3,8,,Минотавр,
+Orc,8,8,,Орк,
+Berserker,1,11,,Берсерк,
+Goblin Archers,6,8,,Гоблины-лучники,
+Dwarves,9,8,,Гномы,
+Imp,7,9,"6 damage|All players lose 5|bricks, gems|and recruits",Черт,
+Slasher,4,9,,Крушитель,
+Little Snakes,0,9,,Маленькие змейки,
+Ogre,5,9,,Огр,
+Rabid Sheep,6,9,,Бешеная овца,
+Shadow Faerie,7,8,,Призрачная фея,
+Troll Trainer,1,9,,Тролль-наставник,
+Spizzer,8,9,,Жучара,
+Tower Gremlin,2,9,,Гремлин башни,
+Unicorn,1,10,,Единорог,
+Werewolf,9,9,,Оборотень,
+Elven Archers,2,10,,Эльфы-лучники,
+Corrosion Cloud,0,10,,Кислотное облако,
+Rock Stompers,4,10,,Камнееды,
+Thief,5,10,"Enemy loses 10 gems, 5 bricks|You gain 1/2 of that",Вор,
+Warlord,2,11,,Воитель,
+Succubus,3,10,,Суккуб,
+Stone Giant,6,10,,Каменный гигант,
+Vampire,7,10,,Вампир,
+Pegasus Lancer,3,11,,Всадник на пегасе,
+Dragon,8,10,,Дракон,

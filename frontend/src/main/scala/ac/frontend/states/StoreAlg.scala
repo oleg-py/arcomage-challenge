@@ -33,7 +33,7 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
   val cards = cell(Vector.empty[Card])
   val me    = cell(none[User])
   val enemy = cell(none[User])
-  val locale = cell[Lang](Lang.Ru)
+  val locale = cell[Lang](Lang.En)
   val myTurn  = cell(false)
   val peerConnection = cell(none[Peer.Connection[F]])
   val rematchState   = cell[RematchState](NotAsked)
