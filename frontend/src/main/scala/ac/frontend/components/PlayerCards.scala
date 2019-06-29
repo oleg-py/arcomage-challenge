@@ -2,7 +2,6 @@ package ac.frontend.components
 
 import ac.frontend.Store
 import ac.frontend.actions.card
-import ac.frontend.i18n.Lang
 import ac.frontend.states.StoreAlg
 import ac.game.Resources
 import ac.game.cards.Card
@@ -17,7 +16,6 @@ import slinky.web.html._
 
 object PlayerCards extends Store.ContainerNoState {
   case class Props(
-    lang: Lang,
     cards: Vector[Card],
     resources: Resources[NonNegInt],
     disableAll: Boolean
@@ -50,7 +48,6 @@ object PlayerCards extends Store.ContainerNoState {
       props.cards.zipWithIndex.map { case (card, i) =>
         CardDisplay(
           card,
-          props.lang,
           Some("disabled").filter(_ =>
             props.disableAll || !card.canPlayWith(props.resources)),
           handleClick[F](props, i)

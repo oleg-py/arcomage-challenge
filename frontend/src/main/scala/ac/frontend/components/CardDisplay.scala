@@ -3,7 +3,7 @@ package ac.frontend.components
 import scala.scalajs.js.Dynamic.literal
 
 import ac.frontend.CardData
-import ac.frontend.i18n.Lang
+import ac.frontend.i18n._
 import ac.game.cards.Card
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
@@ -15,24 +15,23 @@ import slinky.web.html._
 @react class CardDisplay extends StatelessComponent {
   case class Props(
     card: Card,
-    lang: Lang,
     className: Option[String] = None,
     onClick: SyntheticMouseEvent[div.tag.RefType] => Unit = _ => {},
     overlay: ReactElement = None,
   )
 
-  private def describe(card: Card): List[String] =
+  private def describe(card: Card)(implicit lang: Lang): List[String] =
     CardData
       .find(_.name_en == card.name)
       .flatMap(card => Option(card.description_en)) // Nullable field in CSV
       .filter(_.nonEmpty)
       .map(_.split('|').toList)
       .getOrElse {
-        props.lang.cardDescription(card.effect).toList
+        lang.cardDescription(card.effect).toList
       }
 
-  def render(): ReactElement = {
-    val Props(card, lang, customClass, onClick, overlay) = props
+  def render(): ReactElement = withLang { implicit lang =>
+    val Props(card, customClass, onClick, overlay) = props
     val Some(offsets) = CardData.find(_.name_en == card.name)
 
     div(

@@ -3,6 +3,7 @@ package ac.frontend.components
 import ac.frontend.Store
 import ac.frontend.actions.matches
 import ac.frontend.facades.AntDesign.{Button, Spin}
+import ac.frontend.i18n._
 import ac.frontend.states.{AppState, RematchState, StoreAlg}
 import ac.frontend.states.AppState.{Defeat, Draw, Victory}
 import slinky.core.facade.ReactElement
@@ -19,7 +20,7 @@ object EndgameNotice extends Store.ContainerNoProps {
       StoreAlg[F].rematchState.discrete
     )
 
-  def render[F[_]: Render](state: State): ReactElement = {
+  def render[F[_]: Render](state: State): ReactElement = withLang { implicit lang =>
     val State(as, rs) = state
 
     val runRematch = () => exec { matches.proposeRematch[F] }
@@ -29,15 +30,15 @@ object EndgameNotice extends Store.ContainerNoProps {
         div(className := "endgame-notice")(
           div(className := "notice-box")(
             h1(as match {
-              case Victory => "You win!"
-              case Defeat  => "You've lost"
-              case _       => "It's a draw"
+              case Victory => Tr("You win!", "Вы победили!")
+              case Defeat  => Tr("You've lost", "Вы проиграли")
+              case _       => Tr("It's a draw", "Ничья")
             }),
             rs match {
               case RematchState.NotAsked =>
-                Button(onClick = runRematch)("Rematch")
+                Button(onClick = runRematch)(Tr("Rematch", "Реванш"))
               case RematchState.Asked =>
-                Button(onClick = runRematch)("Agree to rematch")
+                Button(onClick = runRematch)(Tr("Agree to rematch", "Согласиться на реванш"))
               case _ =>
                 Spin(SpinProps())
             }

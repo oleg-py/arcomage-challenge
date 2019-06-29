@@ -19,6 +19,7 @@ import mouse.ignore
 
   private[this] val btnClass = "copy-btn"
   private[this] var clipboard: Option[ClipboardJS] = None
+  private[this] var lastLang: Lang = Lang.En
 
 
   override def componentDidMount(): Unit = {
@@ -26,7 +27,10 @@ import mouse.ignore
       text = _ => props.connectionLink
     ))
 
-    c.on("success", _ => ignore(message.success("Link copied!", 3.0)))
+    c.on("success", _ => ignore(message.success(Tr(
+      "Link copied",
+      "Ссылка скопирована"
+    ) in lastLang, 3.0)))
     clipboard = Some(c)
   }
 
@@ -36,6 +40,7 @@ import mouse.ignore
   }
 
   def render(): ReactElement = withLang { implicit lang =>
+    lastLang = lang
     div(className := "box")(
       PlayerDisplay(props.me),
       div(className := "input-container")(

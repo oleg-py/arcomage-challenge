@@ -4,7 +4,6 @@ import ac.frontend.Store
 import slinky.core.facade.ReactElement
 import slinky.web.html.{className, div, onContextMenu}
 import ac.frontend.components._
-import ac.frontend.i18n.Lang
 import ac.frontend.states.AppState.User
 import ac.frontend.states.Progress
 import ac.game.cards.Card
@@ -17,13 +16,12 @@ object GameScreen extends Store.ContainerNoProps {
     me: User,
     enemy: User,
     hand: Vector[Card],
-    lang: Lang,
     canMove: Boolean
   )
 
 
   def render[F[_]: Render](state: State): ReactElement = {
-    val State(Progress(st, conds), me, enemy, cards, lang, canMove) =
+    val State(Progress(st, conds), me, enemy, cards, canMove) =
       state
 
     val maxRes = conds.resources
@@ -44,7 +42,7 @@ object GameScreen extends Store.ContainerNoProps {
           )
         ),
         Notice(),
-        PlayerCards(PlayerCards.Props(lang, cards, st.stats.resources, !canMove))
+        PlayerCards(PlayerCards.Props(cards, st.stats.resources, !canMove))
       ),
       CardAnimation(),
       ReconnectingOverlay(),
@@ -66,7 +64,6 @@ object GameScreen extends Store.ContainerNoProps {
       F.me.discrete.unNone,
       F.enemy.discrete.unNone,
       F.cards.discrete,
-      F.locale.discrete,
       canMove
     )
   }
