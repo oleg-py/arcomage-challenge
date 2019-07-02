@@ -65,6 +65,7 @@ lazy val frontend = crossProject(JSPlatform)
       ScalablyTyped.A.antd,
       ScalablyTyped.G.`gravatar`,
       ScalablyTyped.C.`clipboard`,
+      ScalablyTyped.R.`react-slinky-facade`,
       "me.shadaj" %%% "slinky-web" % "0.6.0",
       "me.shadaj" %%% "slinky-hot" % "0.6.0",
       "co.fs2" %%% "fs2-core" % "1.0.5",

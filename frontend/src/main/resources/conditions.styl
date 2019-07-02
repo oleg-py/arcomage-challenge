@@ -22,14 +22,19 @@
     margin-top: 8px
 
 .box.wide
+  .ant-input-number
+    width: auto !important
+
+  > div:not(.player)
+    flex-grow: 1
   .ant-tabs
     min-height: 250px
 
   .player:first-child
-    margin-right: 24px
+    margin-right: 8px
 
   .player:last-child
-    margin-left: 24px
+    margin-left: 8px
 
 .tavern-select
   width: 180px
@@ -39,3 +44,15 @@
   .ant-typography
     display: block
     padding-bottom: .5ex
+
+
+.custom-conditions
+  .ant-form-item
+    margin-bottom: 0;
+
+  .ant-radio-group
+    display: flex
+    label
+      flex-grow: 1
+
+  margin-bottom: 8px;

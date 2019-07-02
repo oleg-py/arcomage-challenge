@@ -3,13 +3,19 @@ package ac.frontend.facades
 
 import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
+import scala.scalajs.js.|
 
 import org.scalajs.dom.Event
-import slinky.core.ExternalComponent
+import slinky.core.{ExternalComponent, KeyAddingStage, TagMod}
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import typings.antdLib.{antdLibComponents => antd}
 import typings.antdLib.antdLibStrings._
+import typings.antdLib.esCheckboxCheckboxMod.AbstractCheckboxProps
+import typings.antdLib.esGridColMod.ColProps
+import typings.antdLib.esGridRowMod.RowProps
+import typings.antdLib.libRadioInterfaceMod.RadioGroupProps
+import typings.antdLib.libRadioMod.{Group => AntdRadioGroup}
 
 //noinspection TypeAnnotation
 object AntDesign {
@@ -90,5 +96,44 @@ object AntDesign {
 
     def apply(key: String, text: String): ReactElement =
       this(antd.OptionProps()).withKey(key)(text)
+  }
+
+  @react object Col extends ExternalComponent {
+    type Props = antd.ColProps
+    override val component = antd.Col
+    def span(span: Int) = this(ColProps(span = span))
+  }
+
+  @react object Row extends ExternalComponent {
+    type Props = antd.RowProps
+    override val component = antd.Row
+    def of(tm: TagMod[Nothing]*) = this(RowProps())(tm: _*)
+  }
+
+  @react object Slider extends ExternalComponent {
+    type Props = antd.SliderProps
+    override val component = antd.Slider
+  }
+
+  @react object InputNumber extends ExternalComponent {
+    type Props = antd.InputNumberProps
+    override val component = antd.InputNumber
+  }
+
+  @react object Radio extends ExternalComponent {
+    type Props = antd.RadioProps
+    override val component = antd.Radio
+
+    @react object Button extends ExternalComponent {
+      type Props = antd.RadioButtonProps
+      override val component = antd.RadioButton
+
+      def of(value: String | Int) = this(AbstractCheckboxProps(value = value.merge.asInstanceOf[js.Any]))
+    }
+
+    @react object Group extends ExternalComponent {
+      type Props = RadioGroupProps
+      override val component = AntdRadioGroup
+    }
   }
 }
