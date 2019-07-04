@@ -82,7 +82,19 @@ object Peer {
     for {
       jsp <- F.delay(new PeerJS(js.Dynamic.literal(
         port = 443,
-        secure = true
+        secure = true,
+        config = js.Dynamic.literal(
+          iceServers = js.Array(
+            js.Dynamic.literal(
+              urls = js.Array("turn:rpi.olegpy.com"),
+              username = "arco",
+              credential = "mage"
+            ),
+            js.Dynamic.literal(
+              urls = js.Array("stun:stun.l.google.com:19302")
+            )
+          )
+        )
       )))
       id  <- F.async[String] { cb =>
         jsp.on("open", (id: String) => cb(Right(id)))

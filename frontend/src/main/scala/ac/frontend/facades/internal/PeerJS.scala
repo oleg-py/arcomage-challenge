@@ -18,6 +18,7 @@ import com.github.ghik.silencer.silent
 @silent object PeerJS {
   @js.native
   trait Connection extends js.Object {
+    def peer: String = js.native
     def send(data: ArrayBuffer): Unit = js.native
     def on[A](event: String, fn: js.Function1[A, Unit]): Unit = js.native
     def on(event: String, fn: js.Function0[Unit]): Unit = js.native
