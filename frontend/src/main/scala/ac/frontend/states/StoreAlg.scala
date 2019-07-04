@@ -44,7 +44,7 @@ class StoreAlg[F[_]](val peer: F[Peer[F]])(
   object animate {
     private[this] val cell = dsl.cell(none[AnimatedCard])
     val state = cell.discrete
-    val animDuration = 2500.millis
+    val animDuration = 1500.millis
     val sleepDelay = 500.millis
 
     def apply(card: Card, isEnemy: Boolean, isDiscarded: Boolean): F[Unit] =
