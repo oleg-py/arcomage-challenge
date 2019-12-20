@@ -9,13 +9,13 @@ import org.scalajs.dom.Event
 import slinky.core.{ExternalComponent, KeyAddingStage, TagMod}
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
-import typings.antdLib.{antdLibComponents => antd}
-import typings.antdLib.antdLibStrings._
-import typings.antdLib.esCheckboxCheckboxMod.AbstractCheckboxProps
-import typings.antdLib.esGridColMod.ColProps
-import typings.antdLib.esGridRowMod.RowProps
-import typings.antdLib.libRadioInterfaceMod.RadioGroupProps
-import typings.antdLib.libRadioMod.{Group => AntdRadioGroup}
+import typings.antd.{antdComponents => antd}
+import typings.antd.antdStrings._
+import typings.antd.libCheckboxCheckboxMod.AbstractCheckboxProps
+import typings.antd.libGridColMod.ColProps
+import typings.antd.libGridRowMod.RowProps
+import typings.antd.libRadioInterfaceMod.RadioGroupProps
+import typings.antd.libRadioMod.{Group => AntdRadioGroup}
 
 //noinspection TypeAnnotation
 object AntDesign {

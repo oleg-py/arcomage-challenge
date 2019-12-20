@@ -9,7 +9,7 @@ import ac.frontend.states.AppState.{Defeat, Draw, Victory}
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import com.olegpy.shironeko.util.combine
-import typings.antdLib.antdLibComponents.SpinProps
+import typings.antd.antdComponents.SpinProps
 
 object EndgameNotice extends Store.ContainerNoProps {
   case class State(app: AppState, rs: RematchState)

@@ -10,8 +10,8 @@ import ac.game.player.TurnMod.ForceDiscard
 import cats.effect.Timer
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html.{className, div, span}
-import typings.antdLib.antdLibComponents.SpinProps
-import typings.antdLib.antdLibStrings.small
+import typings.antd.antdComponents.SpinProps
+import typings.antd.antdStrings.small
 import com.olegpy.shironeko.util.combine
 
 object Notice extends Store.ContainerNoProps {

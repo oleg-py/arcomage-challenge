@@ -8,12 +8,12 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import monix.eval.Coeval
-import typings.gravatarLib.gravatarMod.^.{url => gravatarUrl}
-import typings.gravatarLib.gravatarMod.Options
+import typings.gravatar.gravatarMod.{url => gravatarUrl}
+import typings.gravatar.gravatarMod.Options
 import ac.frontend.facades.AntDesign.{Avatar, Button, Icon, Input}
 import ac.frontend.i18n._
-import typings.antdLib.antdLibStrings
-import typings.antdLib.antdLibComponents.AvatarProps
+import typings.antd.antdStrings
+import typings.antd.antdComponents.AvatarProps
 
 @react class NameEntryPage extends Component {
   type Props = (String, String, String, Boolean) => Unit
@@ -41,7 +41,7 @@ import typings.antdLib.antdLibComponents.AvatarProps
 
   def render(): ReactElement = withLang { implicit lang =>
     div(className := "box")(
-      Avatar(AvatarProps(size = 128, src = avatarUrl, shape = antdLibStrings.square)),
+      Avatar(AvatarProps(size = 128, src = avatarUrl, shape = antdStrings.square)),
       div(className := "input-container")(
         Input(
           prefix = Icon("user"),

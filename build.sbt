@@ -36,7 +36,7 @@ lazy val frontend = crossProject(JSPlatform)
     addCommandAlias("wp", ";compile;fastOptJS::startWebpackDevServer;~fastOptJS"),
     addCommandAlias("nowp", "fastOptJS::stopWebpackDevServer"),
     npmDependencies in Compile ++= Seq(
-      "antd"               -> "3.15.1",
+      "antd"               -> "3.26.3",
       "react"              -> "16.8.6",
       "react-dom"          -> "16.8.6",
       "react-proxy"        -> "1.1.8",

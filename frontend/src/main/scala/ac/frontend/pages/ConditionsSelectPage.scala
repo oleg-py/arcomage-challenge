@@ -14,7 +14,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html._
 import monocle.macros.syntax.lens._
-import typings.antdLib.antdLibComponents.{SelectProps, TabPaneProps, TabsProps}
+import typings.antd.antdComponents.{SelectProps, TabPaneProps, TabsProps}
 
 /*_*/
 @react class ConditionsSelectPage extends Component {

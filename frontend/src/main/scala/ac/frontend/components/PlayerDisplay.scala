@@ -6,8 +6,8 @@ import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import typings.antdLib.antdLibStrings
-import typings.antdLib.antdLibComponents.{AvatarProps, TagProps}
+import typings.antd.antdStrings
+import typings.antd.antdComponents.{AvatarProps, TagProps}
 
 
 @react class PlayerDisplay extends StatelessComponent {
@@ -15,7 +15,7 @@ import typings.antdLib.antdLibComponents.{AvatarProps, TagProps}
 
   def render(): ReactElement =
     div(className := "player")(
-      Avatar(AvatarProps(size = 128, src = props.avatarUrl, shape = antdLibStrings.square)),
+      Avatar(AvatarProps(size = 128, src = props.avatarUrl, shape = antdStrings.square)),
       Tag(TagProps())(props.name)
     )
 }

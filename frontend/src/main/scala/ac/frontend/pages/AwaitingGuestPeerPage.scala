@@ -9,9 +9,9 @@ import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import typings.clipboardLib.clipboardMod.{^ => ClipboardJS}
-import typings.clipboardLib.clipboardMod.Options
-import typings.antdLib.libMessageMod.^.{default => message}
+import typings.clipboard.clipboardMod.{^ => ClipboardJS}
+import typings.clipboard.clipboardMod.Options
+import typings.antd.libMessageMod.{default => message}
 import mouse.ignore
 
 @react class AwaitingGuestPeerPage extends StatelessComponent {
