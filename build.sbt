@@ -8,7 +8,7 @@ onLoad in Global := (onLoad in Global).value
 
 inThisBuild(Seq(
   version := "0.0.1",
-  scalaVersion := "2.12.8",
+  scalaVersion := "2.12.10",
 ))
 
 val SinglePlatform: CrossType = new CrossType {
@@ -66,16 +66,16 @@ lazy val frontend = crossProject(JSPlatform)
       ScalablyTyped.G.`gravatar`,
       ScalablyTyped.C.`clipboard`,
       ScalablyTyped.R.`react-slinky-facade`,
-      "me.shadaj" %%% "slinky-web" % "0.6.0",
-      "me.shadaj" %%% "slinky-hot" % "0.6.0",
-      "co.fs2" %%% "fs2-core" % "1.0.5",
-      "io.suzaku" %%% "boopickle" % "1.3.0",
-      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-M1",
-      "com.olegpy" %%% "shironeko-core" % "0.1.0-M1",
-      "io.circe" %%% "circe-core" % "0.10.0",
-      "io.circe" %%% "circe-generic" % "0.10.0",
-      "io.circe" %%% "circe-parser" % "0.10.0",
-      "io.circe" %%% "circe-refined" % "0.10.0",
+      "me.shadaj" %%% "slinky-web" % "0.6.3",
+      "me.shadaj" %%% "slinky-hot" % "0.6.3",
+      "co.fs2" %%% "fs2-core" % "2.1.0",
+      "io.suzaku" %%% "boopickle" % "1.3.1",
+      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-RC3",
+      "com.olegpy" %%% "shironeko-core" % "0.1.0-RC3",
+      "io.circe" %%% "circe-core" % "0.12.3",
+      "io.circe" %%% "circe-generic" % "0.12.3",
+      "io.circe" %%% "circe-parser" % "0.12.3",
+      "io.circe" %%% "circe-refined" % "0.12.3",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
@@ -122,26 +122,26 @@ def compilerFlags = {
 
 def coreLibs = {
   libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats-core" % "1.4.0",
-    "org.typelevel" %%% "cats-effect" % "1.0.0",
-    "io.monix" %%% "monix-eval" % "3.0.0-RC3",
-    "org.typelevel" %%% "kittens" % "1.2.0",
-    "io.higherkindness" %%% "droste-core" % "0.4.0",
+    "org.typelevel" %%% "cats-core" % "2.1.0",
+    "org.typelevel" %%% "cats-effect" % "2.0.0",
+    "io.monix" %%% "monix-eval" % "3.1.0",
+    "org.typelevel" %%% "kittens" % "2.0.0",
+    "io.higherkindness" %%% "droste-core" % "0.8.0",
     "com.chuusai" %%% "shapeless" % "2.3.3",
-    "com.github.julien-truffaut" %%% "monocle-core" % "1.5.0-cats",
-    "com.github.julien-truffaut" %%% "monocle-macro" % "1.5.0-cats",
-    "com.github.mpilquist" %%% "simulacrum" % "0.13.0",
-    "eu.timepit" %%% "refined"            % "0.9.4",
-    "eu.timepit" %%% "refined-cats"       % "0.9.4",
-    "org.typelevel" %%% "mouse" % "0.19",
-    "org.scalatest" %%% "scalatest" % "3.0.1" % Test
+    "com.github.julien-truffaut" %%% "monocle-core" % "2.0.0",
+    "com.github.julien-truffaut" %%% "monocle-macro" % "2.0.0",
+    "com.github.mpilquist" %%% "simulacrum" % "0.19.0",
+    "eu.timepit" %%% "refined"            % "0.9.10",
+    "eu.timepit" %%% "refined-cats"       % "0.9.10",
+    "org.typelevel" %%% "mouse" % "0.23",
+    "org.scalatest" %%% "scalatest" % "3.1.0" % Test
   )
 }
 
 def plugins = Seq(
-  libraryDependencies += "com.github.ghik" %% "silencer-lib" % "1.2" % Provided,
-  addCompilerPlugin("com.github.ghik" %% "silencer-plugin" % "1.2"),
-  addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7"),
-  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4"),
+  libraryDependencies += "com.github.ghik" %% "silencer-lib" % "1.4.2" % Provided,
+  addCompilerPlugin("com.github.ghik" %% "silencer-plugin" % "1.4.2"),
+  addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
+  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
   addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
 )

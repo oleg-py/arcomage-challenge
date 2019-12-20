@@ -2,7 +2,7 @@ package ac.game.cards.dsl
 
 import cats.Traverse
 import cats.kernel.Comparison
-import qq.droste.data.Fix
+import higherkindness.droste.data.Fix
 import cats.derived.semi
 
 object structure {

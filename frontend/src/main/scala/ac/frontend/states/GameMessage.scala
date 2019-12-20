@@ -12,7 +12,7 @@ import ac.game.player.Player
 import cats.Functor
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.NonNegInt
-import qq.droste.data.Fix
+import higherkindness.droste.data.Fix
 
 import java.nio.ByteBuffer
 

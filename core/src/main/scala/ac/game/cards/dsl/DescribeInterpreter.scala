@@ -7,7 +7,7 @@ import cats.data.Chain
 import cats.kernel.Comparison.{EqualTo, GreaterThan, LessThan}
 import cats.{Comparison, Endo}
 import monocle.macros.GenLens
-import qq.droste.{Algebra, scheme}
+import higherkindness.droste.{Algebra, scheme}
 import cats.syntax.foldable._
 import cats.instances.list._
 

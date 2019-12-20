@@ -5,7 +5,7 @@ import scala.language.{implicitConversions, postfixOps}
 import ac.game.cards.Card
 import cats.kernel.Comparison
 import eu.timepit.refined.types.numeric.NonNegInt
-import qq.droste.data.Fix
+import higherkindness.droste.data.Fix
 import structure._
 
 object lang {

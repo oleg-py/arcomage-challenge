@@ -7,7 +7,7 @@ import cats.arrow.Compose
 import cats.{Endo, MonoidK}
 import eu.timepit.refined.auto._
 import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
-import qq.droste._
+import higherkindness.droste._
 import monocle.Lens
 import cats.syntax.foldable._
 import cats.instances.function._
