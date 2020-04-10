@@ -14,11 +14,11 @@ import ac.frontend.i18n.{Tr, withLang}
 import eu.timepit.refined.api.Refined
 import eu.timepit.refined.types.numeric.{NonNegInt, PosInt}
 import org.scalablytyped.runtime.NumberDictionary
-import typings.antd.libInputDashNumberMod.InputNumberProps
-import typings.antd.libRadioInterfaceMod.RadioGroupProps
-import typings.antd.libSliderMod.{SliderProps, SliderValue}
 import typings.antd.{antdStrings => $}
 import monocle.macros.syntax.lens._
+import typings.antd.inputNumberMod.InputNumberProps
+import typings.antd.radioInterfaceMod.RadioGroupProps
+import typings.antd.sliderMod.{SliderProps, SliderValue}
 
 @react class CustomConditionsForm extends StatelessComponent {
   case class Props(initial: GameConditions, onChange: GameConditions => Unit)

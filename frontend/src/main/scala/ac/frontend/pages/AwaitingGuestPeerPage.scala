@@ -3,15 +3,15 @@ package ac.frontend.pages
 import ac.frontend.components.PlayerDisplay
 import ac.frontend.states.AppState.User
 import ac.frontend.utils
-import ac.frontend.facades.AntDesign.{Button, Icon, Input}
+import ac.frontend.facades.AntDesign.{Button, Icons, Input}
 import ac.frontend.i18n._
 import slinky.core.StatelessComponent
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
-import typings.clipboard.clipboardMod.{^ => ClipboardJS}
-import typings.clipboard.clipboardMod.Options
-import typings.antd.libMessageMod.{default => message}
+import typings.clipboard.mod.{^ => ClipboardJS}
+import typings.clipboard.mod.Options
+import typings.antd.messageMod.{default => message}
 import mouse.ignore
 
 @react class AwaitingGuestPeerPage extends StatelessComponent {
@@ -50,7 +50,7 @@ import mouse.ignore
         )),
         Input(
           value = props.connectionLink,
-          addonAfter = { Button(className = btnClass)(Icon("copy")): ReactElement }
+          addonAfter = { Button(className = btnClass)(Icons.Copy): ReactElement }
         ),
         if (utils.inDevelopment()) div(
           a(href := props.connectionLink, target := "_blank")(

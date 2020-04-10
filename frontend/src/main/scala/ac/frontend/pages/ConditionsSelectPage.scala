@@ -14,7 +14,7 @@ import slinky.core.annotations.react
 import slinky.core.facade.{Fragment, ReactElement}
 import slinky.web.html._
 import monocle.macros.syntax.lens._
-import typings.antd.antdComponents.{SelectProps, TabPaneProps, TabsProps}
+import typings.antd.antdComponents.{TabPaneProps, TabsProps}
 
 /*_*/
 @react class ConditionsSelectPage extends Component {
@@ -78,13 +78,13 @@ import typings.antd.antdComponents.{SelectProps, TabPaneProps, TabsProps}
           )
         ),
         TabPane(TabPaneProps(tab = Tr("MM7 Presets", "Опции MM7") in lang)).withKey(Tavern.key)(
-          Select(SelectProps[String](
+          Select(
             value = state.cc.tavern,
-            onChange = { (value: String, _) =>
+            onChange = { (value: String) =>
               setState(_.lens(_.cc.tavern).set(value))
             },
             className = "tavern-select"
-          ))(
+          )(
             GameConditionOptions.taverns.map { case (tavernKey, (name, _)) =>
               Option(tavernKey, name in lang)
             }

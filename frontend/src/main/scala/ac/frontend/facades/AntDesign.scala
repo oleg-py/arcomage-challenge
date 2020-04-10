@@ -5,17 +5,17 @@ import scala.scalajs.js
 import scala.scalajs.js.annotation.JSImport
 import scala.scalajs.js.|
 
+import scala.language.dynamics
 import org.scalajs.dom.Event
-import slinky.core.{ExternalComponent, KeyAddingStage, TagMod}
+import slinky.core.{ExternalComponent, TagMod}
 import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import typings.antd.{antdComponents => antd}
 import typings.antd.antdStrings._
-import typings.antd.libCheckboxCheckboxMod.AbstractCheckboxProps
-import typings.antd.libGridColMod.ColProps
-import typings.antd.libGridRowMod.RowProps
-import typings.antd.libRadioInterfaceMod.RadioGroupProps
-import typings.antd.libRadioMod.{Group => AntdRadioGroup}
+import typings.antd.gridColMod.ColProps
+import typings.antd.gridRowMod.RowProps
+import typings.antd.radioInterfaceMod.RadioGroupProps
+import typings.antd.radioMod.{Group => AntdRadioGroup}
 
 //noinspection TypeAnnotation
 object AntDesign {
@@ -32,12 +32,23 @@ object AntDesign {
     override val component = antd.TabPane
   }
 
-  @react object Icon extends ExternalComponent {
-    type Props = antd.IconProps
-    override val component = antd.Icon
+  object Icons {
+    import typings.react.ScalableSlinky._
 
-    def apply(tpe: String): ReactElement =
-      this(antd.IconProps(`type` = tpe))
+    @JSImport("@ant-design/icons", JSImport.Namespace)
+    @js.native object Iconpack extends js.Any
+
+    private[this] object I extends Dynamic {
+      def selectDynamic(name: String): ExternalComponentP[Unit] =
+        new ExternalComponentP[Unit] {
+          override val component =
+            Iconpack.asInstanceOf[js.Dynamic].selectDynamic(name).asInstanceOf[js.Object]
+        }
+    }
+
+    def User: ReactElement = I.UserOutlined.apply(())
+    def Mail: ReactElement = I.MailOutlined.apply(())
+    def Copy: ReactElement = I.CopyOutlined.apply(())
   }
 
   @react object Input extends ExternalComponent {
@@ -86,16 +97,20 @@ object AntDesign {
   }
 
   @react object Select extends ExternalComponent {
-    type Props = antd.SelectProps[String]
+    case class Props(
+      value: String,
+      onChange: String => Unit,
+      className: js.UndefOr[String] = js.undefined
+    )
     override val component = antd.Select[String]
   }
 
   @react object Option extends ExternalComponent {
-    type Props = antd.OptionProps
-    override val component = antd.Option
+    override val component = typings.antd.mod.Select.Option.asInstanceOf[js.Object]
+    case class Props(value: String)
 
     def apply(key: String, text: String): ReactElement =
-      this(antd.OptionProps()).withKey(key)(text)
+      this(Props(key))(text).withKey(key)
   }
 
   @react object Col extends ExternalComponent {
@@ -125,10 +140,10 @@ object AntDesign {
     override val component = antd.Radio
 
     @react object Button extends ExternalComponent {
-      type Props = antd.RadioButtonProps
+      case class Props(value: String | Int)
       override val component = antd.RadioButton
 
-      def of(value: String | Int) = this(AbstractCheckboxProps(value = value.merge.asInstanceOf[js.Any]))
+      def of(value: String | Int) = this(Props(value))
     }
 
     @react object Group extends ExternalComponent {

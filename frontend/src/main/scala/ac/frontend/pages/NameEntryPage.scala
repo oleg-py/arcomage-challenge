@@ -8,9 +8,9 @@ import slinky.core.annotations.react
 import slinky.core.facade.ReactElement
 import slinky.web.html._
 import monix.eval.Coeval
-import typings.gravatar.gravatarMod.{url => gravatarUrl}
-import typings.gravatar.gravatarMod.Options
-import ac.frontend.facades.AntDesign.{Avatar, Button, Icon, Input}
+import typings.gravatar.mod.{url => gravatarUrl}
+import typings.gravatar.mod.Options
+import ac.frontend.facades.AntDesign.{Avatar, Button, Icons, Input}
 import ac.frontend.i18n._
 import typings.antd.antdStrings
 import typings.antd.antdComponents.AvatarProps
@@ -44,7 +44,7 @@ import typings.antd.antdComponents.AvatarProps
       Avatar(AvatarProps(size = 128, src = avatarUrl, shape = antdStrings.square)),
       div(className := "input-container")(
         Input(
-          prefix = Icon("user"),
+          prefix = Icons.User,
           placeholder = DummyName,
           value = state.name,
           onChange = { e: Event =>
@@ -52,7 +52,7 @@ import typings.antd.antdComponents.AvatarProps
             setState(_.copy(name = target.value))
           }),
         Input(
-          prefix = Icon("mail"),
+          prefix = Icons.Mail,
           placeholder = Tr(
             en = "Email (for gravatar only)",
             ru = "Email (только для аватарки)",

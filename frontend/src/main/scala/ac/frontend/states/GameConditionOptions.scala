@@ -60,7 +60,7 @@ object GameConditionOptions {
           )
         )
     }
-    ListMap(entries: _*)
+    entries.to(ListMap)
   }
 
   private def validate(raw: Entry): ValidatedNel[String, (Tr[String], NonNegInt, NonNegInt, PosInt, PosInt)] =

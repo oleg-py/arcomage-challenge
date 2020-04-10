@@ -7,13 +7,13 @@ import simulacrum._
 
 
 @typeclass trait Randomizer[F[_]] {
-  def shuffles[A](v: TraversableOnce[A]): F[Stream[A]]
+  def shuffles[A](v: Iterable[A]): F[LazyList[A]]
 }
 
 object Randomizer {
   implicit def fromSync[F[_]: Sync]: Randomizer[F] = new Randomizer[F] {
-    def shuffles[A](v: TraversableOnce[A]): F[Stream[A]] = Sync[F].delay {
-      def exec: Stream[A] = Random.shuffle(v).toStream #::: exec
+    def shuffles[A](v: Iterable[A]): F[LazyList[A]] = Sync[F].delay {
+      lazy val exec: LazyList[A] = Random.shuffle(v).to(LazyList) #::: exec
       exec
     }
   }

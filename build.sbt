@@ -8,7 +8,7 @@ onLoad in Global := (onLoad in Global).value
 
 inThisBuild(Seq(
   version := "0.0.1",
-  scalaVersion := "2.12.10",
+  scalaVersion := "2.13.1",
 ))
 
 val SinglePlatform: CrossType = new CrossType {
@@ -36,7 +36,8 @@ lazy val frontend = crossProject(JSPlatform)
     addCommandAlias("wp", ";compile;fastOptJS::startWebpackDevServer;~fastOptJS"),
     addCommandAlias("nowp", "fastOptJS::stopWebpackDevServer"),
     npmDependencies in Compile ++= Seq(
-      "antd"               -> "3.26.3",
+      "antd"               -> "4.1.1",
+      "@ant-design/icons"  -> "4.0.5",
       "react"              -> "16.8.6",
       "react-dom"          -> "16.8.6",
       "react-proxy"        -> "1.1.8",
@@ -62,20 +63,20 @@ lazy val frontend = crossProject(JSPlatform)
     resolvers += Resolver.bintrayRepo("oyvindberg", "ScalablyTyped"),
 
     libraryDependencies ++= Seq(
-      ScalablyTyped.A.antd,
+      ScalablyTyped.A.antd intransitive(),
       ScalablyTyped.G.`gravatar`,
       ScalablyTyped.C.`clipboard`,
       ScalablyTyped.R.`react-slinky-facade`,
-      "me.shadaj" %%% "slinky-web" % "0.6.3",
-      "me.shadaj" %%% "slinky-hot" % "0.6.3",
-      "co.fs2" %%% "fs2-core" % "2.1.0",
+      "me.shadaj" %%% "slinky-web" % "0.6.4",
+      "me.shadaj" %%% "slinky-hot" % "0.6.4",
+      "co.fs2" %%% "fs2-core" % "2.3.0",
       "io.suzaku" %%% "boopickle" % "1.3.1",
-      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-RC3",
-      "com.olegpy" %%% "shironeko-core" % "0.1.0-RC3",
-      "io.circe" %%% "circe-core" % "0.12.3",
-      "io.circe" %%% "circe-generic" % "0.12.3",
-      "io.circe" %%% "circe-parser" % "0.12.3",
-      "io.circe" %%% "circe-refined" % "0.12.3",
+      "com.olegpy" %%% "shironeko-slinky" % "0.1.0-RC4",
+      "com.olegpy" %%% "shironeko-core" % "0.1.0-RC4",
+      "io.circe" %%% "circe-core" % "0.13.0",
+      "io.circe" %%% "circe-generic" % "0.13.0",
+      "io.circe" %%% "circe-parser" % "0.13.0",
+      "io.circe" %%% "circe-refined" % "0.13.0",
     ),
 
     scalacOptions += "-P:scalajs:sjsDefinedByDefault",
@@ -110,13 +111,14 @@ lazy val console = crossProject(JVMPlatform)
   .settings(compilerFlags, plugins)
   .dependsOn(core)
   .jvmSettings(
-    libraryDependencies += "com.github.gvolpe" %% "console4cats" % "0.2"
+    libraryDependencies += "dev.profunktor" %% "console4cats" % "0.8.1"
   )
 
 def compilerFlags = {
   scalacOptions ~= { _.filterNot(Set("-Xfatal-warnings")) ++ Seq(
     "-Ybackend-parallelism",
-    Math.max(1, getRuntime.availableProcessors() - 1).toString
+    Math.max(1, getRuntime.availableProcessors() - 1).toString,
+    "-Ymacro-annotations",
   )}
 }
 
@@ -139,9 +141,8 @@ def coreLibs = {
 }
 
 def plugins = Seq(
-  libraryDependencies += "com.github.ghik" %% "silencer-lib" % "1.4.2" % Provided,
-  addCompilerPlugin("com.github.ghik" %% "silencer-plugin" % "1.4.2"),
+  libraryDependencies += "com.github.ghik" %%"silencer-lib" % "1.6.0" % Provided cross CrossVersion.full,
+  addCompilerPlugin("com.github.ghik" % "silencer-plugin" % "1.6.0" cross CrossVersion.full),
   addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.11.0" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-  addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full),
 )

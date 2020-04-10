@@ -11,7 +11,7 @@ import shapeless.{Witness => W}
 
 class Cards private (
   val hand: Vector[Card],
-  source: Stream[Card]
+  source: LazyList[Card]
 ) {
   def drop(n: Int): Cards = new Cards(hand.updated(n, source.head), source.tail)
   def pull(n: Int): (Card, Cards) = (hand(n), drop(n))
@@ -22,7 +22,7 @@ object Cards {
   val allCards = Vector(red cards, blue cards, green cards).flatten
 
   def initial[F[_]: Randomizer: Functor](handSize: Int Refined Greater[W.`4`.T]): F[Cards] =
-    Randomizer[F].shuffles(Stream.fill(MaxDuplicates)(allCards).flatten).map { stream =>
+    Randomizer[F].shuffles(LazyList.fill(MaxDuplicates)(allCards).flatten).map { stream =>
       val (hand, source) = stream splitAt handSize.value
       new Cards(hand.toVector, source)
     }
